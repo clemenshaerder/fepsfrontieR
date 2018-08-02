@@ -1,0 +1,32 @@
+Package: fepsfrontieR
+Type: Package
+Title: Estimation of fixed-effect panel stochastic frontier models (of Wang & Ho) by MLE & Gibbs Sampler
+Version: 0.0.0.9000
+Author: Oliver Dippel, Clemens Haerder
+Maintainer: The package maintainer <clemens.haerder@gmail.com>
+Description: Esimation of fixed-effect panel stochastic frontier models by
+    whitin transformation as proposed by Wang & Ho (13. January 2010).
+    Maximum Likelihood Estimation is numerically computed using ?().
+    Confidence Intervals are provided using the Hessian Matrix or
+    (time intensive) Bootstrapping to calculate Standard Error.
+    In addition, a Gibbs Sampler can be chosen as an alternative to MLE.
+Authors@R: as.person(c(
+    "Clemens Haerder <clemens.haerder@gmail.com> [aut, cre]",
+    "Oliver Dippel <oliverdippel@gmx.de>  [aut, cre]"))
+BugReports: < add github adress here .../issues>
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr,
+    MASS,
+    truncnorm,
+    stats,
+    dplyr,
+    numDeriv
+Suggests:
+    MASS (>= 7.3.0),
+    testthat
+Depends:
+    R (>= 3.4.0)
+RoxygenNote: 6.1.0
