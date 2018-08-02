@@ -13,7 +13,6 @@ Description: Esimation of fixed-effect panel stochastic frontier models by
 Authors@R: as.person(c(
     "Clemens Haerder <clemens.haerder@gmail.com> [aut, cre]",
     "Oliver Dippel <oliverdippel@gmx.de>  [aut, cre]"))
-BugReports: < add github adress here .../issues>
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -30,3 +29,5 @@ Suggests:
 Depends:
     R (>= 3.4.0)
 RoxygenNote: 6.1.0
+URL: https://github.com/clemenshaerder/fepsfrontieR
+BugReports: https://github.com/clemenshaerder/fepsfrontieR/issues
