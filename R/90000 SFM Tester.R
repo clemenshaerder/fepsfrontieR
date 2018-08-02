@@ -62,20 +62,22 @@
 # data.test <- SFM.generate(N = N, Time = Time, beta = beta, delta = delta, mu_u = 0, sigma_u = sigma_u, sigma_v = sigma_v)
 # data.test <- cbind(rep(c("farmer","company"),N*Time/2), data.test)
 # colnames(data.test) <- c("gr","x1", "x2","y","z1", "z2")
-#
+# #
 # form.test <- formula(y  ~ x1 + x2 + (z1 + z2))
 # formula <- form.test
-# data <- data.test
-# data.test[1,2] <- Inf
+# data.test <- sfm.data
+#
 # Time = NULL; N = NULL
-# # do it with N & Time
-# (sfmfep(formula = form.test, N = N, Time = Time, data = data.test, mu=0, myPar = NULL))
-# # do it with N & Time
-# (sfmfep(formula = form.test, group = "gr", data = data.test, mu=0, myPar = NULL))
+# library(dplyr)
+# library(MASS)
+# (sfmfep(formula = form.test, N = N, Time = Time, data = data.test, mu=0, optimPar = NULL))
+# # # do it with N & Time
+# tttt <- (sfmfep(formula = form.test, group = "gr", data = sfm.data, mu=0, optimPar = NULL))
+# typeof(tttt)
 #
 # profvis(sfmfep(formula = form.test, R = 2, N = N, Time = Time, data = data.test, mu=0, myPar = NULL, sigma = c(0.1,0.05)))
 #
-#
+#devtools::use_data
 # ###############################################################################
 # ##############          Test SFM alpha index                      #############
 # ###############################################################################

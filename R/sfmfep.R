@@ -9,7 +9,9 @@
 #' < an example where a data set is created via sfm.generate>
 #' @export
 
-sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL , mu=0, myPar = NULL, sigmaCI = 0.05){
+sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
+                   mu=0,  sigmaCI = 0.05,
+                   optimPar = c(sigma_U = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL)),){
 
   # Error handling of input data & formula  ---------------------------
 
@@ -82,35 +84,43 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL , mu=0, my
   x.dat <- as.matrix(sel.data[, 2:(1+K)])
   try(z.dat <- sel.data[, (1+K+1):(1+K+R)], silent= TRUE) # TODO(Clemens): Check if this is allowed to happen
 
-  # TODO(Clemens): Add reasonable starting point if myPar is not specified
+  # TODO(Clemens): Add reasonable starting point if optimPar is not specified
 
   # Optimization  ---------------------------
   #  lower boundary for optimization
   l.int <- c(0.0001, 0.0001, rep(-Inf, K), rep(-Inf, R))  # Variation can not be negative
 
-  if (is.null(myPar) == T){
+  if (is.null(optimPar) == T){  # we generate appropriate starting values
 
-    # beta.start <- solve(t(x.dat) %*% x.dat) %*% x.dat %*% y.dat
-    optim.SFM <- nlminb(objective = SFM.within,
-                        lower = l.int,
-                        hessian = T,
-                        start = c(1, 1, rep(1, K), rep(1, R)),
-                        Time = Time.input,
-                        N = N.input,
-                        xv = x.dat, y = y.dat, z = z.dat,
-                        mu = mu,
-                        optim = T)
+    beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat
+
+    startOptimPar <- c(sigma_u = sample(10,1),
+                       sigma_v = sample(10,1),
+                       beta = beta.start,
+                       delta = delta.start)
+
+    optim.SFM <- nlminb (objective = SFM.within,
+                         lower = l.int,
+                         hessian = T,
+                         start = startOptimPar,
+                         Time = Time.input,
+                         N = N.input,
+                         xv = x.dat, y = y.dat, z = z.dat,
+                         mu = mu,
+                         optim = T)
+
   } else {
-    if (length(myPar) != (2 + totCountVar)){  # 2 sigmas + total betas&deltas
+    if (length(optimPar) != (2 + totCountVar)){  # 2 sigmas + total betas&deltas
       stop ("Could not perform estimation.
             A starting point for the estimation must be provided for every parameter.")
     }
-    if (!is.numeric(myPar) || myPar[1] <= 0 || myPar[2] <= 0){
+    if (!is.numeric(optimPar) || optimPar[1] <= 0 || optimPar[2] <= 0){
       stop ("Could not perform estimation.
             The starting points must be numeric &| sigmas must be <= 0")
     }
+
     optim.SFM <- nlminb(objective = SFM.within,
-                        start = c(myPar),
+                        start = c(optimPar),
                         lower = l.int,
                         mu = mu,
                         Time = Time.input,
