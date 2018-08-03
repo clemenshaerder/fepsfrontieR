@@ -11,7 +11,7 @@
 
 sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                    mu=0,  sigmaCI = 0.05,
-                   optimPar = c(sigma_U = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL)),){
+                   optimPar = c(sigma_U = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
   # Error handling of input data & formula  ---------------------------
 
@@ -97,7 +97,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     startOptimPar <- c(sigma_u = sample(10,1),
                        sigma_v = sample(10,1),
                        beta = beta.start,
-                       delta = delta.start)
+                       delta = beta.start)  # TODO(Clemens): specify starting point
 
     optim.SFM <- nlminb (objective = SFM.within,
                          lower = l.int,
@@ -110,7 +110,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                          optim = T)
 
   } else {
-    if (length(optimPar) != (2 + totCountVar)){  # 2 sigmas + total betas&deltas
+    if (length(optimPar) != (2 + totCountVar - 1)){  # 2 sigmas + total betas&deltas - 1x y
       stop ("Could not perform estimation.
             A starting point for the estimation must be provided for every parameter.")
     }

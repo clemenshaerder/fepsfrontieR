@@ -11,9 +11,20 @@ test_that ("sfmfep works :-)", {
   delta <- c(0.5,2)
   sigma_u <- 2; sigma_v <- 1
   form.test <- formula(y  ~ x1 + x2 + (z1 + z2))
-  test.data <- sfm.data
+  test.data <- sfm.data  # package data
 
+  # Tests if optim " N & T" works
   testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, data = test.data, mu = 0, optimPar = NULL)
+  expect_type (object = testSfmfep, type = "list")
+
+  # Tests if option "group"
+  testSfmfep <- sfmfep(formula = form.test, group ="gr", data = test.data, mu = 0, optimPar = NULL)
+  expect_type (object = testSfmfep, type = "list")
+
+  # Tests if defined starting points "optimPar" works
+  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+                       data = test.data, mu = 0,
+                       optimPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
 })
 
