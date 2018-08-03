@@ -53,7 +53,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   # PI-Matrix is the Variance-Covariance Matrix of v
   PI <- par[2] * (diag(Time) - 1/Time * (matrix(c(rep(1,Time * Time)), ncol = Time)))
-  gPI <- MASS::ginv(PI)
+  try(gPI <- MASS::ginv(PI), silent=T)
   if (!exists("gPI")){
     stop ("Could not calculate log.likelihood.
           SVD of the g-Inverse of PI = sigma_v * M (orthogonal projection matrix) failed.")

@@ -82,7 +82,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   y.dat <- as.matrix(sel.data[, 1])  # y is always the first value in the formula
   x.dat <- as.matrix(sel.data[, 2:(1+K)])
-  try(z.dat <- sel.data[, (1+K+1):(1+K+R)], silent= TRUE) # TODO(Clemens): Check if this is allowed to happen
+  try(z.dat <- as.matrix(sel.data[, (1+K+1):(1+K+R)]), silent= TRUE) # TODO(Clemens): Check if this is allowed to happen
 
   # TODO(Clemens): Add reasonable starting point if optimPar is not specified
 
@@ -92,12 +92,16 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   if (is.null(optimPar) == T){  # we generate appropriate starting values
 
-    beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat
+    beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS for beta
+    delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat
 
-    startOptimPar <- c(sigma_u = sample(10,1),
-                       sigma_v = sample(10,1),
+    e <- y.dat - x.dat %*% beta.start
+    startSigma <- (t(e) %*% e) / (N.input * Time.input - (K+R))  # OLS for both sigmas
+
+    startOptimPar <- c(sigma_u = startSigma,
+                       sigma_v = startSigma,
                        beta = beta.start,
-                       delta = beta.start)  # TODO(Clemens): specify starting point
+                       delta = delta.start)
 
     optim.SFM <- nlminb (objective = SFM.within,
                          lower = l.int,
