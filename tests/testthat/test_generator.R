@@ -32,7 +32,6 @@ test_that ("sfmfep works :-)", {
 context ("Correct output of SFM.generate")
 library (truncnorm)
 
-
 test_that ("SFM.generate creates a correct output format", {
 
   N <- 2
@@ -54,6 +53,16 @@ test_that ("SFM.generate creates a correct output format", {
   rm(list=ls(all=TRUE))
 })
 
+context ("SFM.within returns a nice output")
 
-
-
+ test_that ("SFM.generate creates a correct output format", {
+   testData <- sfm.data
+   sigma_u <- 0.1
+   sigma_v <- 0.1
+   beta <- c(0.5, 2)
+   delta <- c(0.5, 3)
+   output <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
+                        xv <- sfm.data[2:3], y <- sfm.data[4], z <- sfm.data[5:6],
+                        N <- 2,  Time <- 30, mu = 0, optim = F)
+   expect_type(object = output, type ="list")
+})
