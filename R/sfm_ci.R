@@ -16,7 +16,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha){
     indexExcludeVar <- which (diag (fisher_info) < 0)
     fisher_info <- fisher_info[-indexExcludeVar, -indexExcludeVar]
     estimates <- estimates[-indexExcludeVar]
-    print ("Could not compute Confidence Interval for every variable (negative Fisher Information)")
+    cat ("Could not compute Confidence Interval for:", names(estimates)[indexExcludeVar],"(negative Fisher Information )")
     # TODO(Clemens): which var?
   }, silent = T)
 

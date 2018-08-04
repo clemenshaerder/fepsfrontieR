@@ -170,7 +170,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 # sigmaCI = NULL & !is.null(sigmaCI) & !is.nan(sigmaCI)
   if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null(sigmaCI) && !is.nan(sigmaCI) ){
     conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes, alpha = sigmaCI)
-    print("funktioniert :-D")
   }
 
   # calculate the inefficency index for each panel
@@ -196,7 +195,8 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   AIC <- -2 * optim.SFM$objective + 2*length(optim.SFM$par)
   BIC <- -2 * optim.SFM$objective + length(optim.SFM$par) * dim(y.dat)[1]
 
-  # TODO(Clemens): Check AIC / BIC
+  # TODO(Clemens): Check AIC / BIC signs
+
   return(list(AIC, BIC))
 }
 
