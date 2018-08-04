@@ -132,3 +132,9 @@
 # #
 # # x <- sample(1000)
 #
+x <- as.matrix(testData[2:3], ncol=2)
+y <- as.matrix(testData[4], ncol=1)
+
+beta <- solve(t(x) %*% x) %*% t(x) %*% y
+e <- y - x %*% beta
+(t(e) %*% e) / (60-2)

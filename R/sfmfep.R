@@ -1,9 +1,9 @@
 #' sfmfep estimates a stochastic frontier model for fixed-effects using
 #' within transformation
-#' @param par is a vector of regression coefficients & variance parameters.
-#'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by
-#'     K beta & R delta coefficients
-#' @param formula ist etwas
+#' @param formula an object of class "fomrula" in the form of
+#' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under ‘Details’
+#' @param data an optional data frame, list or environment (or object coercible by
+#' as.data.frame to a data frame) containing the variables in the model.
 #' @return < Describe what is returned when applying this functinon >
 #' @examples
 #' < an example where a data set is created via sfm.generate>
