@@ -1,9 +1,9 @@
-context ("Correct output of SFM.generate")
+context ("sfmfep")
 
 library (MASS)
 library (dplyr)
 
-test_that ("sfmfep works :-)", {
+test_that ("sfmfep works", {
 
   N <- 2
   Time <- 30
@@ -31,10 +31,17 @@ test_that ("sfmfep works :-)", {
   testSfmfep <- sfmfep(formula = form.test, group ="gr",
                        data = test.data, mu = 0, estimate = F,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
+  expect_type(object = testSfmfep, type = "list")
+
+  # Tests if it works when CIs are not wanted
+  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+                       data = test.data, mu = 0, sigmaCI = NaN,
+                       myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
+  expect_type (object = testSfmfep, type = "list")
 })
 
 
-context ("Correct output of SFM.generate")
+context ("SFM.generate")
 library (truncnorm)
 
 test_that ("SFM.generate creates a correct output format", {
@@ -58,7 +65,7 @@ test_that ("SFM.generate creates a correct output format", {
   rm(list=ls(all=TRUE))
 })
 
-context ("SFM.within returns a nice output")
+context ("SFM.within")
 
  test_that ("SFM.generate creates a correct output format", {
    testData <- sfm.data

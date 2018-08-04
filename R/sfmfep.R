@@ -10,8 +10,8 @@
 #' @export
 
 sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
-                   mu=0,  sigmaCI = 0.05, estimate = T,
-                   myPar = c(sigma_U = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
+                   mu = 0,  sigmaCI = 0.05, estimate = T,
+                   myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
     # Error handling of input data & formula  ---------------------------
 
@@ -84,8 +84,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   x.dat <- as.matrix(sel.data[, 2:(1+K)])
   try(z.dat <- as.matrix(sel.data[, (1+K+1):(1+K+R)]), silent= TRUE) # TODO(Clemens): Check if this is allowed to happen
 
-  # TODO(Clemens): Add reasonable starting point if myPar is not specified
-
   # Optimization  ---------------------------
   #  lower boundary for optimization
   l.int <- c(0.0001, 0.0001, rep(-Inf, K), rep(-Inf, R))  # Variation can not be negative
@@ -100,14 +98,14 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
       startSigma <- (t(e) %*% e) / (N.input * Time.input - (K+R))  # OLS for both sigmas
 
       myPar     <- c(sigma_u = startSigma,
-                      sigma_v = startSigma,
-                      beta = beta.start,
-                      delta = delta.start)
+                     sigma_v = startSigma,
+                     beta = beta.start,
+                     delta = delta.start)
 
       optim.SFM <- nlminb (objective = SFM.within,
                            lower = l.int,
                            hessian = T,
-                           start = startmyPar,
+                           start = myPar,
                            Time = Time.input,
                            N = N.input,
                            xv = x.dat, y = y.dat, z = z.dat,
@@ -156,9 +154,11 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                          Time = Time.input,
                          xv = x.dat , y = y.dat ,z = z.dat,
                          par = optim.SFM$par)
+
   if (estimate == F){
     optim.SFM$objective <- sum(ret.list$log.ll)
   }
+
   # assign the estimations
   estimate.sigma_u  <- optim.SFM$par[1]
   estimate.sigma_v  <- optim.SFM$par[2]
@@ -167,7 +167,11 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Calculate Confidence Intervals for the estimates (returns a data frame)
   # alpha can be a vector
-  conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes, alpha = sigmaCI)
+# sigmaCI = NULL & !is.null(sigmaCI) & !is.nan(sigmaCI)
+  if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null(sigmaCI) && !is.nan(sigmaCI) ){
+    conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes, alpha = sigmaCI)
+    print("funktioniert :-D")
+  }
 
   # calculate the inefficency index for each panel
   inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
@@ -191,7 +195,8 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # Calculate Model Selection Criterion  ---------------------------
   AIC <- -2 * optim.SFM$objective + 2*length(optim.SFM$par)
   BIC <- -2 * optim.SFM$objective + length(optim.SFM$par) * dim(y.dat)[1]
-  print(AIC)
-  return(conf.Interval)
+
+  # TODO(Clemens): Check AIC / BIC
+  return(list(AIC, BIC))
 }
 

@@ -4,7 +4,8 @@
 \alias{SFM.within}
 \title{< Within transformation & calculation of log.likelihood >}
 \usage{
-SFM.within(par = c(), xv, y, z, N, Time, mu = 0, optim = F)
+SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), xv, y, z,
+  N = NULL, Time = NULL, group = NULL, mu = 0, optim = F)
 }
 \arguments{
 \item{par}{is a vector of regression coefficients & variance parameters.

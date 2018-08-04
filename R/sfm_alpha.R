@@ -1,4 +1,4 @@
-#' < Recovers the alpha (intercept) of each panel >
+#' < Recovers the alpha (inteysfdysyxyssfdrcept) of each panel >
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
 #' @return < Describe what is returned when applying this functinon >
@@ -8,7 +8,7 @@
 SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu = 0){
 
   # TODO(Oli) comment the file according googles r comment standard (use -------- to easily readable code bloks)
-
+  # TODO(Oli) add panelname to each alpha
 
   sigma_u <- sqrt(sigma_u) # since we need sigma times - 2 and i don`t know how to get it in another way`
   sigma_v <- sqrt(2)  # TODO(Oli) warum 2? sigma_v?

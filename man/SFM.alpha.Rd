@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_alpha.R
 \name{SFM.alpha}
 \alias{SFM.alpha}
-\title{< Recovers the alpha (intercept) of each panel >}
+\title{< Recovers the alpha (inteysfdysyxyssfdrcept) of each panel >}
 \usage{
 SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu = 0)
 }
@@ -14,7 +14,7 @@ SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu = 0)
 < Describe what is returned when applying this functinon >
 }
 \description{
-< Recovers the alpha (intercept) of each panel >
+< Recovers the alpha (inteysfdysyxyssfdrcept) of each panel >
 }
 \examples{
 < an example >

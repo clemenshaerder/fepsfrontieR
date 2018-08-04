@@ -6,7 +6,8 @@
 within transformation}
 \usage{
 sfmfep(formula, data, group = NULL, N = NULL, Time = NULL, mu = 0,
-  myPar = NULL, sigmaCI = 0.05)
+  sigmaCI = 0.05, estimate = T, myPar = c(sigma_u = NULL, sigma_v =
+  NULL, beta = c(NULL), delta = c(NULL)))
 }
 \arguments{
 \item{formula}{ist etwas}

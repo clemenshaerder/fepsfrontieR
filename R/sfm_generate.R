@@ -12,7 +12,7 @@
 #' of the zero-mean random error.
 #' @param mu_u is numeric and is the mean of the truncated normal distribution
 #' of the stochastic inefficency.
-#' @return A data.fram() including x, y, z variables
+#' @return A data.fram() including x, y, z & alpha variables
 #' @examples
 #' < an example >
 #' @export

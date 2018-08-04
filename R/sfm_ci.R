@@ -11,23 +11,29 @@ SFM.CI <- function(estimates, hessianMatrix, alpha){
   # Error Handling: if the Hessian Matrix is indefinite, we can not calculate Confidence Intervals
   # Can occure when eigenvalues of the Hessian are != 0 (estimates are saddle points)
   try (fisher_info <- solve(hessianMatrix), silent = T)
-  try (prop_sigma <- sqrt(diag(fisher_info)), silent = T)  # checks if variance is improper (-)
-  # TODO(Clemens): just 1 entry could be negative
-  tt <- c(2,2,3,4,5)
-  if (typeof( which(!is.numeric(tt)) == 0 )
-  if (exists("prop_sigma")){
 
+  try( if (any (diag (fisher_info) < 0) == T){
+    indexExcludeVar <- which (diag (fisher_info) < 0)
+    fisher_info <- fisher_info[-indexExcludeVar, -indexExcludeVar]
+    estimates <- estimates[-indexExcludeVar]
+    print ("Could not compute Confidence Interval for every variable (negative Fisher Information)")
+    # TODO(Clemens): which var?
+  }, silent = T)
+
+  if (exists("fisher_info")){
+
+    prop_sigma <- sqrt( diag (fisher_info))
     # Calculation of CIs  ---------------------------
     # Note that alpha can be a vector of different significance values
-    upper <- matrix(c(rep(NA, length(estimates)* length(alpha))), ncol = length(alpha))
-    lower <- matrix(c(rep(NA, length(estimates)* length(alpha))), ncol = length(alpha))
+    upper <- matrix (c(rep (NA, length (prop_sigma) * length (alpha))), ncol = length (alpha))
+    lower <- matrix (c(rep (NA, length (prop_sigma) * length (alpha))), ncol = length (alpha))
 
     colnames(upper) <- c(1-alpha[c(1:length(alpha))]/2)
     colnames(lower) <- c(alpha[c(1:length(alpha))]/2)
 
-    for (i in 1:length(estimates)){
-      upper[i, ] <- estimates[i]+qnorm(1-alpha/2)*prop_sigma[i]
-      lower[i, ] <- estimates[i]+qnorm(alpha/2)*prop_sigma[i]
+    for (i in 1:length (prop_sigma)){
+      upper[i, ] <- estimates[i] + qnorm(1-alpha/2)  * prop_sigma[i]
+      lower[i, ] <- estimates[i] + qnorm(alpha/2) * prop_sigma[i]
     }
 
     # Create output data.frame for CIs  ---------------------------

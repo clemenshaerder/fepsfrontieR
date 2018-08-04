@@ -7,7 +7,8 @@
 
 SFM.inindex <- function(h, sigma2star, mu2star, N, Time){
 
-  #TODO(Oli) comment the file according googles r comment standard (use -------- to easily readable code bloks)
+  # TODO(Oli) comment the file according googles r comment standard (use -------- to easily readable code bloks)
+  # TODO(Oli) add panelname to each ineff.index
 
   h <- matrix(h, ncol = N, nrow = Time)
   in_index <- matrix(rep(NA, N*Time), ncol = N, nrow = Time)
