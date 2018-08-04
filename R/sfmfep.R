@@ -13,6 +13,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                    mu = 0,  sigmaCI = 0.05, estimate = T,
                    myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
+  call <- match.call()
     # Error handling of input data & formula  ---------------------------
 
   # Select the data from the "data" input according to applied "formula"
