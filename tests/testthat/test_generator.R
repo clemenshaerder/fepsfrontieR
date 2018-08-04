@@ -14,18 +14,23 @@ test_that ("sfmfep works :-)", {
   test.data <- sfm.data  # package data
 
   # Tests if optim " N & T" works
-  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, data = test.data, mu = 0, optimPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if option "group"
-  testSfmfep <- sfmfep(formula = form.test, group ="gr", data = test.data, mu = 0, optimPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, group ="gr", data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
-  # Tests if defined starting points "optimPar" works
+  # Tests if defined starting points "myPar" works
   testSfmfep <- sfmfep(formula = form.test, group ="gr",
                        data = test.data, mu = 0,
-                       optimPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
+                       myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
+
+  # Tests if it works when estimates provided (estimate = F)
+  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+                       data = test.data, mu = 0, estimate = F,
+                       myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
 })
 
 

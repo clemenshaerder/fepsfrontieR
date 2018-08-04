@@ -10,10 +10,10 @@
 #' @export
 
 sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
-                   mu=0,  sigmaCI = 0.05,
-                   optimPar = c(sigma_U = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
+                   mu=0,  sigmaCI = 0.05, estimate = T,
+                   myPar = c(sigma_U = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
-  # Error handling of input data & formula  ---------------------------
+    # Error handling of input data & formula  ---------------------------
 
   # Select the data from the "data" input according to applied "formula"
   if ((is.data.frame(data) || is.matrix(data)) == F){
@@ -84,53 +84,59 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   x.dat <- as.matrix(sel.data[, 2:(1+K)])
   try(z.dat <- as.matrix(sel.data[, (1+K+1):(1+K+R)]), silent= TRUE) # TODO(Clemens): Check if this is allowed to happen
 
-  # TODO(Clemens): Add reasonable starting point if optimPar is not specified
+  # TODO(Clemens): Add reasonable starting point if myPar is not specified
 
   # Optimization  ---------------------------
   #  lower boundary for optimization
   l.int <- c(0.0001, 0.0001, rep(-Inf, K), rep(-Inf, R))  # Variation can not be negative
 
-  if (is.null(optimPar) == T){  # we generate appropriate starting values
+  if (estimate == T){
+    if (is.null(myPar) == T){  # we generate appropriate starting values
 
-    beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS for beta
-    delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat
+      beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS for beta
+      delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat
 
-    e <- y.dat - x.dat %*% beta.start
-    startSigma <- (t(e) %*% e) / (N.input * Time.input - (K+R))  # OLS for both sigmas
+      e <- y.dat - x.dat %*% beta.start
+      startSigma <- (t(e) %*% e) / (N.input * Time.input - (K+R))  # OLS for both sigmas
 
-    startOptimPar <- c(sigma_u = startSigma,
-                       sigma_v = startSigma,
-                       beta = beta.start,
-                       delta = delta.start)
+      myPar     <- c(sigma_u = startSigma,
+                      sigma_v = startSigma,
+                      beta = beta.start,
+                      delta = delta.start)
 
-    optim.SFM <- nlminb (objective = SFM.within,
-                         lower = l.int,
-                         hessian = T,
-                         start = startOptimPar,
-                         Time = Time.input,
-                         N = N.input,
-                         xv = x.dat, y = y.dat, z = z.dat,
-                         mu = mu,
-                         optim = T)
+      optim.SFM <- nlminb (objective = SFM.within,
+                           lower = l.int,
+                           hessian = T,
+                           start = startmyPar,
+                           Time = Time.input,
+                           N = N.input,
+                           xv = x.dat, y = y.dat, z = z.dat,
+                           mu = mu,
+                           optim = T)
 
-  } else {
-    if (length(optimPar) != (2 + totCountVar - 1)){  # 2 sigmas + total betas&deltas - 1x y
-      stop ("Could not perform estimation.
-            A starting point for the estimation must be provided for every parameter.")
-    }
-    if (!is.numeric(optimPar) || optimPar[1] <= 0 || optimPar[2] <= 0){
-      stop ("Could not perform estimation.
-            The starting points must be numeric &| sigmas must be <= 0")
-    }
+    } else {
+      if (length(myPar) != (2 + totCountVar - 1)){  # 2 sigmas + total betas&deltas - 1x y
+        stop ("Could not perform estimation.
+              A starting point for the estimation must be provided for every parameter.")
+      }
+      if (!is.numeric(myPar) || myPar[1] <= 0 || myPar[2] <= 0){
+        stop ("Could not perform estimation.
+              The starting points must be numeric &| sigmas must be <= 0")
+      }
 
-    optim.SFM <- nlminb(objective = SFM.within,
-                        start = c(optimPar),
-                        lower = l.int,
-                        mu = mu,
-                        Time = Time.input,
-                        N = N.input,
-                        xv = x.dat, y = y.dat, z = z.dat,
-                        optim = T)
+      optim.SFM <- nlminb(objective = SFM.within,
+                          start = c(myPar),
+                          lower = l.int,
+                          mu = mu,
+                          Time = Time.input,
+                          N = N.input,
+                          xv = x.dat, y = y.dat, z = z.dat,
+                          optim = T)
+      }
+
+    } else {
+      optim.SFM <- NULL
+      optim.SFM$par <- myPar
   }
 
   # derive the Hessian Matrix based on estimates from the optimization
@@ -150,6 +156,9 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                          Time = Time.input,
                          xv = x.dat , y = y.dat ,z = z.dat,
                          par = optim.SFM$par)
+  if (estimate == F){
+    optim.SFM$objective <- sum(ret.list$log.ll)
+  }
   # assign the estimations
   estimate.sigma_u  <- optim.SFM$par[1]
   estimate.sigma_v  <- optim.SFM$par[2]
@@ -182,7 +191,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # Calculate Model Selection Criterion  ---------------------------
   AIC <- -2 * optim.SFM$objective + 2*length(optim.SFM$par)
   BIC <- -2 * optim.SFM$objective + length(optim.SFM$par) * dim(y.dat)[1]
-
+  print(AIC)
   return(conf.Interval)
 }
 

@@ -11,8 +11,10 @@ SFM.CI <- function(estimates, hessianMatrix, alpha){
   # Error Handling: if the Hessian Matrix is indefinite, we can not calculate Confidence Intervals
   # Can occure when eigenvalues of the Hessian are != 0 (estimates are saddle points)
   try (fisher_info <- solve(hessianMatrix), silent = T)
-  try (prop_sigma <- sqrt(diag(fisher_info)), silent=T)  # checks if variance is improper (-)
-
+  try (prop_sigma <- sqrt(diag(fisher_info)), silent = T)  # checks if variance is improper (-)
+  # TODO(Clemens): just 1 entry could be negative
+  tt <- c(2,2,3,4,5)
+  if (typeof( which(!is.numeric(tt)) == 0 )
   if (exists("prop_sigma")){
 
     # Calculation of CIs  ---------------------------
