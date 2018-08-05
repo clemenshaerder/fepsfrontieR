@@ -2,10 +2,9 @@
 % Please edit documentation in R/sfm_generate.R
 \name{SFM.generate}
 \alias{SFM.generate}
-\title{SFM.generate creates a fixed-effects panel stochastic frontier model data set
-which can be used as examples for other functions of the package fepsfrontieR.}
+\title{SFM.generate creates a fixed-effects panel stochastic frontier model}
 \usage{
-SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu_u = 0)
+SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu = 0)
 }
 \arguments{
 \item{N}{is an integer and specifies the amount of panels}
@@ -24,16 +23,23 @@ of the stochastic inefficency}
 \item{sigma_v}{is postivie numeric and is the variation
 of the zero-mean random error.}
 
-\item{mu_u}{is numeric and is the mean of the truncated normal distribution
+\item{mu}{is numeric and is the mean of the truncated normal distribution
 of the stochastic inefficency.}
 }
 \value{
-A data.fram() including x, y, z variables
+A data.frame( ) including x, y, z & alpha variables
 }
 \description{
-SFM.generate creates a fixed-effects panel stochastic frontier model data set
-which can be used as examples for other functions of the package fepsfrontieR.
+Data sets created by this function can be applied for sfmfep( ) of
+this package fepsfrontieR. The model specificiation are:
+alpha_i are fixed-effect parameters drawn from a uniform distribution in [0, 1].
+x_it is drawn from a normal distribution N(alpha_i, 1).
+z_it is drawn from a standard normal distribution.
+u_i (inefficency) is drawn from a truncated normal distribution with N(mu, sigma_u).
 }
 \examples{
-< an example >
+exampleSFM <- datsSFM.generate(N = 20, Time = 5, beta = c(0.5,0,9,3),
+delta = (0.5,0.1,2), sigma_u = 0.2, sigma_v = 0.1)
+
+exampleSFM
 }
