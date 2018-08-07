@@ -25,12 +25,12 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                    mu = 0,  sigmaCI = 0.05, estimate = T,
                    myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
-<<<<<<< HEAD
-  # Error handling of input data & formula  ---------------------------
-=======
-  call <- match.call()
-    # Error handling of input data & formula  ---------------------------
->>>>>>> 8e6ae035cdb6ebeff132728f16aa345a52b39530
+# <<<<<<< HEAD
+#   # Error handling of input data & formula  ---------------------------
+# =======
+#   call <- match.call()
+#     # Error handling of input data & formula  ---------------------------
+# >>>>>>> 8e6ae035cdb6ebeff132728f16aa345a52b39530
 
   # Select the data from the "data" input according to applied "formula"
   if ((is.data.frame(data) || is.matrix(data)) == F){
@@ -76,6 +76,10 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   extractZ <- as.formula(paste(formula[2], formula[1], zForm))
 
   R <- length(all.vars(extractZ))-1  # -1, as extractZ is of form y ~ z1 + ... + zr
+  if (R <= 0){
+    stop("No required z variable was defined in your formula.
+         Please add at least one z variable in your formula in brackets (z_i)")
+  }
   totCountVar <- dim(sel.data)[2]  # total amount of variables
   K <- totCountVar - R - 1 # all variables - r Z-variables - (1) y-variable = K x variables
 
@@ -100,7 +104,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   y.dat <- as.matrix(sel.data[, 1])  # y is always the first value in the formula
   x.dat <- as.matrix(sel.data[, 2:(1+K)])
-  try(z.dat <- as.matrix(sel.data[, (1+K+1):(1+K+R)]), silent= TRUE) # TODO(Clemens): Check if this is allowed to happen
+  z.dat <- as.matrix(sel.data[, (1+K+1):(1+K+R)])
 
   # Optimization  ---------------------------
   #  lower boundary for optimization
@@ -109,7 +113,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   if (estimate == T){
     if (is.null(myPar) == T){  # we generate appropriate starting values
 
-      beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS for beta
+      beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS - within model for beta
       delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat
 
       e <- y.dat - x.dat %*% beta.start
@@ -185,7 +189,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Calculate Confidence Intervals for the estimates (returns a data frame)
   # alpha can be a vector
-# sigmaCI = NULL & !is.null(sigmaCI) & !is.nan(sigmaCI)
+  # sigmaCI = NULL & !is.null(sigmaCI) & !is.nan(sigmaCI)
   if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null(sigmaCI) && !is.nan(sigmaCI) ){
     conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes, alpha = sigmaCI)
   }
@@ -215,6 +219,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # TODO(Clemens): Check AIC / BIC signs
 
-  return(list(AIC, BIC))
+  return(list(inefficency))
 }
 

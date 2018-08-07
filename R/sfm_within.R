@@ -1,4 +1,3 @@
-
 #' < Within transformation & calculation of log.likelihood >
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
@@ -13,7 +12,6 @@
 #' @return < Describe what is returned when applying this functino >
 #' @examples
 #' < create an example (look at lm() or something like that) >
-#' @export
 
 # TODO(Authors): Right now one can only use this function when
 # he has all data separated and in perfect groups. have to think about a way to calculate likelihood
