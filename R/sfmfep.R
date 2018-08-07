@@ -219,6 +219,19 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # TODO(Clemens): Check AIC / BIC signs
 
+<<<<<<< HEAD
   return(list(inefficency))
+=======
+
+  #output list
+  res <- list(call = call, par = myPar, hessian = hes,
+              estimates = estimates , AIC = AIC, BIC = BIC,
+              ci=conf.Interval, ret.list = ret.list, contrasts = contrasts,
+              estimate = estimate, likeihood= optim.SFM$objective)
+
+  class(res) <- c(res$class, "sfmfep")
+  res
+
+>>>>>>> b6701f8e3d59cf773b36f08c7349c4f37eb8dc45
 }
 
