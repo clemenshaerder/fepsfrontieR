@@ -1,10 +1,22 @@
-#' sfmfep estimates a stochastic frontier model for fixed-effects using
+#' sfmfep Estimates a Stochastic Frontier Model for Fixed-Effects using
 #' within transformation
 #' @param formula an object of class "fomrula" in the form of
-#' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under ‘Details’
+#' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
 #' @param data an optional data frame, list or environment (or object coercible by
 #' as.data.frame to a data frame) containing the variables in the model.
-#' @return < Describe what is returned when applying this functinon >
+#' @param group an optional vector specifying the panels to be used in the fitting process.
+#' @param N an optional integer specifying the total amount of panels in the data set.
+#' @param Time an optional integer specifying the amount of observations per panel.
+#' @param mu is the mean of a truncated normal distribution of the stochastic inefficencys.
+#' @param sigmaCI is an optional vector specifying the significance values of the confidence intervals
+#' for the MLE estimates (based no the Hessian).
+#' @param estimate T or F specifies if "myPar" is used as starting point of the estimation,
+#' or if "myPar" is used to calculate a given stochastic frontier model.
+#' @param myPar is a vecor which has to be entered in the following order:
+#' c(sigma_v, sigma_u, beta = c(), delta = c())
+#'
+#' @return
+#' A S3 object is returned including: ....
 #' @examples
 #' < an example where a data set is created via sfm.generate>
 #' @export
@@ -13,8 +25,12 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                    mu = 0,  sigmaCI = 0.05, estimate = T,
                    myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
+<<<<<<< HEAD
+  # Error handling of input data & formula  ---------------------------
+=======
   call <- match.call()
     # Error handling of input data & formula  ---------------------------
+>>>>>>> 8e6ae035cdb6ebeff132728f16aa345a52b39530
 
   # Select the data from the "data" input according to applied "formula"
   if ((is.data.frame(data) || is.matrix(data)) == F){
@@ -64,6 +80,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   K <- totCountVar - R - 1 # all variables - r Z-variables - (1) y-variable = K x variables
 
   # N & T, or group must be assign, else we can not compute N & T
+  # TODO(Clemens): What happens, if N, Time & group is specified?
   if ((is.null(N) | is.null(Time)) & is.null(group) ){
     stop ("You have to either specify N = panels & Time = obs. per panel
           or provide a group column")

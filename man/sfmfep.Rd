@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfmfep.R
 \name{sfmfep}
 \alias{sfmfep}
-\title{sfmfep estimates a stochastic frontier model for fixed-effects using
+\title{sfmfep Estimates a Stochastic Frontier Model for Fixed-Effects using
 within transformation}
 \usage{
 sfmfep(formula, data, group = NULL, N = NULL, Time = NULL, mu = 0,
@@ -10,17 +10,31 @@ sfmfep(formula, data, group = NULL, N = NULL, Time = NULL, mu = 0,
   NULL, beta = c(NULL), delta = c(NULL)))
 }
 \arguments{
-\item{formula}{ist etwas}
+\item{formula}{an object of class "fomrula" in the form of
+y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details}
 
-\item{par}{is a vector of regression coefficients & variance parameters.
-1st parameter: sigma_u, 2nd parameter: sigma_v, followed by
-K beta & R delta coefficients}
+\item{data}{an optional data frame, list or environment (or object coercible by
+as.data.frame to a data frame) containing the variables in the model.}
+
+\item{group}{an optional vector specifying the panels to be used in the fitting process.}
+
+\item{N}{an optional integer specifying the total amount of panels in the data set.}
+
+\item{Time}{an optional integer specifying the amount of observations per panel.}
+
+\item{mu}{is the mean of a truncated normal distribution of the stochastic inefficencys.}
+
+\item{sigmaCI}{is an optional vector specifying the significance values of the confidence intervals
+for the MLE estimates (based no the Hessian).}
+
+\item{estimate}{T or F specifies if "myPar" is used as starting point of the estimation,
+or if "myPar" is used to calculate a given stochastic frontier model.}
 }
 \value{
 < Describe what is returned when applying this functinon >
 }
 \description{
-sfmfep estimates a stochastic frontier model for fixed-effects using
+sfmfep Estimates a Stochastic Frontier Model for Fixed-Effects using
 within transformation
 }
 \examples{

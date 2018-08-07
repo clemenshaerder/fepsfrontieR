@@ -55,12 +55,12 @@ test_that ("SFM.generate creates a correct output format", {
   mu <- 0.5
 
   testSFM1 <- SFM.generate(N = N, Time = Time, beta = beta, delta = delta,
-                           mu_u = mu, sigma_u = sigma_u, sigma_v = sigma_v)
+                           mu = mu, sigma_u = sigma_u, sigma_v = sigma_v)
   expect_type (object = testSFM1, type = "list")
 
   N <- "c(3,2)"
   expect_error( SFM.generate(N = N, Time = Time, beta = beta, delta = delta,
-                             mu_u = mu, sigma_u = sigma_u, sigma_v = sigma_v))
+                             mu = mu, sigma_u = sigma_u, sigma_v = sigma_v))
 
   rm(list=ls(all=TRUE))
 })
