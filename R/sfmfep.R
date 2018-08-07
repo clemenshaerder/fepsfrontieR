@@ -25,12 +25,12 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                    mu = 0,  sigmaCI = 0.05, estimate = T,
                    myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
-<<<<<<< HEAD
+
   # Error handling of input data & formula  ---------------------------
-=======
+
   call <- match.call()
     # Error handling of input data & formula  ---------------------------
->>>>>>> 8e6ae035cdb6ebeff132728f16aa345a52b39530
+
 
   # Select the data from the "data" input according to applied "formula"
   if ((is.data.frame(data) || is.matrix(data)) == F){
