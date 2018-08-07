@@ -6,7 +6,7 @@ Author: Oliver Dippel, Clemens Haerder
 Maintainer: The package maintainer <clemens.haerder@gmail.com>
 Description: Esimation of fixed-effect panel stochastic frontier models by
     whitin transformation as proposed by Wang & Ho (13. January 2010).
-    Maximum Likelihood Estimation is numerically computed using ?().
+    Maximum Likelihood Estimation is numerically computed using nlminb( ).
     Confidence Intervals are provided using the Hessian Matrix or
     (time intensive) Bootstrapping to calculate Standard Error.
     In addition, a Gibbs Sampler can be chosen as an alternative to MLE.
