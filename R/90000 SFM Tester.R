@@ -141,23 +141,4 @@
 #
 #
 #
-# data.test
-# N <- NULL
-# Time <- NULL
-# group <- NULL
-# if ((is.null(N) | is.null(Time)) & is.null(group) ){
-#   stop ("You have to either specify N = panels & Time = obs. per panel
-#         or provide a group column")
-# } else if (!is.null(N) && !is.null(Time)){  # user specified N&T (i.e. ordered inputs)
-#   N.input <- N; Time.input <- Time
-# } else {  # if group is specified, we check if this group exists as column name
-#   if (exists(group, data) == F){
-#     stop ("Couldnt match input *group* with colnames")
-#   } else {
-#     sel.data <- cbind(sel.data, data[group])  # adds group to the selected data
-#     sel.data <- sel.data %>% arrange_(.dots = group)  # sorts by group
-#     N.input <- dim(table(sel.data[group]))[1]
-#     Time.input <- dim(sel.data)[1] / N.input
-#     # TODO(Clemens): what if we have an unbalanced panel?
-#   }
-# }
+
