@@ -25,29 +25,10 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                    mu = 0,  sigmaCI = 0.05, estimate = T,
                    myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-   # Error handling of input data & formula  ---------------------------
- =======
-   call <- match.call()
-     # Error handling of input data & formula  ---------------------------
- >>>>>>> 8e6ae035cdb6ebeff132728f16aa345a52b39530
-=======
 
   # Error handling of input data & formula  ---------------------------
 
   call <- match.call()
-    # Error handling of input data & formula  ---------------------------
-
-=======
-# <<<<<<< HEAD
-#   # Error handling of input data & formula  ---------------------------
-# =======
-#   call <- match.call()
-#     # Error handling of input data & formula  ---------------------------
-# >>>>>>> 8e6ae035cdb6ebeff132728f16aa345a52b39530
->>>>>>> 406dbc20d2203faf3d26da25ad172b7569a6e77b
->>>>>>> 97a4968aa79130ea3d292850c6a41a4bbcd52594
 
   # Select the data from the "data" input according to applied "formula"
   if ((is.data.frame(data) || is.matrix(data)) == F){
@@ -236,10 +217,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # TODO(Clemens): Check AIC / BIC signs
 
-<<<<<<< HEAD
-  return(list(inefficency))
-=======
-
   #output list
   res <- list(call = call, par = myPar, hessian = hes,
               estimates = estimates , AIC = AIC, BIC = BIC,
@@ -247,8 +224,5 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
               estimate = estimate, likeihood= optim.SFM$objective)
 
   class(res) <- c(res$class, "sfmfep")
-  res
-
->>>>>>> b6701f8e3d59cf773b36f08c7349c4f37eb8dc45
 }
 
