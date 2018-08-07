@@ -21,7 +21,6 @@ Imports:
     MASS,
     truncnorm,
     stats,
-    dplyr,
     numDeriv
 Suggests:
     MASS (>= 7.3.0),

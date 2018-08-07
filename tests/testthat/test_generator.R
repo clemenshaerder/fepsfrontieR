@@ -35,7 +35,7 @@ test_that ("sfmfep works", {
 
   # Tests if it works when CIs are not wanted
   testSfmfep <- sfmfep(formula = form.test, group ="gr",
-                       data = test.data, mu = 0, sigmaCI = NaN,
+                       data = test.data, mu = 0, sigmaCI = 0.3,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
 })
