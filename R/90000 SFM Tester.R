@@ -1,11 +1,49 @@
-# # # # # ###############################################################################
-# # # # # ##############          Test Optim / nlm                          #############
-# # # # # ###############################################################################
-# # # # #
-# # # # # # Specify "your" variables for the model (and lower & upper bounds for optim)
-# # # # N <- 30
-# # # # Time <- 5
-# # # #
+# Unbalanced Panels:
+# TODO(Clemens) StartSigma -> affected in sfmfep ------ Done
+# TODO(Clemens) Within model ------ Done
+# TODO() First Difference Model
+# TODO(Oli) SFM.inindex
+# TODO(Oli) SFM.alpha
+# TODO(Oli) Output
+
+# First Difference Model
+# TODO() Funktion/Model
+# TODO() sfmfep
+# TODO() unit tester
+# TODO() output
+
+# TODO(Oli) Alpha & Inefficency Index -> check results
+
+# TODO(Oli) Output - s3 & tester
+
+# Bootstrapping (individual)
+# TODO() Funktion
+# TODO() sfmfep
+# TODO() unit tester
+# TODO() output
+
+# TODO() Dokumentation R
+
+# TODO() Dokumentation Abgabe Dok
+
+# TODO() R CMD checker / Travis CI
+
+# TODO() Beispieldatensatz
+
+
+# TODO(Oli & Clemens) Optimierung & Testläufe inkl. Simulationslauf a la paper
+
+
+
+
+###############################################################################
+##############          Test Optim / nlm                          #############
+###############################################################################
+
+# Specify "your" variables for the model (and lower & upper bounds for optim)
+ # N <- 30
+ # Time <- 5
+
 # # # # beta <- c(0.5, 0.5); K <- length(beta);
 # # # # delta=c(0.5, 0.5); R <- length(delta)
 # # # # sigma_u = 10; sigma_v = 10
@@ -36,77 +74,8 @@
 # # # # # apply(data,2,var)
 # # # # # apply(estimate,1,mean)
 # # # # #
-# # # # #
-# # # # # # ?optim
-# # # # # # # some other optimization functions
-# # # # # # optim(par = c(1, 1, rep(2, K), rep(4,R)), method = c("L-BFGS-B"), hessian = T, fn = SFM.within, Time = Time, N = N, x = x, y = y, z = z, lower= lower, upper= upper)
-# # # # # # SFM.within(x = x, y = y, z = z, N = N,  Time = Time, par = c(1, 2, 1, 2, 3, 4), mu=0, optim = T)
-# # # # # # cl <- makeCluster(spec=detectCores(), outfile="")
-# # # # # # setDefaultCluster(cl=cl)
-# # # # # # optimParallel(par = c(1, 2, rep(2, K), rep(4,R)), method = c("L-BFGS-B"), hessian = T, fn = SFM.within, Time = Time, N = N, x = x, y = y, z = z, lower= lower, upper= upper)
-# # # # # # nlminb(objective = SFM.within, hessian=T,lower=c(0.0001,0.0001,-Inf,-Inf,-Inf,-Inf), start = c(1, 1, rep(1, K), rep(1,R)),Time = Time, N = N, x = x, y = y, z = z)
-# # # # #
-# # # # #
-# # # # #
-# # # # # ###############################################################################
-# # # # # ##############          Test sfmfep                               #############
-# # # # # ###############################################################################
-# # # # #
-# N <- 100
-# Time <- 10
-# #  #
-# beta <- c(0.5); K <- length(beta);
-# delta <- c(0.5); R <- length(delta)
-# sigma_u <- 0.2; sigma_v <- 0.1
-# set.seed(66) # der seed läuft aktuell
-# data.test <- SFM.generate(N = N, Time = Time, beta = beta, delta = delta, mu = 0, sigma_u = sigma_u, sigma_v = sigma_v)
-# data.test <- cbind(rep(c("farmer","company"),N*Time/2), data.test)
-# colnames(data.test) <- c("gr","x1","y","z1")
-# # # # # #
-# form.test <- formula(y  ~ x1 + (z1))
-# formula <- form.test
-# data.test <- sfm.data
-# # # # #
-# # Time = NULL; N = NULL
-# # library(dplyr)
-# # library(MASS)
-#
-# profvis(sfmfep(formula = form.test, N = N, Time = Time, data = data.test, mu=0, myPar = c(sigma_u, sigma_v, beta, delta)))
-# # # # # # # do it with N & Time
-# # (sfmfep(formula = form.test, group = "gr", data = sfm.data, mu=0, myPar = NULL))
-# # # # # typeof(tttt)
-# # # # #
-# # # # # profvis(sfmfep(formula = form.test, R = 2, N = N, Time = Time, data = data.test, mu=0, myPar = NULL, sigma = c(0.1,0.05)))
-# # # # #
-# # # # #devtools::use_data
-# # # # # ###############################################################################
-# # # # # ##############          Test SFM alpha index                      #############
-# # # # # ###############################################################################
-# # # # #
-# # # # # N.input <- 20
-# # # # # Time.input <- 10
-# # # # #
-# # # # # beta <- c(1,2); K <- length(beta);
-# # # # # delta=c(3,4); R <- length(delta)
-# # # # # sigma_u = 1; sigma_v = 2
-# # # # # lower <- c(0,0, rep(-Inf,K), rep(-Inf,R)); upper <-  c(1000,1000,1000,1000,1000,1000)
-# # # # #
-# # # # # # Generate dataset for optim based on inputs above
-# # # # # set.seed(666)
-# # # # # data <- SFM.generate(N = N.input, Time = Time.input, beta = beta, delta = delta, mu_u = 0, sigma_u = sigma_u, sigma_v = sigma_v)
-# # # # # x.dat <- as.matrix(data[,1:length(beta)]); y.dat <- as.matrix(data[,(length(beta)+1)])
-# # # # # z.dat <- as.matrix(data[,(length(beta)+2):(length(beta)+2+length(delta)-1)])
-# # # # #
-# # # # # ret.list <- SFM.within(optim=F, N = N.input, Time = Time.input, xv = x.dat ,y = y.dat ,z = z.dat, par = c(1,2,1,2,3,4))
-# # # # #
-# # # # # # Hier werden
-# # # # # test <- SFM.inindex(h=ret.list$h, sigma2star=ret.list$sigma_2star, mu2star=ret.list$mu_2star, N=N.input, Time=Time.input) # h is not within transformed
-# # # # # m.test <- matrix(test,ncol=2)
-# # # # #
-# # # # #
-# # # # # SFM.alpha(y = y.dat, x = x.dat, beta = c(1,2), mu = 0, sigma_u = 1, sigma_v <- 2, h = ret.list$h, epsilon = ret.list$epsilon, N=N.input, Time=Time.input)
-# # # # #
-# # # # #
+# #
+
 # # # # #
 # # # # # ############### RICE DATA SET
 # # # # # data(riceProdPhil)
@@ -128,16 +97,3 @@
 # # # # # # When to use and not to use any particular method of maximization depends to a great extent on the type of data you have. nlm will work just fine if the likelihood surface isn't particularly "rough" and is everywhere differentiable. nlminb provides a way to constrain parameter values to particular bounding boxes. optim, which is probably the most-used optimizer, provides a few different optimization routines; for example, BFGS, L-BFGS-B, and simulated annealing (via the SANN option), the latter of which might be handy if you have a difficult optimizing problem. There are also a number of optimizers available on CRAN. rgenoud, for instance, provides a genetic algorithm for optimization. DEoptim uses a different genetic optimization routine. Genetic algorithms can be slow to converge, but are usually guaranteed to converge (in time) even when there are discontinuities in the likelihood. I don't know about DEoptim, but rgenoud is set up to use snow for parallel processing, which helps somewhat.
 # # # # # #
 # # # # # # So, a probably somewhat unsatisfactory answer is that you should use nlm or any other optimizer if it works for the data you have. If you have a well-behaved likelihood, any of the routines provided by  optim or nlm will give you the same result. Some may be faster than others, which may or may not matter, depending on the size of the dataset, etc. As for the number of parameters these routines can handle, I don't know, though it's probably quite a few. Of course, the more parameters you have, the more likely you are to run into problems with convergence.
-# # # #
-# # # # #
-# # # # # x <- sample(1000)
-# # # #
-# # # # x <- as.matrix(testData[2:3], ncol=2)
-# # # # y <- as.matrix(testData[4], ncol=1)
-# # # #
-# # # # beta <- solve(t(x) %*% x) %*% t(x) %*% y
-# # # # e <- y - x %*% beta
-# # # # (t(e) %*% e) / (60-2)
-#
-#
-#
