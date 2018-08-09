@@ -13,37 +13,60 @@
 #' @examples
 #' < create an example (look at lm() or something like that) >
 
+
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                        xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
+
+  # TODO(Authors): Optimize this function as much as possible to significantly reduce required time.
 
   K <- dim (as.matrix (xv))[2]  # K beta variables
   R <- dim (as.matrix (z))[2]  # R delta variables
 
   # Within Transformations ---------------------------
-  x.wthn <- matrix (rep(NA, N*Time*K), ncol = K)
-  # Each i-panel is centered to 0 for each k-explanatory variable
-  for (i in 1:K){
-    x.as.mat <- matrix (xv[, i], ncol = N)
-    x.wthn[, i] <- matrix (c(scale (x.as.mat, center = T, scale = F)), ncol = 1)
+  if(length (Time) == 1){
+    Time <- rep (Time, N)
   }
 
-  y.as.mat <- matrix (y[,1], ncol = N)  # have to specify col; else we could have a problem
-  y.wthn <- matrix (c(scale (y.as.mat, center = T, scale = F)), ncol = 1)
+  cumTime <- c(0, cumsum(Time)) # used for the index of the variables
+  x.wthn <- matrix(c(rep(NA, sum(Time)*K)), ncol = K)
+  for(k in 1:K){  # for k explenatory variables
+    repMeans <- c()
+    for(i in 1:N){  # do it for each panel
+      repMeans <- c(repMeans, rep(mean (xv[(cumTime[i] + 1) : cumTime[i + 1],k]), Time[i]))
+    }
+    x.wthn[, k] <- (xv[, k] - repMeans)
+  }
+  x.wthn <- as.matrix (x.wthn, ncol = K)
+
+  repYMeans <- c()
+  for(i in 1:N){
+    repYMeans <- c(repYMeans, rep(mean (y[(cumTime[i]+1):cumTime[i+1], ] ), Time[i]))
+  }
+  y.wthn <- as.matrix(y - repYMeans)
 
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
+
+  # Best within transformation of an unbalanced vector ever done
   epsilon <- y.wthn - x.wthn %*% par[3:(3+K-1)]
-  epsilon <- matrix (epsilon, ncol = N)
+
+  cumTime <- c(0, cumsum (Time) + 1)  # used for the index of the variables
+  eps.wthn <- lapply (unname (split (epsilon, findInterval (seq_along (epsilon), cumTime))),
+                      scale) # TODO(Clemens): change scale to F
+
 
   # We apply an exponential inefficency based for the z inefficency determinants
   # TODO(authors): 2ndary expand to more distributions
-  h        <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
-  h.as.mat <- matrix (h, ncol = N)
-  h.wthn   <- matrix (c(scale (h.as.mat, center = T, scale = F)), ncol = N)
+  h      <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
+  h.wthn <- lapply (unname (split (h, findInterval (seq_along (h), cumTime))),
+                                   scale)
 
   # Log-Likelihood computation for each panel ---------------------------
 
   # PI-Matrix is the Variance-Covariance Matrix of v
-  PI <- par[2] * (diag (Time) - 1/Time * (matrix (c(rep (1, Time * Time)), ncol = Time)))
+  # It is a Time_i x Time_i symmetric matrix. Thus we can just compute it once for max Time
+  mTime <- max(Time)
+
+  PI <- par[2] * (diag (mTime) - 1/mTime * (matrix (c(rep (1, mTime * mTime)), ncol = mTime)))
   try(gPI <- MASS::ginv(PI), silent=T)
   if (!exists("gPI")){
     stop ("Could not calculate log.likelihood.
@@ -57,13 +80,14 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   for (i in 1:N){
 
-    mu_2star[i] <- (mu/par[1] - t(epsilon[, i]) %*% gPI %*% h.wthn[, i]) /
-                   (t(h.wthn[, i]) %*% gPI %*% h.wthn[, i] + 1 / par[1])
+    itPI <- gPI[(1:Time[i]), (1:Time[i])]  # for each panel we adapt the dimensions of the gPI
+    mu_2star[i] <- (mu/par[1] - t(eps.wthn[[i]]) %*% itPI %*% h.wthn[[i]]) /
+                   (t(h.wthn[[i]]) %*% itPI %*% h.wthn[[i]] + 1 / par[1])
 
-    sigma_2star[i] <- 1 / ((t(h.wthn[, i]) %*% gPI %*% h.wthn[, i] + 1 / par[1]))
+    sigma_2star[i] <- 1 / ((t(h.wthn[[i]]) %*% itPI %*% h.wthn[[i]] + 1 / par[1]))
 
-    log.ll[i] <-  -0.5 * (Time - 1) * log(2 * pi) - 0.5 * (Time - 1) * log(par[2]) -
-                  0.5 * t(epsilon[, i]) %*% gPI %*% epsilon[, i] +
+    log.ll[i] <-  -0.5 * (Time[i] - 1) * log(2 * pi) - 0.5 * (Time[i] - 1) * log(par[2]) -
+                  0.5 * t(eps.wthn[[i]]) %*% itPI %*% eps.wthn[[i]] +
                   0.5 * ((mu_2star[i]^2) / sigma_2star[i] - (mu^2) / par[1]) +
                   log (sqrt (sigma_2star[i]) * pnorm(mu_2star[i] /  sqrt (sigma_2star[i]))) -
                   log (sqrt (par[1]) * pnorm (mu / sqrt (par[1])))
@@ -75,9 +99,9 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     return (sum ((log.ll)*-1))
 
   } else {
-    ret.list         <- list(x.wthn = x.wthn, y.wthn, PI, epsilon, h.wthn, h,
+    ret.list         <- list(x.wthn = x.wthn, y.wthn, PI, eps.wthn, h.wthn, h,
                              mu_2star, sigma_2star, log.ll)
-    names (ret.list) <- c("x.wthn","y.wthn", "PI", "epsilon", "h", "h.wthn",
+    names (ret.list) <- c("x.wthn","y.wthn", "PI", "eps.wthn", "h", "h.wthn",
                          "mu_2star", "sigma_2star", "log.ll" )
     return (ret.list)
   }

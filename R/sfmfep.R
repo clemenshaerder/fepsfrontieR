@@ -79,10 +79,9 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   totCountVar <- dim(sel.data)[2]  # total amount of variables
   K <- totCountVar - R - 1 # all variables - r Z-variables - (1) y-variable = K x variables
 
- # N & T, or group must be assign, else we can not compute N & T
-  # TODO(Clemens): Add unbalanced panel here!
-
+  # N & T, or group must be assign, else we can not compute N & T
   # First, we check if no option is defined
+
   if ((is.null(N) | is.null(Time)) & is.null(group) ){
     stop ("You have to either specify N = panels & Time = obs. per panel
           or provide a group column")
@@ -96,7 +95,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
       sel.data <- cbind(sel.data, data[group])  # adds group to the selected data
       sel.data <- sel.data %>% arrange_(.dots = group)  # sorts by group
       N.input <- dim(table(sel.data[group]))[1]
-      Time.input <- dim(sel.data)[1] / N.input
+      Time.input <- table(sel.data[group])
     }
   }
 
@@ -115,7 +114,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
       delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat
 
       e <- y.dat - x.dat %*% beta.start
-      startSigma <- (t(e) %*% e) / (N.input * Time.input - (K+R))  # OLS for both sigmas
+      startSigma <- (t(e) %*% e) / (N.input * min(Time.input) - (K+R))  # OLS for both sigmas
 
       myPar     <- c(sigma_u = startSigma,
                      sigma_v = startSigma,
@@ -190,28 +189,32 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # sigmaCI = NULL & !is.null(sigmaCI) & !is.nan(sigmaCI)
   if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null(sigmaCI) && !is.nan(sigmaCI) ){
     conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes, alpha = sigmaCI)
+  } else if (is.null(sigmaCI)){
+
   } else if (any (sigmaCI <= 0 | sigmaCI > 1) || is.nan(sigmaCI)){
     cat ("Could not compute Confidence Intervals due to invalid input (sigmaCI must be between [0, 1]")
   }
 
   # calculate the inefficency index for each panel
-  inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
-                             sigma2star = ret.list$sigma_2star,
-                             mu2star = ret.list$mu_2star,
-                             N = N.input,
-                             Time = Time.input)
+  # TODO(Oli): extend inefficency to Time as an vector (check sfm_within for that)
+  # inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
+  #                            sigma2star = ret.list$sigma_2star,
+  #                            mu2star = ret.list$mu_2star,
+  #                            N = N.input,
+  #                            Time = Time.input)
 
   # Recover the intercept alpha for each panel
-  alpha <- SFM.alpha(beta = estimate.beta,
-                     mu = mu,
-                     sigma_u = estimate.sigma_u,
-                     sigma_v = estimate.sigma_v,
-                     h = ret.list$h,
-                     x = x.dat,
-                     y = y.dat,
-                     epsilon = ret.list$epsilon,
-                     N = N.input,
-                     Time = Time.input)
+  # TODO(Oli): extend alpha to Time as an vector (check sfm_within for that)
+  # alpha <- SFM.alpha(beta = estimate.beta,
+  #                    mu = mu,
+  #                    sigma_u = estimate.sigma_u,
+  #                    sigma_v = estimate.sigma_v,
+  #                    h = ret.list$h,
+  #                    x = x.dat,
+  #                    y = y.dat,
+  #                    epsilon = ret.list$eps.wthn,
+  #                    N = N.input,
+  #                    Time = Time.input)
 
   # Calculate Model Selection Criterion  ---------------------------
   AIC <- -2 * optim.SFM$objective + 2*length(optim.SFM$par)
@@ -219,15 +222,17 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # TODO(Clemens): Check AIC / BIC signs
 
-  #output list
+  # Output list
   # TODO(Oli): add option if some values are not created like conf.Interval
   # -> we have currently one fail in unit tester due   to that
   res <- list(call = call, par = myPar, hessian = hes,
-              estimates = optim.SFM$par , AIC = AIC, BIC = BIC,
-              ci=conf.Interval, ret.list = ret.list, contrasts = c(attr(myPar, "names")),
+              estimates = optim.SFM$par , AIC = AIC, BIC = BIC, estimate = estimate,
+              # ci = conf.Interval
+              ret.list = ret.list, contrasts = c(attr(myPar, "names")),
               likeihood= optim.SFM$objective)
 
   class(res) <- c(res$class, "sfmfep")
   res
+  # return(list(AIC, BIC))
 }
 
