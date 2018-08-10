@@ -17,6 +17,10 @@ test_that ("sfmfep works", {
   testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
+  # Tests if optim " N & T as vector" works
+  testSfmfep <- sfmfep(formula = form.test, N=2,Time=c(30,30), data = test.data, mu = 0, myPar = NULL)
+  expect_type (object = testSfmfep, type = "list")
+
   # Tests if option "group" TODO:(currently throws a NaN but result is correct)
   testSfmfep <- sfmfep(formula = form.test, group ="gr", data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")

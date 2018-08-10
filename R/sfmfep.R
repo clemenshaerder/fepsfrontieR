@@ -88,6 +88,9 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # Second, we check if N & T are both well definded and if group is not
   } else if ((is.double (N) && is.double (Time)) && !is.character(group)){
     N.input <- N; Time.input <- Time
+    # TODO (Clemens) add error handler, if N & T vector doesnt match
+    # just check n*t to data dimensions
+
   } else {  # Third if group is specified, we check if this group exists as column name
     if (is.null(group) || try(exists(group, data) == F, silent = T)){
       stop ("Couldnt match input *group* with colnames")

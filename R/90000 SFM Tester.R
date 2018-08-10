@@ -23,14 +23,9 @@
 # TODO() output
 
 # TODO() Dokumentation R
-
 # TODO() Dokumentation Abgabe Dok
-
 # TODO() R CMD checker / Travis CI
-
 # TODO() Beispieldatensatz
-
-
 # TODO(Oli & Clemens) Optimierung & Testläufe inkl. Simulationslauf a la paper
 
 

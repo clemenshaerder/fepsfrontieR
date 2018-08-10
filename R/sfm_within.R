@@ -23,6 +23,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   R <- dim (as.matrix (z))[2]  # R delta variables
 
   # Within Transformations ---------------------------
+
   if(length (Time) == 1){
     Time <- rep (Time, N)
   }
@@ -45,7 +46,6 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   y.wthn <- as.matrix(y - repYMeans)
 
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
-
   # Best within transformation of an unbalanced vector ever done
   epsilon <- y.wthn - x.wthn %*% par[3:(3+K-1)]
 
