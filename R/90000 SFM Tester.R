@@ -1,7 +1,7 @@
 # Unbalanced Panels:
 # TODO(Clemens) StartSigma -> affected in sfmfep ------ Done
 # TODO(Clemens) Within model ------ Done
-# TODO (Clemens) add error handler, if N & T vector doesnt match
+# TODO (Clemens) add error handler, if N & T vector doesnt match ------ Done
 # TODO() First Difference Model
 # TODO(Oli) SFM.inindex
 # TODO(Oli) SFM.alpha

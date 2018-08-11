@@ -30,12 +30,12 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   cumTime <- c(0, cumsum(Time)) # used for the index of the variables
   x.wthn <- matrix(c(rep(NA, sum(Time)*K)), ncol = K)
-  for(k in 1:K){  # for k explenatory variables
+  for(u in 1:K){  # for k explenatory variables
     repMeans <- c()
     for(i in 1:N){  # do it for each panel
-      repMeans <- c(repMeans, rep(mean (xv[(cumTime[i] + 1) : cumTime[i + 1],k]), Time[i]))
+      repMeans <- c(repMeans, rep(mean (xv[(cumTime[i] + 1) : cumTime[i + 1],u]), Time[i]))
     }
-    x.wthn[, k] <- (xv[, k] - repMeans)
+    x.wthn[, u] <- (xv[, u] - repMeans)
   }
   x.wthn <- as.matrix (x.wthn, ncol = K)
 
@@ -51,7 +51,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   cumTime <- c(0, cumsum (Time) + 1)  # used for the index of the variables
   eps.wthn <- lapply (unname (split (epsilon, findInterval (seq_along (epsilon), cumTime))),
-                      scale) # TODO(Clemens): change scale to F
+                      scale) # TODO(Clemens): change scale to F -> should we actually scale?!?!!?
 
 
   # We apply an exponential inefficency based for the z inefficency determinants
@@ -91,7 +91,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                   0.5 * ((mu_2star[i]^2) / sigma_2star[i] - (mu^2) / par[1]) +
                   log (sqrt (sigma_2star[i]) * pnorm(mu_2star[i] /  sqrt (sigma_2star[i]))) -
                   log (sqrt (par[1]) * pnorm (mu / sqrt (par[1])))
-  }
+  }  # Check if likelihood has mu in it everywhere
 
   # Return values ---------------------------
   if (optim == T){

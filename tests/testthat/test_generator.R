@@ -13,39 +13,41 @@ test_that ("sfmfep works", {
   form.test <- formula(y  ~ x1 + x2 + (z1 + z2))
   test.data <- sfm.data  # package data
 
-  # Tests if optim " N & T" works
-  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, method= "firstDiff", N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
-  # Tests if optim " N & T as vector" works
-  testSfmfep <- sfmfep(formula = form.test, N=2,Time=c(30,30), data = test.data, mu = 0, myPar = NULL)
+  # Tests if optim " N & T" works
+  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, method = "firstDiff",data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
+
+  # Tests if optim " N & T as unbalanced vector" works
+  expect_error ( sfmfep(formula = form.test, method = "firstDiff", N=2,Time=c(30,29), data = test.data, mu = 0, myPar = NULL) )
 
   # Tests if option "group" TODO:(currently throws a NaN but result is correct)
-  testSfmfep <- sfmfep(formula = form.test, group ="gr", data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, method = "firstDiff", group ="gr", data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if defined starting points "myPar" works
-  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+  testSfmfep <- sfmfep(formula = form.test, method = "firstDiff", group ="gr",
                        data = test.data, mu = 0,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if it works when estimates provided (estimate = F)
-  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+  testSfmfep <- sfmfep(formula = form.test, method = "firstDiff", group ="gr",
                        data = test.data, mu = 0, estimate = F,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type(object = testSfmfep, type = "list")
 
   # Tests if it works when CIs are not wanted
-  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+  testSfmfep <- sfmfep(formula = form.test, method = "firstDiff", group ="gr",
                        data = test.data, mu = 0, sigmaCI = NULL,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
 
   # Tests unbalanced panels
   test.data <- test.data[-60, ]
-  testSfmfep <- sfmfep(formula = form.test, group ="gr",
+  testSfmfep <- sfmfep(formula = form.test, method = "firstDiff", group ="gr",
                        data = test.data, mu = 0, sigmaCI = NULL,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
@@ -78,13 +80,13 @@ test_that ("SFM.generate creates a correct output format", {
 
 context ("SFM.within")
 
- test_that ("SFM.generate creates a correct output format", {
+ test_that ("SFM.within / SFM.firstDiff", {
    sigma_u <- 0.1
    sigma_v <- 0.1
    beta <- c(0.5, 2)
    delta <- c(0.5, 3)
 
-   output <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
+   output <- SFM.firstDiff(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
                         xv <- sfm.data[2:3], y <- sfm.data[4], z <- sfm.data[5:6],
                         N <- 2,  Time <- 30, mu = 0, optim = T)  # optim=T for a double (log.l)
    expect_type(object = output, type ="double")
@@ -94,7 +96,7 @@ context ("SFM.within")
    z <- matrix(c(rnorm(10,5,2), rnorm(5,20,1), rnorm(10,5,2), rnorm(5,20,1)), ncol=2)
    N <- 2
    Time <- c(10,5)
-   output <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
+   output <- SFM.firstDiff(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
                         xv <- xv, y <- y, z <- z,
                         N <- N,  Time <- Time, mu = 0, optim = F)  # optim = F for a list
    expect_type(object = output, type ="list")

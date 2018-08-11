@@ -22,7 +22,7 @@
 #' @export
 
 sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
-                   mu = 0,  sigmaCI = 0.05, estimate = T,
+                   mu = 0,  sigmaCI = 0.05, estimate = T, method = "within",
                    myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
 
@@ -87,9 +87,13 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
           or provide a group column")
   # Second, we check if N & T are both well definded and if group is not
   } else if ((is.double (N) && is.double (Time)) && !is.character(group)){
+
     N.input <- N; Time.input <- Time
-    # TODO (Clemens) add error handler, if N & T vector doesnt match
-    # just check n*t to data dimensions
+
+    if ( sum(N.input * Time.input) != dim(sel.data)[1]) {
+      stop("Your input (N & T) doesn`t match the data dimensions.
+           Could not perform calculations.")
+    }
 
   } else {  # Third if group is specified, we check if this group exists as column name
     if (is.null(group) || try(exists(group, data) == F, silent = T)){
@@ -171,11 +175,22 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Get & apply variables of the SFM.within model based on estimation  ---------------------------
   # Get all variables from the SFM.within model for further calculations
-  ret.list <- SFM.within(optim = F,  # Note optim = F
-                         N = N.input,
-                         Time = Time.input,
-                         xv = x.dat , y = y.dat ,z = z.dat,
-                         par = optim.SFM$par)
+
+  if(any(method == c("within", "firstdiff"))){
+    if(method == "within"){
+      ret.list <- SFM.within(optim = F,  # Note optim = F
+                             N = N.input,
+                             Time = Time.input,
+                             xv = x.dat , y = y.dat ,z = z.dat,
+                             par = optim.SFM$par)
+    } else {
+      ret.list <- SFM.firstDiff(optim = F,  # Note optim = F
+                                N = N.input,
+                                Time = Time.input,
+                                xv = x.dat , y = y.dat ,z = z.dat,
+                                par = optim.SFM$par)
+    }
+  }
 
   if (estimate == F){  # log.ll is obtained from the within model as nlminb is not used.
     optim.SFM$objective <- sum(ret.list$log.ll)
