@@ -2,7 +2,7 @@
 # TODO(Clemens) StartSigma -> affected in sfmfep ------ Done
 # TODO(Clemens) Within model ------ Done
 # TODO (Clemens) add error handler, if N & T vector doesnt match ------ Done
-# TODO() First Difference Model
+# TODO(Clemens) First Difference Model ------ Done
 # TODO(Oli) SFM.inindex
 # TODO(Oli) SFM.alpha
 # TODO(Oli) Output
