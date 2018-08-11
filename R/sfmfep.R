@@ -249,7 +249,10 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   res <- list(call = call, par = myPar, hessian = hes,
               estimates = optim.SFM$par , AIC = AIC, BIC = BIC, estimate = estimate,
               # ci = conf.Interval
-              ret.list = ret.list, contrasts = c(attr(myPar, "names")),
+              #ret.list = ret.list,
+              #alpha = alpha
+              #inefficency = inefficency
+              contrasts = c(attr(myPar, "names")),
               likeihood= optim.SFM$objective, standerror = standerror)
 
   class(res) <- c(res$class, "sfmfep")
