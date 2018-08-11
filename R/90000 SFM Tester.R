@@ -8,10 +8,12 @@
 # TODO(Oli) Output
 
 # First Difference Model
-# TODO() Funktion/Model
-# TODO() sfmfep
-# TODO() unit tester
+# TODO(Clemens) Funktion/Model ------ Done
+# TODO(Clemens) sfmfep ------ Done
+# TODO(Clemens) unit tester ------ Done
 # TODO() output
+
+# TODO(Oli & Clemens) check within model & first diff model
 
 # TODO(Oli) Alpha & Inefficency Index -> check results
 
