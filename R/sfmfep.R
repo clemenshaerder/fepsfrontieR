@@ -199,6 +199,9 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                            mu = mu,
                            optim = T)  # Note optim = T
 
+  #standard errors for estimates
+  standerror <- sqrt(diag(solve(hes)))
+
   # Get & apply variables of the SFM.within model based on estimation  ---------------------------
   # Get all variables from the SFM.within model for further calculations
 
@@ -271,8 +274,11 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   res <- list(call = call, par = myPar, hessian = hes,
               estimates = optim.SFM$par , AIC = AIC, BIC = BIC, estimate = estimate,
               # ci = conf.Interval
-              ret.list = ret.list, contrasts = c(attr(myPar, "names")),
-              likeihood= optim.SFM$objective)
+              #ret.list = ret.list,
+              #alpha = alpha
+              #inefficency = inefficency
+              contrasts = c(attr(myPar, "names")),
+              likeihood= optim.SFM$objective, standerror = standerror)
 
   class(res) <- c(res$class, "sfmfep")
   res
