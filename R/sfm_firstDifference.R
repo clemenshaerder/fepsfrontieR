@@ -23,10 +23,10 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     Time <- rep (Time, N)
   }
 
-  cumTime <- c(0, cumsum(Time)) # used for the index of the variables
+  cumTime <- c(0, cumsum(Time)) # used for the index of the different panels
 
   # First Difference of x
-  x.diff <- matrix(c(rep(NA, sum(Time - 1) * N)), ncol = K)  # -1 for first diff
+  x.diff <- matrix(c(rep(NA, sum(Time - 1) * K)), ncol = K)  # -1 for first diff
 
   for(u in 1:K){
     difference <- c()
@@ -36,7 +36,8 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     x.diff[, u] <- difference
   }
 
-  z.diff <- matrix(c(rep(NA, sum(Time - 1) * N)), ncol = R)  # -1 for first diff
+  # First Difference of z
+  z.diff <- matrix(c(rep(NA, sum(Time - 1) * R)), ncol = R)  # -1 for first diff
 
   for(u in 1:R){
     difference <- c()
@@ -46,7 +47,7 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     z.diff[, u] <- difference
   }
 
-
+  # First DIfference of y
   y.diff <- c()
   for(i in 1:N){
     y.diff <- c(y.diff, diff(y[(cumTime[i]+1):cumTime[i+1], ]))
@@ -54,19 +55,18 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   epsilon <- y.diff - x.diff %*% par[3:(3+K-1)]  # is a (N * (Time-1)) x 1 vector
 
-  # TODO() i have no idea if this is correct. it should, because the dimensions fit.. still
-  h      <- exp (as.matrix (z.diff) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
+  # TODO() i have no idea if this is correct. it should, because the dimensions fit...
+  h <- exp (as.matrix (z.diff) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
   # TODO(Clemens): Check if this is correct.
-  cumTimeH <- c(0, cumsum(Time))
-  # h.diff <- lapply(unname (split (h, findInterval (seq_along (h), cumTimeH))), diff)
-  h.diff <- unname (split (h, findInterval (seq_along (h), cumTimeH)))
-  cumTimeE <- c(0, cumsum(Time) - N + 1)
+
+  # splits the vector to N-lists of Time-1 observations
+  cumTimeDiff <- c(0, cumsum(Time-1))
+  h.diff <- unname (split (h, findInterval (seq_along (h), cumTimeDiff, left.open = TRUE)))
+  eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTimeDiff, left.open = TRUE)))
   # TODO(Clemens): lapply(..., diff)  not required?
-  eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTime)))
 
-
+  # create the covar-var matrix of sigma for the llikelihood
   mTime <- max(Time)
-
   C <- diag(sqrt(par[2]), mTime)
   D <- diff(C)
   PI <- D %*% t(D)

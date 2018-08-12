@@ -35,6 +35,10 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     stop ("Your data should be a data.frame or matrix")
   }
 
+  if(!any(method == c("within", "firstdiff"))){
+    stop("A method correct method must be chosen. within or firstdiff")
+  }
+
   # Tests if a correct formula has been plugged in (i.e. y ~ x...)
   try (vars.ex <- all.vars(formula), silent = T)
   if (exists("vars.ex") == F){  # if the "wiggle ~" is missing, vars.ex will be of lenght 0
@@ -44,34 +48,34 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Tests if all variables in the formula match with a column name
   try (sel.data <- data[vars.ex], silent = T)
-  if (exists("sel.data") == F){
+  if (exists ("sel.data") == F){
     stop ("Couldnt match input *formula* with colnames of input *data*.
           Use the same colnames as in your input file.")
   }
 
   # Tests if any of the model variables are not numeric
-  if (any(sapply(sel.data, function(sel.data) !is.numeric(sel.data)))){
+  if (any (sapply (sel.data, function(sel.data) !is.numeric (sel.data)))){
     stop ("All variables must be numeric.")
   }
 
   # Tests if any NAs exist in the data sel.data
-  dataInvalid <- sapply(data, function(sel.data) sum(is.na(sel.data)) +
-                                                 sum(is.infinite(sel.data)) +
-                                                 sum(is.null(sel.data)))
+  dataInvalid <- sapply (data, function(sel.data) sum (is.na (sel.data)) +
+                                                  sum (is.infinite (sel.data)) +
+                                                  sum (is.null (sel.data)))
 
-  if (sum(dataInvalid) > 0){
+  if (sum (dataInvalid) > 0){
     print ("Function Stopped. You have NAs/Inf/NULL in your selected data. Summary:")
-    stop (print(dataInvalid))
+    stop (print (dataInvalid))
   }
 
   # Translate formula, get N & Time and assign to variables  ---------------------------
 
   # Get amount of z variables (in curly brackets)
-  formula <- as.character(formula)
-  zForm <- stringr::str_extract(formula, "(?<=\\().*?(?=\\))")[3]  # extracts everything in curly brackets.
-  extractZ <- as.formula(paste(formula[2], formula[1], zForm))
+  formula <- as.character (formula)
+  zForm <- stringr::str_extract (formula, "(?<=\\().*?(?=\\))")[3]  # extracts everything in curly brackets.
+  extractZ <- as.formula (paste (formula[2], formula[1], zForm))
 
-  R <- length(all.vars(extractZ))-1  # -1, as extractZ is of form y ~ z1 + ... + zr
+  R <- length (all.vars (extractZ))-1  # -1, as extractZ is of form y ~ z1 + ... + zr
   if (R <= 0){
     stop("No required z variable were defined in the formula.
          Please add at least one z variable in your formula in brackets (z_i)")
@@ -127,16 +131,27 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                      sigma_v = startSigma,
                      beta = beta.start,
                      delta = delta.start)
-
-      optim.SFM <- nlminb (objective = SFM.within,
-                           lower = l.int,
-                           hessian = T,
-                           start = myPar,
-                           Time = Time.input,
-                           N = N.input,
-                           xv = x.dat, y = y.dat, z = z.dat,
-                           mu = mu,
-                           optim = T)
+      if (method == "within"){
+        optim.SFM <- nlminb (objective = SFM.within,
+                             lower = l.int,
+                             hessian = T,
+                             start = myPar,
+                             Time = Time.input,
+                             N = N.input,
+                             xv = x.dat, y = y.dat, z = z.dat,
+                             mu = mu,
+                             optim = T)
+      } else {
+        optim.SFM <- nlminb (objective = SFM.firstDiff,
+                             lower = l.int,
+                             hessian = T,
+                             start = myPar,
+                             Time = Time.input,
+                             N = N.input,
+                             xv = x.dat, y = y.dat, z = z.dat,
+                             mu = mu,
+                             optim = T)
+      }
 
     } else {
         if (length(myPar) != (2 + K + R)){  # 2 sigmas + k betas & r deltas
@@ -147,16 +162,27 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
           stop ("Could not perform estimation.
                 The starting points must be numeric &| sigmas must be <= 0")
         }
-
-        optim.SFM <- nlminb(objective = SFM.within,
-                            start = c(myPar),
-                            lower = l.int,
-                            mu = mu,
-                            Time = Time.input,
-                            N = N.input,
-                            xv = x.dat, y = y.dat, z = z.dat,
-                            optim = T)
+        if (method == "within"){
+          optim.SFM <- nlminb(objective = SFM.within,
+                              start = c(myPar),
+                              lower = l.int,
+                              mu = mu,
+                              Time = Time.input,
+                              N = N.input,
+                              xv = x.dat, y = y.dat, z = z.dat,
+                              optim = T)
+        } else {
+          optim.SFM <- nlminb(objective = SFM.firstDiff,
+                              start = c(myPar),
+                              lower = l.int,
+                              mu = mu,
+                              Time = Time.input,
+                              N = N.input,
+                              xv = x.dat, y = y.dat, z = z.dat,
+                              optim = T)
         }
+
+      }
 
     } else { # we dont estimate (estimate = F)
       optim.SFM <- NULL
@@ -176,20 +202,19 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # Get & apply variables of the SFM.within model based on estimation  ---------------------------
   # Get all variables from the SFM.within model for further calculations
 
-  if(any(method == c("within", "firstdiff"))){
-    if(method == "within"){
-      ret.list <- SFM.within(optim = F,  # Note optim = F
-                             N = N.input,
-                             Time = Time.input,
-                             xv = x.dat , y = y.dat ,z = z.dat,
-                             par = optim.SFM$par)
-    } else {
-      ret.list <- SFM.firstDiff(optim = F,  # Note optim = F
-                                N = N.input,
-                                Time = Time.input,
-                                xv = x.dat , y = y.dat ,z = z.dat,
-                                par = optim.SFM$par)
-    }
+
+  if(method == "within"){
+    ret.list <- SFM.within(optim = F,  # Note optim = F
+                           N = N.input,
+                           Time = Time.input,
+                           xv = x.dat , y = y.dat ,z = z.dat,
+                           par = optim.SFM$par)
+  } else {
+    ret.list <- SFM.firstDiff(optim = F,  # Note optim = F
+                              N = N.input,
+                              Time = Time.input,
+                              xv = x.dat , y = y.dat ,z = z.dat,
+                              par = optim.SFM$par)
   }
 
   if (estimate == F){  # log.ll is obtained from the within model as nlminb is not used.
