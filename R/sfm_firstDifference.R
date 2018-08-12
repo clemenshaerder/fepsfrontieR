@@ -37,15 +37,15 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   }
 
   # First Difference of z
-  z.diff <- matrix(c(rep(NA, sum(Time - 1) * R)), ncol = R)  # -1 for first diff
-
-  for(u in 1:R){
-    difference <- c()
-    for(i in 1:N){
-      difference <- c(difference, diff(z[(cumTime[i] + 1) : cumTime[i + 1], u]))
-    }
-    z.diff[, u] <- difference
-  }
+  # z.diff <- matrix(c(rep(NA, sum(Time - 1) * R)), ncol = R)  # -1 for first diff
+  #
+  # for(u in 1:R){
+  #   difference <- c()
+  #   for(i in 1:N){
+  #     difference <- c(difference, diff(z[(cumTime[i] + 1) : cumTime[i + 1], u]))
+  #   }
+  #   z.diff[, u] <- difference
+  # }
 
   # First DIfference of y
   y.diff <- c()
@@ -56,12 +56,12 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   epsilon <- y.diff - x.diff %*% par[3:(3+K-1)]  # is a (N * (Time-1)) x 1 vector
 
   # TODO() i have no idea if this is correct. it should, because the dimensions fit...
-  h <- exp (as.matrix (z.diff) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
+  h <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
   # TODO(Clemens): Check if this is correct.
 
   # splits the vector to N-lists of Time-1 observations
   cumTimeDiff <- c(0, cumsum(Time-1))
-  h.diff <- unname (split (h, findInterval (seq_along (h), cumTimeDiff, left.open = TRUE)))
+  h.diff <- lapply (unname (split (h, findInterval (seq_along (h), cumTime, left.open = TRUE))), diff)
   eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTimeDiff, left.open = TRUE)))
   # TODO(Clemens): lapply(..., diff)  not required?
 
@@ -71,12 +71,21 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   D <- diff(C)
   PI <- D %*% t(D)
 
+  try(gPI <- MASS::ginv(PI), silent=T)
+  if (!exists("gPI")){
+    stop ("Could not calculate log.likelihood.
+          SVD of the g-Inverse of PI failed.
+          PI is sigma_v * M (M is the txt orthogonal projection matrix).")
+  }
+
+
   log.ll      <- c(rep (NA, N))
   mu_2star    <- c(rep (NA, N))
   sigma_2star <- c(rep (NA, N))
 
   for (i in 1:N){
-    itPI <- PI[(1:(Time[i]-1)), (1:(Time[i]-1))]  # for each panel we adapt the dimensions of the gPI
+    itPI <- gPI[(1:(Time[i]-1)), (1:(Time[i]-1))]  # for each panel we adapt the dimensions of the gPI
+
     mu_2star[i] <- (mu/par[1] - t(eps.diff[[i]]) %*% itPI %*% h.diff[[i]]) /
                    (t(h.diff[[i]]) %*% itPI %*% h.diff[[i]] + 1 / par[1])
 
