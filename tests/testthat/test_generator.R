@@ -13,11 +13,11 @@ test_that ("sfmfep works", {
   form.test <- formula(y  ~ x1 + x2 + (z1 + z2))
   test.data <- sfm.data  # package data
 
-  testSfmfep <- sfmfep(formula = form.test, method= "firstdiff", N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, method= "within", N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if optim " N & T" works
-  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, method = "within", data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, method = "firstdiff", data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if optim " N & T as unbalanced vector" works

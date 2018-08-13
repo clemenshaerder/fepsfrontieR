@@ -65,34 +65,33 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTimeDiff, left.open = TRUE)))
   # TODO(Clemens): lapply(..., diff)  not required?
 
-  # create the covar-var matrix of sigma for the llikelihood
-  mTime <- max(Time)
-  C <- diag(sqrt(par[2]), mTime)
-  D <- diff(C)
-  PI <- D %*% t(D)
-
-  try(gPI <- MASS::ginv(PI), silent=T)
-  if (!exists("gPI")){
-    stop ("Could not calculate log.likelihood.
-          SVD of the g-Inverse of PI failed.
-          PI is sigma_v * M (M is the txt orthogonal projection matrix).")
-  }
-
+  # if all Time entries are equal we can save time in the next for loop
+  # if (diff(range(Time)) < .Machine$double.eps ^ 0.5){
+  #   C <- diag(sqrt(par[2]), Time[1])
+  #   D <- diff(C)
+  #   PI <- D %*% t(D)
+  #   invPI <- solve(PI)
+  # }
 
   log.ll      <- c(rep (NA, N))
   mu_2star    <- c(rep (NA, N))
   sigma_2star <- c(rep (NA, N))
 
   for (i in 1:N){
-    itPI <- gPI[(1:(Time[i]-1)), (1:(Time[i]-1))]  # for each panel we adapt the dimensions of the gPI
 
-    mu_2star[i] <- (mu/par[1] - t(eps.diff[[i]]) %*% itPI %*% h.diff[[i]]) /
-                   (t(h.diff[[i]]) %*% itPI %*% h.diff[[i]] + 1 / par[1])
+    # TODO(Clemens) This is inefficient.
+    C <- diag(sqrt(par[2]), Time[i])
+    D <- diff(C)
+    PI <- D %*% t(D)
+    invPI <- solve(PI)
 
-    sigma_2star[i] <- 1 / ((t(h.diff[[i]]) %*% itPI %*% h.diff[[i]] + 1 / par[1]))
+    mu_2star[i] <- (mu/par[1] - t(eps.diff[[i]]) %*% invPI %*% h.diff[[i]]) /
+                   (t(h.diff[[i]]) %*% invPI %*% h.diff[[i]] + 1 / par[1])
+
+    sigma_2star[i] <- 1 / ((t(h.diff[[i]]) %*% invPI %*% h.diff[[i]] + 1 / par[1]))
 
     log.ll[i] <-  -0.5 * (Time[i] - 1) * log(2 * pi) - 0.5 * log(Time[i]) - 0.5 * (Time[i] - 1) * log(par[2]) -
-      0.5 * t(eps.diff[[i]]) %*% itPI %*% eps.diff[[i]] +
+      0.5 * t(eps.diff[[i]]) %*% invPI %*% eps.diff[[i]] +
       0.5 * ((mu_2star[i]^2) / sigma_2star[i] - (mu^2) / par[1]) +
       log (sqrt (sigma_2star[i]) * pnorm(mu_2star[i] /  sqrt (sigma_2star[i]))) -
       log (sqrt (par[1]) * pnorm (mu / sqrt (par[1])))
