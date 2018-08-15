@@ -35,7 +35,7 @@ test_that ("sfmfep works", {
 
   # Tests if it works when estimates provided (estimate = F)
   testSfmfep <- sfmfep(formula = form.test, method = "firstdiff", group ="gr",
-                       data = test.data, mu = 0, estimate = F,
+                       data = test.data, mu = 0, estimate = F, bootstrap = T, B = 10,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type(object = testSfmfep, type = "list")
 
@@ -96,6 +96,7 @@ context ("SFM.within")
    z <- matrix(c(rnorm(10,5,2), rnorm(5,20,1), rnorm(10,5,2), rnorm(5,20,1)), ncol=2)
    N <- 2
    Time <- c(10,5)
+   data <- data.frame(y = y, xv = xv, z = z)
    output <- SFM.firstDiff(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
                         xv <- xv, y <- y, z <- z,
                         N <- N,  Time <- Time, mu = 0, optim = F)  # optim = F for a list

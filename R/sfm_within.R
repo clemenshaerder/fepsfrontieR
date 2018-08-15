@@ -4,15 +4,14 @@
 #' @param xv is a n*t x k matrix (explantatory variables)
 #' @param z is a n*t x r matrix (inefficency determinants)
 #' @param y is a n*t x 1 vector (response)
-#' @param N is a number (n - panels)
-#' @param T is a number (observations per panel)
+#' @param N is a integer (n - panels)
+#' @param Time is a integer (observations per panel)
 #' @param mu is a number (mean of the truncated normal distribution of the inefficency)
 #' @param optim is a boolean (set F to obtain a list of model variables.
 #'     T to obtain the -sum of log.likelihood)
-#' @return < Describe what is returned when applying this functino >
-#' @examples
-#' < create an example (look at lm() or something like that) >
-
+#' @param group an optional vector specifying the panels to be used in the fitting process.
+#' @return If optim = T the log.likelihood is returned of all panels.
+#'     If optim = F the model fit is returned including all important model variables.
 
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                        xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
@@ -51,14 +50,14 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   cumTime <- c(0, cumsum (Time) + 1)  # used for the index of the variables
   eps.wthn <- lapply (unname (split (epsilon, findInterval (seq_along (epsilon), cumTime))),
-                      scale) # TODO(Clemens): change scale to F -> should we actually scale?!?!!?
+                      scale, scale = F) # TODO(Clemens): change scale to F -> should we actually scale?!?!!?
 
 
   # We apply an exponential inefficency based for the z inefficency determinants
   # TODO(authors): 2ndary expand to more distributions
   h      <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
   h.wthn <- lapply (unname (split (h, findInterval (seq_along (h), cumTime))),
-                                   scale)
+                                   scale, scale = F)
 
   # Log-Likelihood computation for each panel ---------------------------
 
