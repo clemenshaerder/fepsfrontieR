@@ -20,7 +20,7 @@
 #' and a Confidence Interval for each estimate as a data frame.
 
 
-SFM.bootstrap <- function(y, xv, z, mu, N, Time, R, K, B, myPar = NULL, lowerInt, sigmaCI){
+SFM.bootstrap <- function(y, xv, z, mu, N, method, Time, R, K, B, myPar = NULL, lowerInt, sigmaCI){
 
   if(length (Time) == 1){
     Time <- rep (Time, N)
@@ -55,7 +55,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, R, K, B, myPar = NULL, lowerInt
                                                       N = N,
                                                       xv = as.matrix (x[, 2:(2+K-1)]),
                                                       y = as.matrix (x[, 1]),
-                                                      z = as.matrix (x[, (2+K):rows]),
+                                                      z = as.matrix (x[, (2+K):cols]),
                                                       mu = mu,
                                                       optim = T,
                                                       objective = SFM.within
@@ -67,7 +67,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, R, K, B, myPar = NULL, lowerInt
                                                              N = N,
                                                              xv = as.matrix (x[, 2:(2+K-1)]),
                                                              y = as.matrix (x[, 1]),
-                                                             z = as.matrix (x[, (2+K):rows]),
+                                                             z = as.matrix (x[, (2+K):cols]),
                                                              mu = mu,
                                                              optim = T,
                                                              objective = SFM.firstDiff
