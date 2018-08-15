@@ -270,7 +270,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   }
 
   if (estimate == F || bootstrap == T){  # log.ll is obtained from the model as nlminb is not primarilyused.
-    optim.SFM$objective <- sum(ret.list$log.ll)
+    optim.SFM$objective <- sum(ret.list$log.ll*-1)
   }
 
 
@@ -314,9 +314,9 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Model Selection Criterion  ---------------------------
 
-  # TODO(Clemens): Check AIC / BIC signs
-  AIC <- -2 * optim.SFM$objective + 2 * length (optim.SFM$par)
-  BIC <- -2 * optim.SFM$objective + length (optim.SFM$par) * dim (y.dat)[1]
+  # Adjusted formula with "* -1" as the used objective is the "-"log.ll (needed for optimization)
+  AIC <- -2 * -1 * optim.SFM$objective + 2 * length (optim.SFM$par)
+  BIC <- -2 * -1 * optim.SFM$objective + length (optim.SFM$par) * dim (y.dat)[1]
 
 
   # Output  ---------------------------
