@@ -21,8 +21,8 @@
 
 # Bootstrapping (individual)
 # TODO(Clemens) Funktion ------ Done
-# TODO(Clemens) sfmfep
-# TODO(Clemens) unit tester
+# TODO(Clemens) sfmfep ------ Done
+# TODO(Clemens) unit tester ------ Done
 # TODO() output
 
 # TODO() Dokumentation R
