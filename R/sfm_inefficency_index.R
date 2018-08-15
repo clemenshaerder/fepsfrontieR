@@ -1,16 +1,15 @@
-#' < What it does >
+#' < calculate the inefficiency of each individuum >
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
-#' @return < Describe what is returned when applying this functinon >
+#' @return < returns the inefficiency for each individuum >
 #' @examples
 #' < an example >
 
 SFM.inindex <- function(h, sigma2star, mu2star, N, Time){
 
-  # TODO(Oli) comment the file according googles r comment standard (use -------- to easily readable code bloks)
   # TODO(Oli) add panelname to each ineff.index
 
-  h <- matrix(h, ncol = N, nrow = Time)
+  h        <- matrix(h, ncol = N, nrow = Time)
   in_index <- matrix(rep(NA, N*Time), ncol = N, nrow = Time)
 
   for (i in 1:N){
