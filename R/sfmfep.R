@@ -301,6 +301,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   #                            Time = Time.input)
 
   # Recover Fixed Effects (alpha) for each Panel  ---------------------------
+<<<<<<< HEAD
 #
 #   if (length (Time) == 1){
 #     alpha <- SFM.alpha(beta = estimate.beta,
@@ -326,6 +327,49 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 #                                   Time = Time.input)
 #
 #   }
+=======
+
+  if (length (Time) == 1){
+    alpha <- SFM.alpha(beta = optim.SFM$par[3:(3+K-1)],
+                       mu = mu,
+                       sigma_u = optim.SFM$par[1],
+                       sigma_v = optim.SFM$par[2],
+                       h = ret.list$h,
+                       x = x.dat,
+                       y = y.dat,
+                       epsilon = ret.list$eps.wthn,
+                       N = N.input,
+                       Time = Time.input)
+    
+    inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
+                       sigma2star = ret.list$sigma_2star,
+                       mu2star = ret.list$mu_2star,
+                       N = N.input,
+                       Time = Time.input)
+    
+  } else {
+    alpha <- SFM.alpha.unbalanced(beta = estimate.beta,
+                                  mu = mu,
+                                  sigma_u = estimate.sigma_u,
+                                  sigma_v = estimate.sigma_v,
+                                  h = ret.list$h,
+                                  x = x.dat,
+                                  y = y.dat,
+                                  epsilon = ret.list$eps.wthn,
+                                  N = N.input,
+                                  Time = Time.input)
+
+    inefficency <- SFM.inindex.unbalanced (h = ret.list$h,  # Note h is not within transformed
+                                 sigma2star = ret.list$sigma_2star,
+                                 mu2star = ret.list$mu_2star,
+                                 N = N.input,
+                                 Time = Time.input)
+  }
+  # TODO(Oli): extend alpha to Time as an vector (check sfm_within for that)
+
+
+
+>>>>>>> 2065a9f43769519b124a1239a4ddf9cf1cae9991
 
   # Model Selection Criterion  ---------------------------
 

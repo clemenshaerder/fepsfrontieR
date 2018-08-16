@@ -59,3 +59,6 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
   returnTibble <- dplyr::as_tibble (data.frame (x = x, y = y, z = z, alpha = alpha))
   return (returnTibble)
 }
+
+
+
