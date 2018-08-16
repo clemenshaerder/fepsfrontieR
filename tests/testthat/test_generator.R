@@ -15,11 +15,7 @@ test_that ("sfmfep works", {
   method <- "firstdiff"
   boot <- F
 
-<<<<<<< HEAD
   testSfmfep <- sfmfep(formula = form.test, bootstrap = boot, B , method = method, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
-=======
-  testSfmfep <- sfmfep(formula = form.test, bootstrap = T, B = 2, method = method, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
->>>>>>> 2065a9f43769519b124a1239a4ddf9cf1cae9991
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if optim " N & T" works

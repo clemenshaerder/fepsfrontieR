@@ -37,4 +37,3 @@
 #'
 #' @docType package
 #' @name fepsfrontieR
-NULL
