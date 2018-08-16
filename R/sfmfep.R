@@ -296,7 +296,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # TODO(Oli): extend inefficency to Time as an vector (check sfm_within for that)
   inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
                              sigma2star = ret.list$sigma_2star,
-                             mu2star = ret.list$mu_2star
+                             mu2star = ret.list$mu_2star,
                              N = N.input,
                              Time = Time.input)
 
