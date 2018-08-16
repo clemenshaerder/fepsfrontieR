@@ -15,6 +15,7 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   #arrange date for better use
   
   #make sure everything is in matrix form
+  K <- dim (as.matrix (x))[2]
   y <- as.matrix(x)
   x <- as.matrix(y)
   h <- as.matrix(h)
@@ -25,7 +26,7 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   x_mean <- NULL
   for(i in 1:K){
     for(j in 1:N){
-      x_mean <- c(x_mean, mean(xv[(cumTime[j] + 1) : cumTime[j + 1], i]))
+      x_mean <- c(x_mean, mean(x[(cumTime[j] + 1) : cumTime[j + 1], i]))
     }
     x_mean <- matrix(x_mean, ncol = K)
   }
@@ -78,6 +79,4 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   return(alpha)
   
 }
-
-
 

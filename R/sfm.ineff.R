@@ -8,14 +8,14 @@
 SFM.inindex <- function(h, sigma2star, mu2star, N, Time){
   
   # TODO(Oli) add panelname to each ineff.index
-  
+  sigma <- sqrt(sigma2star)
   h <- matrix(h, ncol = N, nrow = Time)
   in_index <- c()
   
   for (i in 1:N){
     in_index <- c(in_index, h[,i] * 
-                 (mu2star[i] + (dnorm(mu2star[i] / sqrt(sigma2star[i])) *
-                  sqrt(sigma2star[i])) / pnorm(mu2star[i]/sqrt(sigma2star[i]))))
+                 (mu2star[i] + (dnorm(mu2star[i] / sigma[i]) *
+                  sigma[i]) / pnorm(mu2star[i]/ sigma[i])))
   }
   
   return (in_index)
