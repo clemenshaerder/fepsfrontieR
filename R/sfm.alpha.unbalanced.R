@@ -8,7 +8,6 @@
 #' @examples
 #' < an example >
 
-
 SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu){
 
   # TODO(Oli) add panelname to each alpha

@@ -1,4 +1,3 @@
-
 #' < calculate the inefficiency of each individuum >
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
@@ -22,3 +21,4 @@ SFM.inindex <- function(h, sigma2star, mu2star, N, Time){
   return (in_index)
   
 }
+
