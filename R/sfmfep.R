@@ -9,6 +9,7 @@
 #' @param N an optional integer specifying the total amount of panels in the data set.
 #' @param Time an optional integer specifying the amount of observations per panel.
 #' @param mu is the mean of a truncated normal distribution of the stochastic inefficencys.
+#' @param Bootstrap
 #' @param sigmaCI is an optional vector specifying the significance values of the confidence intervals
 #' for the MLE estimates (based no the Hessian).
 #' @param estimate T or F specifies if "myPar" is used as starting point of the estimation,
