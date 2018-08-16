@@ -70,17 +70,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     stop (print (dataInvalid))
   }
 
-  # Tests if myPar is correctly entered if it is not NULL
-  if (!is.null(myPar)){
-    if (length (myPar) != (2 + K + R)){  # 2 sigmas + k betas & r deltas
-      stop ("Could not perform estimation.
-                  A starting point for the estimation must be provided for every parameter.")
-    }
-    if (!is.numeric (myPar) || myPar[1] <= 0 || myPar[2] <= 0){
-      stop ("Could not perform estimation.
-                  The starting points must be numeric &| sigmas must be <= 0")
-    }
-  }
 
   # Tests if B is correctly specified if bootstrapping is performed
   if (bootstrap == T){
@@ -104,6 +93,18 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   }
   totCountVar <- dim (sel.data)[2]  # total amount of variables
   K <- totCountVar - R - 1 # all variables - r Z-variables - (1) y-variable = K x variables
+
+  # Tests if myPar is correctly entered if it is not NULL
+  if (!is.null(myPar)){
+    if (length (myPar) != (2 + K + R)){  # 2 sigmas + k betas & r deltas
+      stop ("Could not perform estimation.
+                  A starting point for the estimation must be provided for every parameter.")
+    }
+    if (!is.numeric (myPar) || myPar[1] <= 0 || myPar[2] <= 0){
+      stop ("Could not perform estimation.
+                  The starting points must be numeric &| sigmas must be <= 0")
+    }
+  }
 
   # N & T, or group must be assign, else we can not compute N & T
   # First, we check if no option is defined
@@ -142,7 +143,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   #  lower boundary for optimization
   l.int <- c(0.0001, 0.0001, rep(-Inf, K), rep(-Inf, R))  # Variation can not be negative
 
-  # TODO() - hier ist closure fehler
   if (estimate == T){
     if (is.null(myPar) == T){  # we generate appropriate starting values
 
@@ -301,31 +301,31 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   #                            Time = Time.input)
 
   # Recover Fixed Effects (alpha) for each Panel  ---------------------------
-
-  if (length (Time) == 1){
-    alpha <- SFM.alpha(beta = estimate.beta,
-                       mu = mu,
-                       sigma_u = estimate.sigma_u,
-                       sigma_v = estimate.sigma_v,
-                       h = ret.list$h,
-                       x = x.dat,
-                       y = y.dat,
-                       epsilon = ret.list$eps.wthn,
-                       N = N.input,
-                       Time = Time.input)
-  } else {
-    alpha <- SFM.alpha.unbalanced(beta = estimate.beta,
-                                  mu = mu,
-                                  sigma_u = estimate.sigma_u,
-                                  sigma_v = estimate.sigma_v,
-                                  h = ret.list$h,
-                                  x = x.dat,
-                                  y = y.dat,
-                                  epsilon = ret.list$eps.wthn,
-                                  N = N.input,
-                                  Time = Time.input)
-
-  }
+#
+#   if (length (Time) == 1){
+#     alpha <- SFM.alpha(beta = estimate.beta,
+#                        mu = mu,
+#                        sigma_u = estimate.sigma_u,
+#                        sigma_v = estimate.sigma_v,
+#                        h = ret.list$h,
+#                        x = x.dat,
+#                        y = y.dat,
+#                        epsilon = ret.list$eps.wthn,
+#                        N = N.input,
+#                        Time = Time.input)
+#   } else {
+#     alpha <- SFM.alpha.unbalanced(beta = estimate.beta,
+#                                   mu = mu,
+#                                   sigma_u = estimate.sigma_u,
+#                                   sigma_v = estimate.sigma_v,
+#                                   h = ret.list$h,
+#                                   x = x.dat,
+#                                   y = y.dat,
+#                                   epsilon = ret.list$eps.wthn,
+#                                   N = N.input,
+#                                   Time = Time.input)
+#
+#   }
 
   # Model Selection Criterion  ---------------------------
 

@@ -31,6 +31,8 @@ for the MLE estimates (based no the Hessian).}
 \item{estimate}{T or F specifies if "myPar" is used as starting point of the estimation,
 or if "myPar" is used to calculate a given stochastic frontier model.}
 
+\item{method}{a required string specifying the method ("within" or "firstdiff").}
+
 \item{myPar}{is a vecor which has to be entered in the following order:
 c(sigma_v, sigma_u, beta = c(), delta = c())}
 }

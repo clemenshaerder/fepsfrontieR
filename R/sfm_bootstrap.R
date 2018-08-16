@@ -1,8 +1,10 @@
-#' Generates B Individual Bootstrap Samples from the data and performes MLE
+#' SFM.bootstrap performs estimation with B Individual Bootstrap Samples
+#'
+#' B Individual Bootstrap Samples are genereated from the input and MLE is performed
 #' for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
 #' the rows with replacement individually for each panel instead from all samples.
-#' In addition to the Mean and the Standard Error of the estimates,
-#' a Confidence Interval is returned based on the quantiles of the distribution of estimates.
+#' In addition to the mean and the standard error of the estimates,
+#' a confidence interval is returned based on the quantiles of the distribution of estimates.
 #' @param B is an integer (# of Bootstraps)
 #' @param xv is a n*t x k matrix (explantatory variables)
 #' @param z is a n*t x r matrix (inefficency determinants)
@@ -12,17 +14,18 @@
 #' @param K is an integer (# of xv variables)
 #' @param N is an integer (n - panels)
 #' @param Time is an integer (observations per panel)
+#' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param lowerInt is a vector of doubles (lower bound for the estimation)
 #' @param sigmaCI is a vector of doubles (significance of the Confidence Intervals)
 #' @param myPar is a vecor which has to be entered in the following order:
 #'      c(sigma_v, sigma_u, beta = c(), delta = c()). Required as starting point for the estimation.
-#' @return A B x k+r+2 matrix is returned of the estimates, the mean, standard error
-#' and a Confidence Interval for each estimate as a data frame.
+#' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
+#'      and a confidence interval for each estimate as a data frame.
 
 
-SFM.bootstrap <- function(y, xv, z, mu, N, method, Time, R, K, B, myPar = NULL, lowerInt, sigmaCI){
+SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI){
 
-  if(length (Time) == 1){
+  if (length (Time) == 1){
     Time <- rep (Time, N)
   }
 
@@ -38,8 +41,10 @@ SFM.bootstrap <- function(y, xv, z, mu, N, method, Time, R, K, B, myPar = NULL, 
 
   # draw R individual bootstrap samples. each list entry consists of N lists.
   bootList <- replicate(B, list(), simplify = F)  # create R bootstrap samples
-  bootList <- lapply (bootList, function(x) by (data, simplify = F, INDICES = index,
-                                                FUN = function(x) sample_n (tbl = x, size = dim (x)[1], replace = T)))
+  # for every entry of bootList we sample rowwise for each panel
+  bootList <- lapply (bootList, function(x)
+                                by (data, simplify = F, INDICES = index,
+                                FUN = function(x) sample_n (tbl = x, size = dim (x)[1], replace = T)))
 
   # transforms the N-lists in the list to a matrices which can be used for bootstrapping
   bootListMat <- lapply(bootList, function(x) do.call (rbind, x))

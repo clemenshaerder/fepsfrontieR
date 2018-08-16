@@ -13,42 +13,43 @@ test_that ("sfmfep works", {
   form.test <- formula(y  ~ x1 + x2 + (z1 + z2))
   test.data <- sfm.data  # package data
   method <- "firstdiff"
+  boot <- F
 
-  testSfmfep <- sfmfep(formula = form.test, bootstrap = T, B = 5, method = method, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, bootstrap = boot, B , method = method, N=2,Time=30, data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if optim " N & T" works
-  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, bootstrap = T, B = 5, method = method, data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, N=2,Time=30, bootstrap = boot, B, method = method, data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if optim " N & T as unbalanced vector" works
-  expect_error ( sfmfep(formula = form.test, method = method, bootstrap = T, B = 5, N=2,Time=c(30,29), data = test.data, mu = 0, myPar = NULL) )
+  expect_error ( sfmfep(formula = form.test, method = method, bootstrap = boot, B, N=2,Time=c(30,29), data = test.data, mu = 0, myPar = NULL) )
 
   # Tests if option "group" TODO:(currently throws a NaN but result is correct)
-  testSfmfep <- sfmfep(formula = form.test, method = method, bootstrap = T, B = 5, group ="gr", data = test.data, mu = 0, myPar = NULL)
+  testSfmfep <- sfmfep(formula = form.test, method = method, bootstrap = boot, group ="gr", data = test.data, mu = 0, myPar = NULL)
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if defined starting points "myPar" works
-  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = T, B = 5,
+  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = T, B =5,
                        data = test.data, mu = 0,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
 
   # Tests if it works when estimates provided (estimate = F)
-  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = T, B = 5,
+  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = boot, B,
                        data = test.data, mu = 0, estimate = F,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type(object = testSfmfep, type = "list")
 
   # Tests if it works when CIs are not wanted
-  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = T, B = 5,
+  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = boot, B ,
                        data = test.data, mu = 0, sigmaCI = NULL,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")
 
   # Tests unbalanced panels
   test.data <- test.data[-60, ]
-  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = T, B = 5,
+  testSfmfep <- sfmfep(formula = form.test, method = method, group ="gr", bootstrap = boot, B ,
                        data = test.data, mu = 0, sigmaCI = NULL,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = testSfmfep, type = "list")

@@ -8,7 +8,7 @@ the rows with replacement individually for each panel instead from all samples.
 In addition to the Mean and the Standard Error of the estimates,
 a Confidence Interval is returned based on the quantiles of the distribution of estimates.}
 \usage{
-SFM.bootstrap(y, xv, z, mu, N, method, Time, R, K, B, myPar = NULL,
+SFM.bootstrap(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL,
   lowerInt, sigmaCI)
 }
 \arguments{
@@ -23,6 +23,8 @@ SFM.bootstrap(y, xv, z, mu, N, method, Time, R, K, B, myPar = NULL,
 \item{N}{is an integer (n - panels)}
 
 \item{Time}{is an integer (observations per panel)}
+
+\item{method}{a required string specifying the method ("within" or "firstdiff").}
 
 \item{R}{is an integer (# of z variables)}
 
@@ -39,7 +41,7 @@ c(sigma_v, sigma_u, beta = c(), delta = c()). Required as starting point for the
 }
 \value{
 A B x k+r+2 matrix is returned of the estimates, the mean, standard error
-and a Confidence Interval for each estimate as a data frame.
+     and a Confidence Interval for each estimate as a data frame.
 }
 \description{
 Generates B Individual Bootstrap Samples from the data and performes MLE
