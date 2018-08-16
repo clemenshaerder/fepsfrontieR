@@ -2,19 +2,26 @@
 % Please edit documentation in R/sfm_alpha.R
 \name{SFM.alpha}
 \alias{SFM.alpha}
-\title{< Recovers the alpha (inteysfdysyxyssfdrcept) of each panel >}
+\title{< Recovers the individual fixed effects for each individuum >}
 \usage{
-SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu = 0)
+SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu)
 }
 \arguments{
-\item{par}{is a vector of regression coefficients & variance parameters.
-1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients}
+\item{y}{is a n*t x 1 vector (response)}
+
+\item{x}{is a n*t x k matrix (explantatory variables)}
+
+\item{N}{an optional integer specifying the total amount of panels in the data set.}
+
+\item{Time}{an optional integer specifying the amount of observations per panel.}
+
+\item{mu}{is the mean of a truncated normal distribution of the stochastic inefficencys.}
 }
 \value{
-< Describe what is returned when applying this functinon >
+recovered values of individual fixed effects
 }
 \description{
-< Recovers the alpha (inteysfdysyxyssfdrcept) of each panel >
+< Recovers the individual fixed effects for each individuum >
 }
 \examples{
 < an example >

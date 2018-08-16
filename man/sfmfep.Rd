@@ -6,8 +6,9 @@
 within transformation}
 \usage{
 sfmfep(formula, data, group = NULL, N = NULL, Time = NULL, mu = 0,
-  sigmaCI = 0.05, estimate = T, myPar = c(sigma_u = NULL, sigma_v =
-  NULL, beta = c(NULL), delta = c(NULL)))
+  sigmaCI = 0.05, estimate = T, method = "firstdiff",
+  bootstrap = F, B = NULL, myPar = c(sigma_u = NULL, sigma_v = NULL,
+  beta = c(NULL), delta = c(NULL)))
 }
 \arguments{
 \item{formula}{an object of class "fomrula" in the form of
@@ -29,9 +30,12 @@ for the MLE estimates (based no the Hessian).}
 
 \item{estimate}{T or F specifies if "myPar" is used as starting point of the estimation,
 or if "myPar" is used to calculate a given stochastic frontier model.}
+
+\item{myPar}{is a vecor which has to be entered in the following order:
+c(sigma_v, sigma_u, beta = c(), delta = c())}
 }
 \value{
-< Describe what is returned when applying this functinon >
+A S3 object is returned including: ....
 }
 \description{
 sfmfep Estimates a Stochastic Frontier Model for Fixed-Effects using

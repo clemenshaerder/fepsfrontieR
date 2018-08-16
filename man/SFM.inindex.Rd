@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_inefficency_index.R
 \name{SFM.inindex}
 \alias{SFM.inindex}
-\title{< What it does >}
+\title{< calculate the inefficiency of each individuum >}
 \usage{
 SFM.inindex(h, sigma2star, mu2star, N, Time)
 }
@@ -11,10 +11,10 @@ SFM.inindex(h, sigma2star, mu2star, N, Time)
 1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients}
 }
 \value{
-< Describe what is returned when applying this functinon >
+< returns the inefficiency for each individuum >
 }
 \description{
-< What it does >
+< calculate the inefficiency of each individuum >
 }
 \examples{
 < an example >
