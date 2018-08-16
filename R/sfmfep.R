@@ -5,6 +5,7 @@
 #' @param data an optional data frame, list or environment (or object coercible by
 #' as.data.frame to a data frame) containing the variables in the model.
 #' @param group an optional vector specifying the panels to be used in the fitting process.
+#' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param N an optional integer specifying the total amount of panels in the data set.
 #' @param Time an optional integer specifying the amount of observations per panel.
 #' @param mu is the mean of a truncated normal distribution of the stochastic inefficencys.
