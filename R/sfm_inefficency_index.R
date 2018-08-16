@@ -14,8 +14,9 @@ SFM.inindex <- function(h, sigma2star, mu2star, N, Time){
   in_index <- c()
   
   for (i in 1:N){
-    in_index <- c(in_index, h[(cumTime[i] + 1) : cumTime[i + 1]] * (mu2star[i] + (dnorm(mu2star[i] / sqrt(sigma2star[i])) *
-                                                                                    sqrt(sigma2star[i])) / pnorm(mu2star[i]/sqrt(sigma2star[i]))))
+    in_index <- c(in_index, h[(cumTime[i] + 1) : cumTime[i + 1]] * 
+                    (mu2star[i] + (dnorm(mu2star[i] / sqrt(sigma2star[i])) *
+                     sqrt(sigma2star[i])) / pnorm(mu2star[i]/sqrt(sigma2star[i]))))
   }
   
   return (in_index)
