@@ -293,6 +293,8 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Inefficency Index for each Panel  ---------------------------
 
+  # Inefficency Index for each Panel  ---------------------------
+
   # TODO(Oli): extend inefficency to Time as an vector (check sfm_within for that)
   inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
                              sigma2star = ret.list$sigma_2star,
@@ -304,18 +306,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # TODO(Oli): extend alpha to Time as an vector (check sfm_within for that)
   if(Time == length(1){
-  alpha <- SFM.alpha(beta = estimate.beta,
-                      mu = mu,
-                      sigma_u = estimate.sigma_u,
-                      sigma_v = estimate.sigma_v,
-                      h = ret.list$h,
-                      x = x.dat,
-                      y = y.dat,
-                      epsilon = ret.list$eps.wthn,
-                      N = N.input,
-                      Time = Time.input)
-  } else {
-    alpha <- SFM.alpha.unbalanced(beta = estimate.beta,
+    alpha <- SFM.alpha(beta = estimate.beta,
                        mu = mu,
                        sigma_u = estimate.sigma_u,
                        sigma_v = estimate.sigma_v,
@@ -325,6 +316,17 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                        epsilon = ret.list$eps.wthn,
                        N = N.input,
                        Time = Time.input)
+  } else {
+    alpha <- SFM.alpha.unbalanced(beta = estimate.beta,
+                                  mu = mu,
+                                  sigma_u = estimate.sigma_u,
+                                  sigma_v = estimate.sigma_v,
+                                  h = ret.list$h,
+                                  x = x.dat,
+                                  y = y.dat,
+                                  epsilon = ret.list$eps.wthn,
+                                  N = N.input,
+                                  Time = Time.input)
   }
 
   # Model Selection Criterion  ---------------------------
