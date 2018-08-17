@@ -1,4 +1,5 @@
-#' < First-difference transformation & calculation of log.likelihood >
+#' Performs a first-difference transformation to a Stochastic Frontier Model
+#'
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
 #' @param xv is a n*t x k matrix (explantatory variables)
@@ -19,13 +20,16 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   K <- dim (as.matrix (xv))[2]  # K beta variables
   R <- dim (as.matrix (z))[2]  # R delta variables
 
+  # First-difference Transformations ---------------------------
+
+  # In case of a balanced panel each N has Time observations
   if(length (Time) == 1){
     Time <- rep (Time, N)
   }
 
   cumTime <- c(0, cumsum(Time)) # used for the index of the different panels
 
-  # First Difference of x
+  # First-Difference of X
   x.diff <- matrix(c(rep(NA, sum(Time - 1) * K)), ncol = K)  # -1 for first diff
 
   for(u in 1:K){
@@ -36,32 +40,23 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     x.diff[, u] <- difference
   }
 
-  # First Difference of z
-  # z.diff <- matrix(c(rep(NA, sum(Time - 1) * R)), ncol = R)  # -1 for first diff
-  #
-  # for(u in 1:R){
-  #   difference <- c()
-  #   for(i in 1:N){
-  #     difference <- c(difference, diff(z[(cumTime[i] + 1) : cumTime[i + 1], u]))
-  #   }
-  #   z.diff[, u] <- difference
-  # }
-
-  # First DIfference of y
+  # First DIfference of Y
   y.diff <- c()
   for(i in 1:N){
     y.diff <- c(y.diff, diff(y[(cumTime[i]+1):cumTime[i+1], ]))
   }
 
+  # Computes the residuals of the centered response & explanatory variables based on beta-estimates
   epsilon <- y.diff - x.diff %*% par[3:(3+K-1)]  # is a (N * (Time-1)) x 1 vector
 
-  # TODO() i have no idea if this is correct. it should, because the dimensions fit...
   h <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
-  # TODO(Clemens): Check if this is correct.
 
   # splits the vector to N-lists of Time-1 observations
   cumTimeDiff <- c(0, cumsum(Time-1))
+
+  # First DIfference of H
   h.diff <- lapply (unname (split (h, findInterval (seq_along (h), cumTime, left.open = TRUE))), diff)
+
   eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTimeDiff, left.open = TRUE)))
   # TODO(Clemens): lapply(..., diff)  not required?
 
@@ -95,7 +90,7 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
       0.5 * ((mu_2star[i]^2) / sigma_2star[i] - (mu^2) / par[1]) +
       log (sqrt (sigma_2star[i]) * pnorm(mu_2star[i] /  sqrt (sigma_2star[i]))) -
       log (sqrt (par[1]) * pnorm (mu / sqrt (par[1])))
-  }  # TODO(Clemens) -> check again ll
+  }
 
   # Return values ---------------------------
   if (optim == T){

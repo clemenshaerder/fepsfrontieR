@@ -26,6 +26,7 @@
 #' exampleSFM
 #' @export
 
+# TODO(Clemens): Extend to unbalanced panels
 SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
 
   if (!is.double(N) | !is.double(Time) | !is.vector(beta) | !is.vector(delta) |
@@ -56,6 +57,7 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
   # Calculation of the response ---------------------------
   y <- alpha + x%*%beta + epsilon
 
+  # nice output with dplyr -> need dplyr dependency anyhow for bootstrapping
   returnTibble <- dplyr::as_tibble (data.frame (x = x, y = y, z = z, alpha = alpha))
   return (returnTibble)
 }

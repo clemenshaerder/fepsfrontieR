@@ -49,10 +49,10 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   # transforms the N-lists in the list to a matrices which can be used for bootstrapping
   bootListMat <- lapply(bootList, function(x) do.call (rbind, x))
 
-  # potential to parallize here?
+  # TODO(): OPTIMIZATION by parallization??
   # parallel::parLapply(lapply (bootList, function(x) by (data, INDICES = index, FUN = function(x) sample_n (tbl = x, size = dim(x)[1], replace = T))))
 
-  # calculate estimates for each entry of the list
+  # calculate estimates for each entry of the list depending on the method
   if (method == "within"){
     bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
                                                       start = myPar,  # TBD by Rouven
@@ -79,7 +79,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                              )$par)  # we want only the estimates
   }
 
-  # create a matrice of estimates to calculate colmeans & standard error
+  # creates a matrix of estimates to calculate colmeans & standard error
   estimatesMat <- do.call (rbind, bootEstimates)
 
   estimates <- apply (estimatesMat, 2, mean)
@@ -88,7 +88,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   # Calculate CIs based on the quantiles of the estimate distribution
   if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null (sigmaCI) && !is.nan (sigmaCI) ){
     conf.Interval <- t (apply (estimatesMat, 2, function(x) quantile(x, probs = c(sigmaCI/2, 1-sigmaCI/2))))
-  } else if (is.null (sigmaCI)){
+  } else if (is.null (sigmaCI)){  # if NULL we just dont calculate CIs
 
   } else if (any (sigmaCI <= 0 | sigmaCI > 1) || is.nan (sigmaCI)){
     cat ("Could not compute Confidence Intervals due to invalid input (sigmaCI must be between [0, 1]")

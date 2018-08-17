@@ -1,4 +1,5 @@
-#' < Within transformation & calculation of log.likelihood >
+#' Performs a within transformation to a Stochastic Frontier Model
+#'
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
 #' @param xv is a n*t x k matrix (explantatory variables)
@@ -23,11 +24,14 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   # Within Transformations ---------------------------
 
+  # In case of a balanced panel each N has Time observations
   if(length (Time) == 1){
     Time <- rep (Time, N)
   }
 
   cumTime <- c(0, cumsum(Time)) # used for the index of the variables
+
+  # Within transformation of X
   x.wthn <- matrix(c(rep(NA, sum(Time)*K)), ncol = K)
   for(u in 1:K){  # for k explenatory variables
     repMeans <- c()
@@ -38,6 +42,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   }
   x.wthn <- as.matrix (x.wthn, ncol = K)
 
+  # Within transformation of Y
   repYMeans <- c()
   for(i in 1:N){
     repYMeans <- c(repYMeans, rep(mean (y[(cumTime[i]+1):cumTime[i+1], ] ), Time[i]))
@@ -45,15 +50,16 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   y.wthn <- as.matrix(y - repYMeans)
 
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
-  # Best within transformation of an unbalanced vector ever done
   epsilon <- y.wthn - x.wthn %*% par[3:(3+K-1)]
 
   cumTime <- c(0, cumsum (Time) + 1)  # used for the index of the variables
+  # Within transformation of epsilon. Note, that epsilon is a vector that
+  # needs to be split to lists for the likelihood computation.
   eps.wthn <- lapply (unname (split (epsilon, findInterval (seq_along (epsilon), cumTime))),
-                      scale, scale = F) # TODO(Clemens): change scale to F -> should we actually scale?!?!!?
+                      scale, scale = F)
 
-
-  # We apply an exponential inefficency based for the z inefficency determinants
+  # Within Transformation of h
+  # An exponential function is applied on the z inefficency determinants
   # TODO(authors): 2ndary expand to more distributions
   h      <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
   h.wthn <- lapply (unname (split (h, findInterval (seq_along (h), cumTime))),
@@ -70,16 +76,19 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   if (!exists("gPI")){
     stop ("Could not calculate log.likelihood.
           SVD of the g-Inverse of PI failed.
-          PI is sigma_v * M (M is the txt orthogonal projection matrix).")
+          PI is sigma_v * M (M is the TxT orthogonal projection matrix).")
   }
 
   log.ll      <- c(rep (NA, N))
   mu_2star    <- c(rep (NA, N))
   sigma_2star <- c(rep (NA, N))
 
+  # the likelihood for each panel is computed applying the list entries of e.wthn & h.wthn.
   for (i in 1:N){
 
-    itPI <- gPI[(1:Time[i]), (1:Time[i])]  # for each panel we adapt the dimensions of the gPI
+    # for each panel we adapt the dimensions of the gPI which was calculated based on the max(Time)
+    itPI <- gPI[(1:Time[i]), (1:Time[i])]
+
     mu_2star[i] <- (mu/par[1] - t(eps.wthn[[i]]) %*% itPI %*% h.wthn[[i]]) /
                    (t(h.wthn[[i]]) %*% itPI %*% h.wthn[[i]] + 1 / par[1])
 
@@ -90,7 +99,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                   0.5 * ((mu_2star[i]^2) / sigma_2star[i] - (mu^2) / par[1]) +
                   log (sqrt (sigma_2star[i]) * pnorm(mu_2star[i] /  sqrt (sigma_2star[i]))) -
                   log (sqrt (par[1]) * pnorm (mu / sqrt (par[1])))
-  }  # Check if likelihood has mu in it everywhere
+  }
 
   # Return values ---------------------------
   if (optim == T){

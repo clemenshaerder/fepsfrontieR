@@ -8,40 +8,40 @@
 \usage{
 sfmfep(formula, data, group = NULL, N = NULL,
        Time = NULL, mu = 0,  sigmaCI = 0.05, estimate = T,
+       method = c("firstdifff, within"), bootstrap = F, B = NULL
        myPar = c(sigma_u, sigma_v, beta = c( ), delta = c( )))
 
-SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu_u = 0)
+SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu = 0)
 }
 \description{
 A package for estimation of fixed-effect panel stochastic
-frontier models by within-model transformation as proposed by Wang & Ho (2010).
+frontier models by within or first-difference model transformation
+as proposed by Wang & Ho (2010).
 Maximum Likelihood Estimation is performed using nlminb( ).
-Confidence Intervals are provided using the Hessian Matrix or
-numerically expensive Bootstrapping to calculate Standard Error.
-In addition, a Gibbs Sampler can be chosen as an alternative to MLE.
-}
-\details{
-The fepsfrontieR package provides one important function
-sfmfep and a supplementary data generation function SFM.generate
+Standard Errors are provided using the Hessian Matrix or
+by individual Bootstrapping.
+The fepsfrontieR package provides the main function sfmfep
+and a supplementary data generation function SFM.generate
 }
 \section{sfmfep}{
 
 The sfmfep functions is the main function of the package fepsfrontieR.
-It provides two options.
-If "estimate = T" is chosen, the model is
-estimated with MLE or a Gibbs Sampler. Starting points can be provided
-for the numerical optimizer nlminb ( ). Otherwise OLS estimators are
-applied as starting points.
-
-If "estimate = F", a stochastic frontier model is calculated,
-based on provided point estimates.
-
-A S3 object is returned in both cases.
+sfmfep can be either used to estimate model parameters based on a data input,
+or to fit a prespecified model.
+Estimation is performed by applying a within or first-difference transformation
+of the data. One can optionally chose Bootstrapping to calculate the estimates and
+standard errors of the estimates. Otherwise the Standard Errors are obtained
+from the Hessian matrix.
+The estimation of the parameters is numerically done using the optimizer nlminb ( ).
+Starting points for the optimizer can be provided. Otherwise, OLS estimators
+are used as starting points.
+Finally, the inefficency index & fixed-effects are calculated.
+A S3 object is returned.
 }
 
 \section{SFM.generate}{
 
-The SFM.generate function generates a fixed-effects stochastic
+The SFM.generate function generates a balanced fixed-effects stochastic
 frontier model with exponential inefficencys. The amount of specified
 betas & deltas create associated explenatory varibles & inefficeny determinants.
 }

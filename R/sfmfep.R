@@ -1,5 +1,10 @@
-#' sfmfep Estimates a Stochastic Frontier Model for Fixed-Effects using
+#' Estimates a Stochastic Frontier Model for Fixed-Effects using
 #' within transformation
+#'
+#' sfmfep is used to fit fixed-effect stochastic frontier models for panel data
+#' using a specified model transformation. Bootstrapping can be performed to
+#' calculate the standard errors instead of a numerical deriviation
+#' via the hessian matrix.
 #' @param formula an object of class "fomrula" in the form of
 #' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
 #' @param data an optional data frame, list or environment (or object coercible by
@@ -7,18 +12,28 @@
 #' @param group an optional vector specifying the panels to be used in the fitting process.
 #' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param N an optional integer specifying the total amount of panels in the data set.
+#'     If N is entered, Time is also a required input.
 #' @param Time an optional integer specifying the amount of observations per panel.
-#' @param mu is the mean of a truncated normal distribution of the stochastic inefficencys.
-#' @param Bootstrap
-#' @param sigmaCI is an optional vector specifying the significance values of the confidence intervals
-#' for the MLE estimates (based no the Hessian).
-#' @param estimate T or F specifies if "myPar" is used as starting point of the estimation,
-#' or if "myPar" is used to calculate a given stochastic frontier model.
+#'     If Time is entered, N is also a required input.
+#' @param mu is the mean of a truncated normal distribution of the stochastic inefficiency.
+#' @param Bootstrap is an optional boolean variable. If it is set to TRUE, bootstrapping is
+#'     performed. "B" must be specified.
+#' @param B is a required input for Bootstrap = TRUE. It defines
+#'     the amount of bootstrap samples.
+#' @param sigmaCI is an optional vector specifying the significance
+#'     values of the confidence intervals for the MLE estimates.
+#' @param estimate TRUE or FALSE specifies if "myPar" is used as
+#'     starting point of the estimation, or if "myPar" is used to fit
+#'     a given stochastic frontier model.
 #' @param myPar is a vecor which has to be entered in the following order:
-#' c(sigma_v, sigma_u, beta = c(), delta = c())
-#'
+#'     c(sigma_v, sigma_u, beta = c(), delta = c())
 #' @return
-#' A S3 object is returned including: ....
+#'     sfmfep returns an object of class S3. The function summary( )
+#'     can be used to obtain or print a summary of the results.
+#'     An object of class "sfmfep" is a list containing at least the
+#'     following components:
+#'     TODO(): Add all output components here
+#'
 #' @examples
 #' < an example where a data set is created via sfm.generate>
 #' @export
@@ -98,11 +113,11 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   if (!is.null(myPar)){
     if (length (myPar) != (2 + K + R)){  # 2 sigmas + k betas & r deltas
       stop ("Could not perform estimation.
-                  A starting point for the estimation must be provided for every parameter.")
+            A starting point for the estimation must be provided for every parameter.")
     }
     if (!is.numeric (myPar) || myPar[1] <= 0 || myPar[2] <= 0){
       stop ("Could not perform estimation.
-                  The starting points must be numeric &| sigmas must be <= 0")
+            The starting points must be numeric &| sigmas must be <= 0")
     }
   }
 
@@ -117,10 +132,18 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
     N.input <- N; Time.input <- Time
 
-    if ( sum (N.input * Time.input) != dim (sel.data)[1]) {
-      stop ("Your input (N & T) doesn`t match the data dimensions.
+    if(length(Time.input) == 1){
+      if ( sum (N.input * Time.input) != dim (sel.data)[1]) {
+        stop ("Your input (N & T) doesn`t match the data dimensions.
             Calculations could not be performed.")
+      }
+    } else {
+      if ( sum (Time.input) != dim (sel.data)[1]) {
+        stop ("Your input (N & T) doesn`t match the data dimensions.
+            Calculations could not be performed.")
+      }
     }
+
 
   } else {  # Third if group is specified, we check if this group exists as column name
     if (is.null (group) || try (exists (group, data) == F, silent = T)){
@@ -241,9 +264,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                            mu = mu,
                            optim = T)  # Note optim = T
 
-    #standard errors for estimates
-    standerror <- sqrt (diag (solve (hes))) # TODO() Check confidence Interval -> we do that twice (and only 1 time with error handler)
-
   }
 
 
@@ -349,7 +369,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
               # alpha = alpha
               # inefficency = inefficency
               # hessian = hes
-              # standerror = standerror
+              standerror = conf.Interval$standerror,
               contrasts = c(attr (myPar, "names")),
               likeihood= optim.SFM$objective)
 

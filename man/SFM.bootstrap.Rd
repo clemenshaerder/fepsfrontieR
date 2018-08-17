@@ -2,11 +2,7 @@
 % Please edit documentation in R/sfm_bootstrap.R
 \name{SFM.bootstrap}
 \alias{SFM.bootstrap}
-\title{Generates B Individual Bootstrap Samples from the data and performes MLE
-for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
-the rows with replacement individually for each panel instead from all samples.
-In addition to the Mean and the Standard Error of the estimates,
-a Confidence Interval is returned based on the quantiles of the distribution of estimates.}
+\title{SFM.bootstrap performs estimation with B Individual Bootstrap Samples}
 \usage{
 SFM.bootstrap(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL,
   lowerInt, sigmaCI)
@@ -40,13 +36,13 @@ c(sigma_v, sigma_u, beta = c(), delta = c()). Required as starting point for the
 \item{sigmaCI}{is a vector of doubles (significance of the Confidence Intervals)}
 }
 \value{
-A B x k+r+2 matrix is returned of the estimates, the mean, standard error
-     and a Confidence Interval for each estimate as a data frame.
+A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
+     and a confidence interval for each estimate as a data frame.
 }
 \description{
-Generates B Individual Bootstrap Samples from the data and performes MLE
+B Individual Bootstrap Samples are genereated from the input and MLE is performed
 for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
 the rows with replacement individually for each panel instead from all samples.
-In addition to the Mean and the Standard Error of the estimates,
-a Confidence Interval is returned based on the quantiles of the distribution of estimates.
+In addition to the mean and the standard error of the estimates,
+a confidence interval is returned based on the quantiles of the distribution of estimates.
 }
