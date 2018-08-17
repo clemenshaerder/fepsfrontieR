@@ -13,6 +13,8 @@
 #' @param group an optional vector specifying the panels to be used in the fitting process.
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
+#' @export
+
 
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                        xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){

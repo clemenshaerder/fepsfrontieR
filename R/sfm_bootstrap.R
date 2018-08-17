@@ -22,6 +22,7 @@
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 #'      and a confidence interval for each estimate as a data frame.
 
+# TODO: estimates are off. try to recreate bootstrapping
 
 SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI){
 
@@ -89,7 +90,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null (sigmaCI) && !is.nan (sigmaCI) ){
     conf.Interval <- t (apply (estimatesMat, 2, function(x) quantile(x, probs = c(sigmaCI/2, 1-sigmaCI/2))))
   } else if (is.null (sigmaCI)){  # if NULL we just dont calculate CIs
-
+    conf.Interval <- "NULL"
   } else if (any (sigmaCI <= 0 | sigmaCI > 1) || is.nan (sigmaCI)){
     cat ("Could not compute Confidence Intervals due to invalid input (sigmaCI must be between [0, 1]")
   }

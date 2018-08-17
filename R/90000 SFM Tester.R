@@ -38,36 +38,53 @@
 ###############################################################################
 ##############          Test Optim / nlm                          #############
 ###############################################################################
-
-# Specify "your" variables for the model (and lower & upper bounds for optim)
-# N <- 30
-# Time <- 10
+# library("fepsfrontieR")
+# # Specify "your" variables for the model (and lower & upper bounds for optim)
+# N <- 100
+# Time <- 5
 # #
-# beta <- c(0.5, 0.5); K <- length(beta);
-# delta=c(0.5, 0.5); R <- length(delta)
+# beta <- c(0.5); K <- length(beta);
+# delta=c(0.5); R <- length(delta)
 # sigma_u = 0.2; sigma_v = 0.1
 # par <-c(sigma_u,sigma_v,beta,delta)
-# mu <- 0.5
+# mu <- 0
 # lower <- c(0.05,0.05, rep(-Inf,K), rep(-Inf,R)); upper <-  c(1000,1000,1000,1000,1000,1000)
 # # # # # #
 # # # # # # # Generates data for the optimization & does it "Iteration" times
 # Iteration <- 20
-# estimate <- matrix(c(rep(NA, (2+K+R)*Iteration)), nrow= 2 + K + R, ncol=Iteration)
+# estimateW <- matrix(c(rep(NA, (2+K+R)*Iteration)), nrow= 2 + K + R, ncol=Iteration)
+# estimateF <- matrix(c(rep(NA, (2+K+R)*Iteration)), nrow= 2 + K + R, ncol=Iteration)
 # #
 # for(i in 1:Iteration){
-# # # # # #   # Generate dataset for optim based on inputs above
+#   # # # # #   # Generate dataset for optim based on inputs above
 #   set.seed(sample(99999,1))
 #   data <- SFM.generate(N = N, Time = Time, beta = beta, delta = delta, mu = mu, sigma_u = sigma_u, sigma_v = sigma_v)
 #   x    <- as.matrix(data[, 1:length(beta)]); y <- as.matrix(data[, (length(beta)+1)])
 #   z    <- as.matrix(data[, (length(beta)+2):(length(beta)+2+length(delta)-1)])
-#   test <- nlminb(objective = SFM.firstDiff, lower=c(0.001,0.001,rep(-Inf, R+K)), start = c(sigma_u,sigma_v,beta,delta), mu = mu, Time = Time, N = N, xv = x, y = y, z = z, optim = T)
-# # # # # #
-#   estimate[, i] <- test$par
+#   firstdiff <- nlminb(objective = SFM.firstDiff, lower=c(0.001,0.001,rep(-Inf, R+K)), start = c(sigma_u,sigma_v,beta,delta), mu = mu, Time = Time, N = N, xv = x, y = y, z = z, optim = T)
+#   within <- nlminb(objective = SFM.within, lower=c(0.001,0.001,rep(-Inf, R+K)), start = c(sigma_u,sigma_v,beta,delta), mu = mu, Time = Time, N = N, xv = x, y = y, z = z, optim = T)
+#   # # # # #
+#   estimateW[, i] <- within$par
+#   estimateF[, i] <- firstdiff$par
 # }
+#
+# t.formula <- y ~ x + (z)
+# ttt <- sfmfep(formula = t.formula, data = data, N = 100, Time = 5, mu = 0.5,
+#        sigmaCI = 0.05, estimate = T, method = "firstdiff", bootstrap = T, B = 100,
+#                    myPar = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta))
+# hist(ttt$estimatesMat[,1])
+#
+# # #
 # #
-# apply(estimate,1, mean)
-# apply(estimate,1, var)
+# #   hist(estimateW[1,])
+# apply(estimateW,1, median) - apply(estimateF,1, median)
+# apply(estimateW,1, mean) - c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta)
+# apply(estimateW,1, mean)
+# apply(estimateW,1, var)
+# apply(estimateF,1, mean)
+# apply(estimateF,1, var)
 
+# for(i in 1:Iteration)
 # # # # typeof(dplyr::tbl_df(data))
 # # # # #   typeof(data)
 # # # # # x <- as.matrix(data[, 1:2], ncol=2)

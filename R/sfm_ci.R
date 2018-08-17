@@ -4,6 +4,7 @@
 #' @return < Describe what is returned when applying this functinon >
 #' @examples
 #' < an example >
+#' @export
 
 
 SFM.CI <- function(estimates, hessianMatrix, alpha){

@@ -144,7 +144,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
       }
     }
 
-
   } else {  # Third if group is specified, we check if this group exists as column name
     if (is.null (group) || try (exists (group, data) == F, silent = T)){
       stop ("Couldnt match input *group* with colnames")
@@ -369,10 +368,10 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
               # alpha = alpha
               # inefficency = inefficency
               # hessian = hes
-              standerror = conf.Interval$standerror,
+              # standerror = conf.Interval$standerror,
               contrasts = c(attr (myPar, "names")),
               likeihood= optim.SFM$objective)
 
   class (res) <- c(res$class, "sfmfep")
-  res
+  return(optim.SFM)
 }

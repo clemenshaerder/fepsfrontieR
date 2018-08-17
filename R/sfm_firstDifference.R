@@ -13,6 +13,7 @@
 #'     T to obtain the -sum of log.likelihood)
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
+#' @export
 
 SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                           xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
@@ -54,7 +55,7 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   # splits the vector to N-lists of Time-1 observations
   cumTimeDiff <- c(0, cumsum(Time-1))
 
-  # First DIfference of H
+  # First DIfference of H. H is p
   h.diff <- lapply (unname (split (h, findInterval (seq_along (h), cumTime, left.open = TRUE))), diff)
 
   eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTimeDiff, left.open = TRUE)))
