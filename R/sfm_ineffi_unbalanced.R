@@ -8,6 +8,10 @@
 SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time){
 
   # TODO(Oli) add panelname to each ineff.index
+  if(length (Time) == 1){
+    Time <- rep (Time, N)
+  }
+
   sigma <- sqrt(sigma2star)
   cumTime <- c(0, cumsum(Time))
   h <- as.matrix(h)
