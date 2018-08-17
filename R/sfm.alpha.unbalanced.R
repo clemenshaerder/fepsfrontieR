@@ -19,15 +19,20 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   h <- as.matrix(h)
   epsilon <- as.matrix(epsilon)
 
+  if(length (Time) == 1){
+    Time <- rep (Time, N)
+  }
+
+  K <- dim (as.matrix (x))[2]
   cumTime <- c(0, cumsum(Time)) # used for the index of the variables
 
   x_mean <- NULL
   for(i in 1:K){
     for(j in 1:N){
-      x_mean <- c(x_mean, mean(xv[(cumTime[j] + 1) : cumTime[j + 1], i]))
+      x_mean <- c(x_mean, mean(x[(cumTime[j] + 1) : cumTime[j + 1], i]))
     }
-    x_mean <- matrix(x_mean, ncol = K)
   }
+  x_mean <- matrix(x_mean, ncol = K)
 
   pro_xb  <- x_mean %*% beta
 
