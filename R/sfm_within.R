@@ -54,17 +54,17 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
   epsilon <- y.wthn - x.wthn %*% par[3:(3+K-1)]
 
-  cumTime <- c(0, cumsum (Time) + 1)  # used for the index of the variables
   # Within transformation of epsilon. Note, that epsilon is a vector that
   # needs to be split to lists for the likelihood computation.
-  eps.wthn <- lapply (unname (split (epsilon, findInterval (seq_along (epsilon), cumTime))),
+  splitInterval <- findInterval (seq_along (epsilon), cumTime, left.open = TRUE)
+  eps.wthn <- lapply (unname (split (epsilon, splitInterval)),
                       scale, scale = F)
 
   # Within Transformation of h
   # An exponential function is applied on the z inefficency determinants
   # TODO(authors): 2ndary expand to more distributions
   h      <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
-  h.wthn <- lapply (unname (split (h, findInterval (seq_along (h), cumTime))),
+  h.wthn <- lapply (unname (split (h, splitInterval)),
                                    scale, scale = F)
 
   # Log-Likelihood computation for each panel ---------------------------
