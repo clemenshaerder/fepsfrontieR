@@ -16,6 +16,7 @@ SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time){
   cumTime <- c(0, cumsum(Time))
   h <- as.matrix(h)
   in_index <- c()
+  mean_ineff_index <- c()
 
   for (i in 1:N){
     in_index <- c(in_index, h[(cumTime[i] + 1) : cumTime[i + 1]] *
@@ -23,9 +24,15 @@ SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time){
                   sigma[i]) / pnorm(mu2star[i]/ sigma[i])))
   }
 
-  return (in_index)
+  for(i in 1:N){
+    mean_ineff_index <- c(mean_ineff_index, mean( in_index[(cumTime[j] + 1) : cumTime[j + 1]]))
+  }
 
+  Ineff <- list (mean_ineff_index = mean_ineff_index,
+                in_index = in_index)
+
+  return(Ineff)
 }
-library("gamlss")
+
 
 
