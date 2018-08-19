@@ -39,7 +39,7 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
   R <- length(delta)
 
   # Generate inefficencys for each panel and repeat it from truncated normal distribution (x>a)
-  u_star <- rep(truncnorm::rtruncnorm(N, a = 0, mean = mu, sd = sqrt(sigma_u)), each = Time)
+  u_star <- rep(rtruncnorm(N, a = 0, mean = mu, sd = sqrt(sigma_u)), each = Time)
 
   # Generate one alpha intercepts for each panel and repeat it from a uniform distribution
   alpha  <- rep(runif(N, 0, 1), each = Time)

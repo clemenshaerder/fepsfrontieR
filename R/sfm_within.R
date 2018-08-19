@@ -19,8 +19,6 @@
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                        xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
 
-  # TODO(Authors): Optimize this function as much as possible to significantly reduce required time.
-
   K <- dim (as.matrix (xv))[2]  # K beta variables
   R <- dim (as.matrix (z))[2]  # R delta variables
 
@@ -31,10 +29,10 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     Time <- rep (Time, N)
   }
 
-  cumTime <- c(0, cumsum(Time)) # used for the index of the variables
+  cumTime <- c(0, cumsum (Time)) # used for the index of the variables
 
   # Within transformation of X
-  x.wthn <- matrix(c(rep(NA, sum(Time)*K)), ncol = K)
+  x.wthn <- matrix(c(rep (NA, sum (Time) * K)), ncol = K)
   for(u in 1:K){  # for k explenatory variables
     repMeans <- c()
     for(i in 1:N){  # do it for each panel
@@ -51,21 +49,21 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   }
   y.wthn <- as.matrix(y - repYMeans)
 
+
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
   epsilon <- y.wthn - x.wthn %*% par[3:(3+K-1)]
-
-  # Within transformation of epsilon. Note, that epsilon is a vector that
-  # needs to be split to lists for the likelihood computation.
   splitInterval <- findInterval (seq_along (epsilon), cumTime, left.open = TRUE)
-  eps.wthn <- lapply (unname (split (epsilon, splitInterval)),
-                      scale, scale = F)
+
+  # Within transformation of epsilon is not required (already mean 0).
+  # Note, that epsilon is a vector that needs to be split to lists for the likelihood computation
+
+  eps.wthn <- unname (split (epsilon, splitInterval))
 
   # Within Transformation of h
   # An exponential function is applied on the z inefficency determinants
-  # TODO(authors): 2ndary expand to more distributions
   h      <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
   h.wthn <- lapply (unname (split (h, splitInterval)),
-                                   scale, scale = F)
+                     function(x) x - rep (mean (x), length (x)))
 
   # Log-Likelihood computation for each panel ---------------------------
 
@@ -112,7 +110,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     ret.list         <- list(x.wthn = x.wthn, y.wthn, PI, eps.wthn, h.wthn, h,
                              mu_2star, sigma_2star, log.ll)
     names (ret.list) <- c("x.wthn","y.wthn", "PI", "eps.wthn", "h", "h.wthn",
-                         "mu_2star", "sigma_2star", "log.ll" )
+                          "mu_2star", "sigma_2star", "log.ll" )
     return (ret.list)
   }
 

@@ -37,6 +37,10 @@ SFM.CI <- function(estimates, hessianMatrix, alpha){
     colnames(upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
     colnames(lower) <- c(alpha[c(1:length (alpha))] / 2)
 
+    # TODO(Clemens) shouldnt it be chi-sqare dist for sigmas?
+    #((N*T-1) * 0.38011841) / qchisq(0.95,1000-1)
+    # what are the actual degree of freedom?
+
     for (i in 1:length (standerror) && dim (fisher_info)[1] > 0){
       upper[i, ] <- estimates[i] + qnorm (1 - alpha / 2)  * standerror[i]
       lower[i, ] <- estimates[i] + qnorm (alpha / 2) * standerror[i]

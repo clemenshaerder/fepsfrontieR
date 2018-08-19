@@ -42,10 +42,16 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   }
 
   # First DIfference of Y
-  y.diff <- c()
-  for(i in 1:N){
-    y.diff <- c(y.diff, diff(y[(cumTime[i]+1):cumTime[i+1], ]))
-  }
+  # y.diff <- c()
+  # microbenchmark(
+  # for(i in 1:N){
+  #    y.diff <- c(y.diff, diff(y[(cumTime[i]+1):cumTime[i+1], ]))
+  # })
+  # microbenchmark(lapply ( unname (split (y, findInterval ( seq_along (y), cumTime, left.open = TRUE))), diff))
+  # microbenchmark(matrix (unlist (ttt, recursive = T), ncol = 1))
+  y.diff <- lapply ( unname (split (y, findInterval ( seq_along (y), cumTime, left.open = TRUE))), diff)
+  y.diff <- matrix (unlist (y.diff, recursive = T), ncol = 1)
+
 
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
   epsilon <- y.diff - x.diff %*% par[3:(3+K-1)]  # is a (N * (Time-1)) x 1 vector
@@ -53,13 +59,12 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   h <- exp (as.matrix (z) %*% par[(4+K-1):(4+K+R-2)])  # R-delta coefficients are used
 
   # splits the vector to N-lists of Time-1 observations
-  cumTimeDiff <- c(0, cumsum(Time-1))
 
-  # First DIfference of H. H is p
+  # First DIfference of H
   h.diff <- lapply (unname (split (h, findInterval (seq_along (h), cumTime, left.open = TRUE))), diff)
 
+  cumTimeDiff <- c(0, cumsum(Time-1))
   eps.diff <- unname (split (epsilon, findInterval (seq_along (epsilon), cumTimeDiff, left.open = TRUE)))
-  # TODO(Clemens): lapply(..., diff)  not required?
 
   # if all Time entries are equal we can save time in the next for loop
   # if (diff(range(Time)) < .Machine$double.eps ^ 0.5){
