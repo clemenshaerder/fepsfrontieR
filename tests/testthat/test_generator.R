@@ -14,7 +14,7 @@ test_that ("sfmfep works", {
   sigma_v <- 1
   t.formula <- formula(y  ~ x1 + x2 + (z1 + z2))
   test.data <- sfm.data  # package data
-  method <- "within"
+  method <- "firstdiff"
   boot <- F
   mu = 0
   myPar = NULL
@@ -133,10 +133,10 @@ context ("SFM.within / SFM.firstDiff")
    N <- 2
    Time <- c(10,5)
    data <- data.frame(y = y, xv = xv, z = z)
-   output <- SFM.firstDiff(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
-                        xv <- xv, y <- y, z <- z,
+   ret.list <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
+                        x <- xv, y <- y, z <- z,
                         N <- N,  Time <- Time, mu = 0, optim = F)  # optim = F for a list
-   expect_type(object = output, type ="list")
+   expect_type(object = ret.list, type ="list")
 
    rm(list=ls(all=TRUE))
 })

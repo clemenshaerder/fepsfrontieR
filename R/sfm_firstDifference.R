@@ -104,9 +104,10 @@ SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     return (sum ((log.ll)*-1))
 
   } else {
-    ret.list         <- list(x.diff = x.diff, y.diff, PI, eps.diff, h.diff, h,
+    ret.list         <- list(x.trans = x.diff, y.trans = y.diff, PI,
+                             eps.trans = eps.diff, h.trans = h.diff, h,
                              mu_2star, sigma_2star, log.ll)
-    names (ret.list) <- c("x.wthn","y.wthn", "PI", "eps.wthn", "h", "h.wthn",
+    names (ret.list) <- c("x.trans","y.trans", "PI", "eps.trans", "h.trans", "h",
                           "mu_2star", "sigma_2star", "log.ll" )
     return (ret.list)
   }

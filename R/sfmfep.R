@@ -152,6 +152,9 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
       sel.data <- sel.data %>% arrange_(.dots = group)  # sorts by group
       N.input <- dim (table (sel.data[group]))[1]
       Time.input <- table (sel.data[group])
+
+      # get names of panels for proper output
+      panelName <- unique(sel.data[group]) %>% arrange_(.dots = group)
     }
   }
 
@@ -269,12 +272,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Fit the model based on the estimation  ---------------------------
 
-  # TODO() Do we actually need that???
-  estimate.sigma_u  <- optim.SFM$par[1]
-  estimate.sigma_v  <- optim.SFM$par[2]
-  estimate.beta     <- optim.SFM$par[3:(3+K-1)]
-  estimate.delta    <- optim.SFM$par[(3+K):(3+R-1)]
-
   # Fit the specified model with the estimates
   if (method == "within"){
     ret.list <- SFM.within(optim = F,  # Note optim = F
@@ -293,7 +290,29 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   if (estimate == F || bootstrap == T){  # log.ll is obtained from the model as nlminb is not primarilyused.
     optim.SFM$objective <- sum(ret.list$log.ll*-1)
   }
+  # Calculate Inefficencys  ---------------------------
 
+  inefficency <- SFM.inindex.unbalanced (h = ret.list$h, sigma2star = ret.list$sigma_2star,
+                                         mu2star = ret.list$mu_2star, N = N.input, Time = Time.input)
+  if (!is.null (group)){
+    rownames (inefficency) <- as.matrix (panelName)
+  }
+
+  # Recover Inefficencys  ---------------------------
+
+  estimate.sigma_u  <- optim.SFM$par[1]
+  estimate.sigma_v  <- optim.SFM$par[2]
+  estimate.beta     <- optim.SFM$par[3:(3+K-1)]
+  # estimate.delta    <- optim.SFM$par[(3+K):(3+R-1)]
+
+  alpha <- SFM.alpha.unbalanced (y = y.dat , x = x.dat, beta = estimate.beta,
+                                 sigma_u = estimate.sigma_u, sigma_v = estimate.sigma_v,
+                                 h = ret.list$h.trans, epsilon = ret.list$eps.trans,
+                                 N = N.input, Time = Time.input, mu = mu)
+  if (!is.null (group)){
+    alpha <- as.matrix(alpha)
+    rownames(alpha) <- as.matrix(panelName)
+  }
 
   # Calculated Confidence Intervals  ---------------------------
 
@@ -310,46 +329,6 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     }
   }
 
-  # Inefficency Index for each Panel  ---------------------------
-
-  # if (length (Time) == 1){
-  #   alpha <- SFM.alpha(beta = optim.SFM$par[3:(3+K-1)],
-  #                      mu = mu,
-  #                      sigma_u = optim.SFM$par[1],
-  #                      sigma_v = optim.SFM$par[2],
-  #                      h = ret.list$h,
-  #                      x = x.dat,
-  #                      y = y.dat,
-  #                      epsilon = ret.list$eps.wthn,
-  #                      N = N.input,
-  #                      Time = Time.input)
-  #
-  #   inefficency <- SFM.inindex(h = ret.list$h,  # Note h is not within transformed
-  #                      sigma2star = ret.list$sigma_2star,
-  #                      mu2star = ret.list$mu_2star,
-  #                      N = N.input,
-  #                      Time = Time.input)
-  #
-  # } else {
-  #   alpha <- SFM.alpha.unbalanced(beta = estimate.beta,
-  #                                 mu = mu,
-  #                                 sigma_u = estimate.sigma_u,
-  #                                 sigma_v = estimate.sigma_v,
-  #                                 h = ret.list$h,
-  #                                 x = x.dat,
-  #                                 y = y.dat,
-  #                                 epsilon = ret.list$eps.wthn,
-  #                                 N = N.input,
-  #                                 Time = Time.input)
-  #
-  #   inefficency <- SFM.inindex.unbalanced (h = ret.list$h,  # Note h is not within transformed
-  #                                sigma2star = ret.list$sigma_2star,
-  #                                mu2star = ret.list$mu_2star,
-  #                                N = N.input,
-  #                                Time = Time.input)
-  # }
-
-
   # Model Selection Criterion  ---------------------------
 
   # Adjusted formula with "* -1" as the used objective is the "-"log.ll (needed for optimization)
@@ -363,11 +342,11 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   # -> we have currently one fail in unit tester due   to that
   res <- list (call = call, par = myPar,
                estimates = optim.SFM$par , AIC = AIC, BIC = BIC, estimate = estimate,
-              # ci = conf.Interval
+              # ci = conf.Interval,
               # ret.list = ret.list,
-              # alpha = alpha
-              # inefficency = inefficency
-              # hessian = hes
+              alpha = alpha,
+              inefficency = inefficency,
+              # hessian = hes,
               # standerror = conf.Interval$standerror,
               contrasts = c(attr (myPar, "names")),
               likeihood= optim.SFM$objective)

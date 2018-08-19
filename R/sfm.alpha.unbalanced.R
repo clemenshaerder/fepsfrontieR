@@ -16,8 +16,8 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   #make sure everything is in matrix form
   y <- as.matrix(x)
   x <- as.matrix(y)
-  h <- as.matrix(h)
-  epsilon <- as.matrix(epsilon)
+
+
 
   if(length (Time) == 1){
     Time <- rep (Time, N)
@@ -34,6 +34,9 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   }
   x_mean <- matrix(x_mean, ncol = K)
 
+  # splitInterval <- findInterval ( seq_along (y), cumTime, left.open = TRUE)
+
+
   pro_xb  <- x_mean %*% beta
 
   y_mean <- NULL
@@ -41,8 +44,9 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
 
   for(j in 1:N){
     y_mean <- c(y_mean, mean(y [(cumTime[j] + 1) : cumTime[j + 1], ]))
-    h_mean <- c(h_mean, mean(h [(cumTime[j] + 1) : cumTime[j + 1], ]))
   }
+  h_mean <- lapply(h, mean)
+
 
 
   #get sigma*** and mu*** ---------------------------
@@ -53,20 +57,18 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
   sum_eh      <- NULL
   h_srt_sum   <- NULL
 
-  eh <- epsilon * h
-  h2 <- h^2
+  eh <- Map('*', epsilon, h)
+  h2 <- lapply(h, function(x) x^2)
 
-  for(j in 1:N){
-    sum_eh[j]    <- sum(eh[(cumTime[j] + 1) : cumTime[j + 1]])
-    h_srt_sum[j] <- sum(h2[(cumTime[j] + 1) : cumTime[j + 1]])
-  }
+  sum_eh <- lapply(eh, sum)
+  h_srt_sum <- lapply(h2, sum)
 
   for(i in 1:N){
-    mu_3star[i] <- (mu * sigma_u^-1 - sigma_v^-Time[i] * sum_eh[i]) /
-      (sigma_v^-Time[i] * h_srt_sum[i] + sigma_u^-1)
+    mu_3star[i] <- (mu * sigma_u^-1 - sigma_v^-Time[i] * sum_eh[[i]]) /
+      (sigma_v^-Time[i] * h_srt_sum[[i]] + sigma_u^-1)
 
     sigma_3star[i] <- sigma_v^Time[i] /
-      (h_srt_sum[i] + sigma_v^Time[i] * sigma_u^-1)
+      (h_srt_sum[[i]] + sigma_v^Time[i] * sigma_u^-1)
   }
 
   #take the square root of sigma*** since we only need this for alpha
@@ -74,8 +76,8 @@ SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Ti
 
   #recover alpha for each N-----------------------------
   for(i in 1:N){
-    alpha[i] <- y_mean[i] - pro_xb[i] + mu_3star[i] * h_mean[i]
-    + sigma_3star[i] * h_mean[i] * (dnorm(mu_3star[i] / sigma_3star[i]) /
+    alpha[i] <- y_mean[i] - pro_xb[i] + mu_3star[i] * h_mean[[i]]
+    + sigma_3star[i] * h_mean[[i]] * (dnorm(mu_3star[i] / sigma_3star[i]) /
                                       pnorm(mu_3star[i] / sigma_3star[i]))
   }
 

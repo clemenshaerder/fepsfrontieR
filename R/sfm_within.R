@@ -107,9 +107,9 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     return (sum ((log.ll)*-1))
 
   } else {
-    ret.list         <- list(x.wthn = x.wthn, y.wthn, PI, eps.wthn, h.wthn, h,
-                             mu_2star, sigma_2star, log.ll)
-    names (ret.list) <- c("x.wthn","y.wthn", "PI", "eps.wthn", "h", "h.wthn",
+    ret.list         <- list(x.trans = x.wthn, y.trans = y.wthn, PI, eps.trans = eps.wthn,
+                             h.trans = h.wthn, h, mu_2star, sigma_2star, log.ll)
+    names (ret.list) <- c("x.trans","y.trans", "PI", "eps.trans", "h.trans", "h",
                           "mu_2star", "sigma_2star", "log.ll" )
     return (ret.list)
   }

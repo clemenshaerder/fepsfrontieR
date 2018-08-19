@@ -5,33 +5,32 @@
 #' @examples
 #' < an example >
 
-SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time){
+SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time, method){
 
   # TODO(Oli) add panelname to each ineff.index
   if(length (Time) == 1){
     Time <- rep (Time, N)
   }
 
-  sigma <- sqrt(sigma2star)
-  cumTime <- c(0, cumsum(Time))
+  sigmaStar <- sqrt (sigma2star)
+  cumTime <- c(0, cumsum (Time))
   h <- as.matrix(h)
-  in_index <- c()
-  mean_ineff_index <- c()
+  inIndex_i <- c()
+  inefficencyIndex <- c()
 
   for (i in 1:N){
-    in_index <- c(in_index, h[(cumTime[i] + 1) : cumTime[i + 1]] *
-                 (mu2star[i] + (dnorm(mu2star[i] / sigma[i]) *
-                  sigma[i]) / pnorm(mu2star[i]/ sigma[i])))
+    inIndex_i <- c(inIndex_i, h[(cumTime[i] + 1) : cumTime[i + 1]] *
+                  (mu2star[i] + (dnorm(mu2star[i] / sigmaStar[i]) *
+                                  sigmaStar[i]) / pnorm(mu2star[i]/ sigmaStar[i])))
   }
 
-  for(i in 1:N){
-    mean_ineff_index <- c(mean_ineff_index, mean( in_index[(cumTime[j] + 1) : cumTime[j + 1]]))
+  for(j in 1:N){
+    inefficencyIndex <- c(inefficencyIndex, mean( inIndex_i[(cumTime[j] + 1) : cumTime[j + 1]]))
   }
 
-  Ineff <- list (mean_ineff_index = mean_ineff_index,
-                in_index = in_index)
+  inefficencyIndex <- as.matrix(inefficencyIndex)
 
-  return(Ineff)
+  return(inefficencyIndex)
 }
 
 
