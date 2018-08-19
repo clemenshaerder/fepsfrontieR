@@ -11,7 +11,7 @@ print.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
     print.default(format(x$out, digits = digits),
                   print.gap = 2, quote = FALSE)
   } else {
-    paste(deparse(x$likelihood))
+    cat("Likelihood:", deparse(round(x$objective, digits)))
   }
 
 }
