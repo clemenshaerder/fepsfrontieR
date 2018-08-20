@@ -26,12 +26,17 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
     cat("method:", deparse(x$method), "\n\n")
   }
 
-  cat("Estimates:\t\t\t\tconfInterval\n")
+  if(!is.null(x$conf)){
+    cat("Estimates:\t\t\t\tconfInterval\n")
+    } else {
+    cat("Estimates:\n")
+    }
+
   printCoefmat(mat1)
 
   cat("log.Likelihood:", deparse(round(x$objective, digits)),
-      ";\t AIC:", deparse(x$aic),
-      ";\t BIC:", deparse(x$bic), "\n\n")
+      "; AIC:", deparse(x$aic),
+      "; BIC:", deparse(x$bic), "\n\n")
 
   printCoefmat(mat2)
 
