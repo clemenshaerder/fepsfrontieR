@@ -11,7 +11,7 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   mat1[, 1] <- x$estimates
   mat1[, 2] <- x$standerror
-  mat1[, 3] <- x$tvalue
+  #mat1[, 3] <- x$tvalue
   mat1 <- cbind(mat1, x$conf)
 
   mat2[, 1] <- x$alpha
