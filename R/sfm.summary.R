@@ -21,12 +21,17 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
       paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
 
   if(x$bootstrap == T){
-    cat("Estimates are based on ", x$B , "bootstrap samples\n")
+    cat("method:", deparse(x$method), "\nEstimates are based on ", x$B , "bootstrap samples\n\n")
   } else {
-    cat("method:", deparse(x$method), "\n")
+    cat("method:", deparse(x$method), "\n\n")
   }
 
-  cat("Estimates:\t\t\t\tconfInterval\n")
+  if(!is.null(x$conf)){
+    cat("Estimates:\t\t\t\tconfInterval\n")
+    } else {
+    cat("Estimates:\n")
+    }
+
   printCoefmat(mat1)
 
   cat("log.Likelihood:", deparse(round(x$objective, digits)),
@@ -36,32 +41,4 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   printCoefmat(mat2)
 
 }
-
-#######-------------tester---------------##########
-#contrasts <- c("sigma_u","sigma_v","beta","delta")
-#call <- "y~x1+x2"
-#cat("\nEstimates:\n")
-#printCoefmat(mat)
-
-
-#hello <- list(contrasts = c("sigma_u","sigma_v","beta1" ,"beta2", "delta1", "delta2"),
-#              call = "y~x1+x2",
-#              standerror = c(1,2,3,4,5,6),
-#              aic = 150,
-#              estimates = c(1,1,1,1,1,1),
-#              bootstrap = T,
-#              tvalue = c(1,1,1,1,1,1),
-#              conf = h1$conf.Interval,
-#              objective = h1$objective,
-#              bic = 140,
-#              alpha = 1:10,
-#              Ineff = rnorm(10, 0, 1),
-#              method = "first Diff",
-#              B = 1000
-#              )
-
-#summary.sfmfep(x=hello)
-
-
-
 
