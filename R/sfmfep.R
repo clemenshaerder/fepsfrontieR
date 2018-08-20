@@ -204,49 +204,49 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
                                optim = T)
         }
       } else {
-        optim.SFM <- SFM.bootstrap(y = y.dat, xv = x.dat, z = z.dat,
-                                   mu = mu,
-                                   N = N.input,
-                                   Time = Time.input,
-                                   myPar = myPar,
-                                   R = R, K = K,
-                                   B = B,
-                                   method = method,
-                                   lowerInt = l.int,
-                                   sigmaCI = sigmaCI)
+        optim.SFM <- SFM.bootstrap (y = y.dat, xv = x.dat, z = z.dat,
+                                    mu = mu,
+                                    N = N.input,
+                                    Time = Time.input,
+                                    myPar = myPar,
+                                    R = R, K = K,
+                                    B = B,
+                                    method = method,
+                                    lowerInt = l.int,
+                                    sigmaCI = sigmaCI)
       }
     } else {
       if (bootstrap == F){
         if (method == "within"){
-          optim.SFM <- nlminb(objective = SFM.within,
-                              start = c(myPar),
-                              lower = l.int,
-                              mu = mu,
-                              Time = Time.input,
-                              N = N.input,
-                              xv = x.dat, y = y.dat, z = z.dat,
-                              optim = T)
+          optim.SFM <- nlminb (objective = SFM.within,
+                               start = c(myPar),
+                               lower = l.int,
+                               mu = mu,
+                               Time = Time.input,
+                               N = N.input,
+                               xv = x.dat, y = y.dat, z = z.dat,
+                               optim = T)
         } else {  # use first-difference method
-          optim.SFM <- nlminb(objective = SFM.firstDiff,
-                              start = c(myPar),
-                              lower = l.int,
-                              mu = mu,
-                              Time = Time.input,
-                              N = N.input,
-                              xv = x.dat, y = y.dat, z = z.dat,
-                              optim = T)
+          optim.SFM <- nlminb (objective = SFM.firstDiff,
+                               start = c(myPar),
+                               lower = l.int,
+                               mu = mu,
+                               Time = Time.input,
+                               N = N.input,
+                               xv = x.dat, y = y.dat, z = z.dat,
+                               optim = T)
         }
       } else {
-        optim.SFM <- SFM.bootstrap(y = y.dat, xv = x.dat, z = z.dat,
-                                   mu = mu,
-                                   N = N.input,
-                                   Time = Time.input,
-                                   myPar = myPar,
-                                   method = method,
-                                   R = R, K = K,
-                                   B = B,
-                                   lowerInt = l.int,
-                                   sigmaCI = sigmaCI)
+        optim.SFM <- SFM.bootstrap (y = y.dat, xv = x.dat, z = z.dat,
+                                    mu = mu,
+                                    N = N.input,
+                                    Time = Time.input,
+                                    myPar = myPar,
+                                    method = method,
+                                    R = R, K = K,
+                                    B = B,
+                                    lowerInt = l.int,
+                                    sigmaCI = sigmaCI)
       }
     }
   } else { # we dont estimate (estimate = F)
@@ -274,26 +274,26 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # Fit the specified model with the estimates
   if (method == "within"){
-    ret.list <- SFM.within(optim = F,  # Note optim = F
-                           N = N.input,
-                           Time = Time.input,
-                           xv = x.dat , y = y.dat ,z = z.dat,
-                           par = optim.SFM$par)
+    ret.list <- SFM.within (optim = F,  # Note optim = F
+                            N = N.input,
+                            Time = Time.input,
+                            xv = x.dat , y = y.dat ,z = z.dat,
+                            par = optim.SFM$par)
   } else {
-    ret.list <- SFM.firstDiff(optim = F,  # Note optim = F
-                              N = N.input,
-                              Time = Time.input,
-                              xv = x.dat , y = y.dat ,z = z.dat,
-                              par = optim.SFM$par)
+    ret.list <- SFM.firstDiff (optim = F,  # Note optim = F
+                               N = N.input,
+                               Time = Time.input,
+                               xv = x.dat, y = y.dat ,z = z.dat,
+                               par = optim.SFM$par)
   }
 
   if (estimate == F || bootstrap == T){  # log.ll is obtained from the model as nlminb is not primarilyused.
-    optim.SFM$objective <- sum(ret.list$log.ll*-1)
+    optim.SFM$objective <- sum (ret.list$log.ll*-1)
   }
   # Calculate Inefficencys  ---------------------------
 
-  inefficency <- SFM.inindex.unbalanced (h = ret.list$h, sigma2star = ret.list$sigma_2star,
-                                         mu2star = ret.list$mu_2star, N = N.input, Time = Time.input)
+  inefficency <- SFM.inindex (h = ret.list$h, sigma2star = ret.list$sigma_2star,
+                              mu2star = ret.list$mu_2star, N = N.input, Time = Time.input)
   if (!is.null (group)){
     rownames (inefficency) <- as.matrix (panelName)
   }
@@ -305,10 +305,11 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
   estimate.beta     <- optim.SFM$par[3:(3+K-1)]
   # estimate.delta    <- optim.SFM$par[(3+K):(3+R-1)]
 
-  alpha <- SFM.alpha.unbalanced (y = y.dat , x = x.dat, beta = estimate.beta,
-                                 sigma_u = estimate.sigma_u, sigma_v = estimate.sigma_v,
-                                 h = ret.list$h.trans, epsilon = ret.list$eps.trans,
-                                 N = N.input, Time = Time.input, mu = mu)
+  alpha <- SFM.alpha (y = y.dat , x = x.dat, beta = estimate.beta,
+                      sigma_u = estimate.sigma_u, sigma_v = estimate.sigma_v,
+                      h = ret.list$h.trans, epsilon = ret.list$eps.trans,
+                      N = N.input, Time = Time.input, mu = mu)
+
   if (!is.null (group)){
     alpha <- as.matrix(alpha)
     rownames(alpha) <- as.matrix(panelName)

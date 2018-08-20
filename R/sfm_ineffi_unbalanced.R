@@ -6,7 +6,7 @@
 #' < an example >
 #' @export
 
-SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time, method){
+SFM.inindex <- function(h, sigma2star, mu2star, N, Time, method){
 
   # TODO(Oli) add panelname to each ineff.index
   if(length (Time) == 1){
