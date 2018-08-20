@@ -4,6 +4,7 @@
 #' @return < returns the inefficiency for each individuum >
 #' @examples
 #' < an example >
+#' @export
 
 SFM.inindex.unbalanced <- function(h, sigma2star, mu2star, N, Time, method){
 

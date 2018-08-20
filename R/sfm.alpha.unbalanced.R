@@ -7,6 +7,7 @@
 #' @return recovered values of individual fixed effects
 #' @examples
 #' < an example >
+#' @export
 
 SFM.alpha.unbalanced <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu){
 
