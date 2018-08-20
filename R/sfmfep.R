@@ -298,7 +298,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     rownames (inefficency) <- as.matrix (panelName)
   }
 
-  # Recover Inefficencys  ---------------------------
+  # Recover Alpha  ---------------------------
 
   estimate.sigma_u  <- optim.SFM$par[1]
   estimate.sigma_v  <- optim.SFM$par[2]
