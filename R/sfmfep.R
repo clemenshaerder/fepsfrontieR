@@ -315,7 +315,7 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     rownames(alpha) <- as.matrix(panelName)
   }
 
-  # Calculated Confidence Intervals  ---------------------------
+  # Calculate Confidence Intervals  ---------------------------
 
   # sigmaCI can be a vector of significance levels
   # TODO(Clemens): only calculated if bootstrapping is not performed
@@ -328,6 +328,8 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
     } else if (any (sigmaCI <= 0 | sigmaCI > 1) || is.nan (sigmaCI)){
       cat ("Could not compute Confidence Intervals due to invalid input (sigmaCI must be between [0, 1]")
     }
+  } else {
+    conf.Interval <- optim.SFM$conf.Interval
   }
 
   # Model Selection Criterion  ---------------------------
