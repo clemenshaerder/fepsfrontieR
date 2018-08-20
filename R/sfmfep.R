@@ -340,17 +340,33 @@ sfmfep <- function(formula, data, group = NULL, N = NULL, Time = NULL,
 
   # TODO(Oli): add option if some values are not created like conf.Interval
   # -> we have currently one fail in unit tester due   to that
-  res <- list (call = call, par = myPar,
-               estimates = optim.SFM$par , AIC = AIC, BIC = BIC, estimate = estimate,
-              # ci = conf.Interval,
-              # ret.list = ret.list,
-              alpha = alpha,
-              inefficency = inefficency,
+
+  if(estimate == F){
+    res <- list(objective = optim.SFM$objective)
+  } else {
+  res <- list (call = call,
+               par = myPar,
+               estimates = optim.SFM$par ,
+               aic = AIC,
+               bic = BIC,
+               estimate = estimate,
+               conf = optim.SFM$conf.Interval,
+               alpha = alpha,
+               Ineff = inefficency,
               # hessian = hes,
-              # standerror = conf.Interval$standerror,
-              contrasts = c(attr (myPar, "names")),
-              likeihood= optim.SFM$objective)
+               standerror = optim.SFM$standerror,
+               contrasts = c(attr (optim.SFM$par, "names")),
+               objective = optim.SFM$objective,
+               bootstrap = bootstrap,
+               method = method,
+               B = B,
+               tvalue = NULL
+               )
+  }
 
   class (res) <- c(res$class, "sfmfep")
-  return(optim.SFM)
+  res
+  #return(optim.SFM)
 }
+
+
