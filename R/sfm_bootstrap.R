@@ -24,11 +24,7 @@
 
 # TODO: estimates are off. try to recreate bootstrapping
 
-SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI){
-
-  if (length (Time) == 1){
-    Time <- rep (Time, N)
-  }
+SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI, cumTime){
 
   # create data frame of input variables which helps
   # to conduct the rowise bootstrapping
@@ -37,7 +33,6 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   cols <- dim (data)[2]
 
   # create the index to sample from the different panels
-  cumTime <- c(0, cumsum (Time))
   index <- findInterval (seq (1:rows), cumTime, left.open = TRUE)
 
   # draw R individual bootstrap samples. each list entry consists of N lists.
@@ -64,7 +59,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                       z = as.matrix (x[, (2+K):cols]),
                                                       mu = mu,
                                                       optim = T,
-                                                      objective = SFM.within
+                                                      objective = SFM.within,
+                                                      cumTime = cumTime
                                                       )$par)  # we want only the estimates
   } else {
     bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
@@ -76,7 +72,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                              z = as.matrix (x[, (2+K):cols]),
                                                              mu = mu,
                                                              optim = T,
-                                                             objective = SFM.firstDiff
+                                                             objective = SFM.firstDiff,
+                                                             cumTime = cumTime
                                                              )$par)  # we want only the estimates
   }
 
@@ -87,12 +84,10 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   stderror <- apply (estimatesMat, 2, sd)
 
   # Calculate CIs based on the quantiles of the estimate distribution
-  if ( (!any (sigmaCI <= 0 | sigmaCI > 1)) && !is.null (sigmaCI) && !is.nan (sigmaCI) ){
+  if (!is.null(sigmaCI)){
     conf.Interval <- t (apply (estimatesMat, 2, function(x) quantile(x, probs = c(sigmaCI/2, 1-sigmaCI/2))))
-  } else if (is.null (sigmaCI)){  # if NULL we just dont calculate CIs
+  } else{
     conf.Interval <- "NULL"
-  } else if (any (sigmaCI <= 0 | sigmaCI > 1) || is.nan (sigmaCI)){
-    cat ("Could not compute Confidence Intervals due to invalid input (sigmaCI must be between [0, 1]")
   }
 
   # TODO() we could include a histogram of the estimates and QQ-Plot.

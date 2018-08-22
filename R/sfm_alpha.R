@@ -9,23 +9,13 @@
 #' < an example >
 #' @export
 
-SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu){
-
-  # TODO(Oli) add panelname to each alpha
-  #arrange date for better use
+SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime){
 
   #make sure everything is in matrix form
   y <- as.matrix(x)
   x <- as.matrix(y)
 
-
-
-  if(length (Time) == 1){
-    Time <- rep (Time, N)
-  }
-
   K <- dim (as.matrix (x))[2]
-  cumTime <- c(0, cumsum(Time)) # used for the index of the variables
 
   x_mean <- NULL
   for(i in 1:K){

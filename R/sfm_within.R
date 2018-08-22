@@ -16,20 +16,13 @@
 #' @export
 
 
-SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
+SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
                        xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
 
   K <- dim (as.matrix (xv))[2]  # K beta variables
   R <- dim (as.matrix (z))[2]  # R delta variables
 
   # Within Transformations ---------------------------
-
-  # In case of a balanced panel each N has Time observations
-  if(length (Time) == 1){
-    Time <- rep (Time, N)
-  }
-
-  cumTime <- c(0, cumsum (Time)) # used for the index of the variables
 
   # Within transformation of X
   x.wthn <- matrix(c(rep (NA, sum (Time) * K)), ncol = K)

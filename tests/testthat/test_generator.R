@@ -20,7 +20,9 @@ test_that ("sfmfep works", {
   myPar = NULL
   boot = F
   B = NULL
-
+  sigmaCI <- 0.05
+  estimate = T
+  panel = NULL
 
   # tests if bootstrapping works for method = "firstdiff"
   firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = method,
@@ -41,41 +43,41 @@ test_that ("sfmfep works", {
   expect_error ( sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
                          N=2,Time=c(30,29), data = test.data, mu = mu, myPar = myPar) )
 
-  # Tests if option "group" works TODO:(currently throws a NaN but result is correct)
-  groupTest <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
-                       group = "gr", data = test.data, mu = mu, myPar = myPar)
-  expect_type (object = groupTest, type = "list")
+  # Tests if option "panel" works TODO:(currently throws a NaN but result is correct)
+  panelTest <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+                       panel = "gr", data = test.data, mu = mu, myPar = myPar)
+  expect_type (object = panelTest, type = "list")
 
-  # Tests if defined starting points "myPar" works with Bootstrapping & group
-  GroupMyParBoot <- sfmfep(formula = t.formula, method = method, group ="gr", bootstrap = T, B = 5,
+  # Tests if defined starting points "myPar" works with Bootstrapping & panel
+  panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
                        data = test.data, mu = mu,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
-  expect_type (object = GroupMyParBoot, type = "list")
+  expect_type (object = panelMyParBoot, type = "list")
 
   # Tests if it works when estimates are provided (estimate = F)
   # TODO(Olli) -> This test doenst provide an output. I guess it is due to the negative Fisher of sigma_v
   # Anyhow, a CI is computed for the other parameters. Thus, there should still be an ouput.
 
-  GroupEstimateF <- sfmfep(formula = t.formula, method = method, group ="gr", bootstrap = boot, B = B,
+  panelEstimateF <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
                        data = test.data, mu = mu, estimate = F,
                        myPar = c(sigma_u = 1, sigma_v = 2, beta = c(1,2), delta = c(1, 2)))
-  expect_type(object = GroupEstimateF, type = "list")
+  expect_type(object = panelEstimateF, type = "list")
 
   # Tests if it works when CIs are not wanted
-  GroupNoCI <- sfmfep(formula = t.formula, method = method, group = "gr", bootstrap = boot, B = B,
+  panelNoCI <- sfmfep(formula = t.formula, method = method, panel = "gr", bootstrap = boot, B = B,
                        data = test.data, mu = mu, sigmaCI = NULL,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
-  expect_type (object = GroupNoCI, type = "list")
+  expect_type (object = panelNoCI, type = "list")
 
-  # Tests unbalanced panels with groups without CI
+  # Tests unbalanced panels with panels without CI
 
   test.data <- test.data[-60, ]
-  unbalancedGroup <- sfmfep(formula = t.formula, method = method, group ="gr", bootstrap = boot, B = B,
+  unbalancedpanel <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
                        data = test.data, mu = mu, sigmaCI = NULL,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
-  expect_type (object = unbalancedGroup, type = "list")
+  expect_type (object = unbalancedpanel, type = "list")
 
-  unbalancedBoot <- sfmfep(formula = t.formula, method = method, group ="gr", bootstrap = T, B = 5,
+  unbalancedBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
                             data = test.data, mu = mu, sigmaCI = NULL,
                             myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = unbalancedBoot, type = "list")
@@ -121,10 +123,13 @@ context ("SFM.within / SFM.firstDiff")
    sigma_v <- 0.1
    beta <- c(0.5, 2)
    delta <- c(0.5, 3)
+   N <- 2
+   Time <- c(30,30)
+   cumTime <- c(0, cumsum (Time)) # required to work with unbalanced panels
 
    output <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
                         xv <- sfm.data[2:3], y <- sfm.data[4], z <- sfm.data[5:6],
-                        N <- 2,  Time <- 30, mu = 0, optim = T)  # optim=T for a double (log.l)
+                        N <- N,  Time <- Time, mu = 0, optim = T, cumTime = cumTime)  # optim=T for a double (log.l)
    expect_type(object = output, type ="double")
 
    xv <- matrix(c(rnorm(10,5,2), rnorm(5,20,1), rnorm(10,5,2), rnorm(5,20,1)), ncol=2)
@@ -135,7 +140,7 @@ context ("SFM.within / SFM.firstDiff")
    data <- data.frame(y = y, xv = xv, z = z)
    ret.list <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
                         x <- xv, y <- y, z <- z,
-                        N <- N,  Time <- Time, mu = 0, optim = F)  # optim = F for a list
+                        N <- N,  Time <- Time, mu = 0, optim = F, cumTime = c(0,10,15))  # optim = F for a list
    expect_type(object = ret.list, type ="list")
 
    rm(list=ls(all=TRUE))

@@ -7,7 +7,7 @@
 #' @export
 
 
-SFM.CI <- function(estimates, hessianMatrix, alpha){
+SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
   # Error Handling & exclusion of improper Fisher entries  ---------------------------
   # If the Hessian Matrix is indefinite, we can not calculate Confidence Intervals.
@@ -18,11 +18,15 @@ SFM.CI <- function(estimates, hessianMatrix, alpha){
   # CIs are calculated for the remaining variables
 
   try( if (any (diag (fisher_info) < 0) == T){
+
     indexExcludeVar <- which (diag (fisher_info) < 0)
     fisher_info <- fisher_info[-indexExcludeVar, -indexExcludeVar]
-    estimates <- estimates[-indexExcludeVar]
+
     cat ("Could not compute Confidence Interval for:",
          names(estimates)[indexExcludeVar],"(negative Fisher Information )")
+
+    estimates <- estimates[-indexExcludeVar]
+
   }, silent = T)
 
   if (exists ("fisher_info")){  # if dim == 0 no CI is calculated
@@ -37,13 +41,16 @@ SFM.CI <- function(estimates, hessianMatrix, alpha){
     colnames(upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
     colnames(lower) <- c(alpha[c(1:length (alpha))] / 2)
 
-    # TODO(Clemens) shouldnt it be chi-sqare dist for sigmas?
-    #((N*T-1) * 0.38011841) / qchisq(0.95,1000-1)
     # what are the actual degree of freedom?
 
     for (i in 1:length (standerror) && dim (fisher_info)[1] > 0){
-      upper[i, ] <- estimates[i] + qnorm (1 - alpha / 2)  * standerror[i]
-      lower[i, ] <- estimates[i] + qnorm (alpha / 2) * standerror[i]
+      if( any (names (estimates[1]) == c("sigma_u", "sigma_v"))){
+        upper[i, ] <- df * estimates[i] / qchisq (alpha / 2, df)
+        lower[i, ] <- df * estimates[i] / qchisq (1 - alpha / 2, df)
+      } else {
+        upper[i, ] <- estimates[i] + qnorm (1 - alpha / 2)  * standerror[i]
+        lower[i, ] <- estimates[i] + qnorm (alpha / 2) * standerror[i]
+      }
     }
 
     # Create output data.frame for CIs  ---------------------------

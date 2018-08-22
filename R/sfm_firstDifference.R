@@ -15,20 +15,13 @@
 #'     If optim = F the model fit is returned including all important model variables.
 #' @export
 
-SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
+SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
                           xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
 
   K <- dim (as.matrix (xv))[2]  # K beta variables
   R <- dim (as.matrix (z))[2]  # R delta variables
 
   # First-difference Transformations ---------------------------
-
-  # In case of a balanced panel each N has Time observations
-  if(length (Time) == 1){
-    Time <- rep (Time, N)
-  }
-
-  cumTime <- c(0, cumsum(Time)) # used for the index of the different panels
 
   # First-Difference of X
   x.diff <- matrix(c(rep(NA, sum(Time - 1) * K)), ncol = K)  # -1 for first diff
