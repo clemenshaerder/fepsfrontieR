@@ -380,11 +380,12 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
 
   # Calculate Confidence Intervals  ---------------------------
 
+  df = sum (Time.input) - length (optim.SFM$par)
+
   # sigmaCI can be a vector of significance levels
   if (bootstrap == F){
     if (!is.null(sigmaCI)){
       # A data frame is returned
-      df = sum (Time.input) - length (optim.SFM$par)
       conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
                               alpha = sigmaCI, df = df)
     } else {
