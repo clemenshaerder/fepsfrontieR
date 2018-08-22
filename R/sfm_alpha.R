@@ -72,7 +72,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
                                       pnorm(mu_3star[i] / sigma_3star[i]))
   }
 
-  return(alpha)
+  return(as.matrix(alpha))
 
 }
 

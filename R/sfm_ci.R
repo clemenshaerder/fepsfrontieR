@@ -9,7 +9,8 @@
 
 SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
-  # Error Handling & exclusion of improper Fisher entries  ---------------------------
+  # Exclusion of improper Fisher entries  ---------------------------
+
   # If the Hessian Matrix is indefinite, we can not calculate Confidence Intervals.
   # Can occure when eigenvalues of the Hessian are != 0 (estimates are saddle points)
   try (fisher_info <- solve(hessianMatrix), silent = T)
@@ -17,7 +18,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
   # If diagonal entries of the fisher are negative, these variables are excluded and
   # CIs are calculated for the remaining variables
 
-  try( if (any (diag (fisher_info) < 0) == T){
+  if (any (diag (fisher_info) < 0) == T){
 
     indexExcludeVar <- which (diag (fisher_info) < 0)
     fisher_info <- fisher_info[-indexExcludeVar, -indexExcludeVar]
@@ -27,23 +28,25 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
     estimates <- estimates[-indexExcludeVar]
 
-  }, silent = T)
+  }
 
   if (exists ("fisher_info")){  # if dim == 0 no CI is calculated
 
-    standerror <- sqrt( diag (fisher_info))
+    standerror <- sqrt (diag (fisher_info))
+    numberVarCI <- length (estimates)  # used as an index
+    lenghtAlpha <- length (alpha) # used as an index
 
     # Calculation of CIs  ---------------------------
-    # Note that alpha can be a vector of different significance values
-    upper <- matrix (c(rep (NA, length (standerror) * length (alpha))), ncol = length (alpha))
-    lower <- matrix (c(rep (NA, length (standerror) * length (alpha))), ncol = length (alpha))
 
-    colnames(upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
-    colnames(lower) <- c(alpha[c(1:length (alpha))] / 2)
+    # Alpha can be a vector of different significance values
+    upper <- matrix (c(rep (NA, numberVarCI * lenghtAlpha)), ncol = lenghtAlpha)
+    lower <- matrix (c(rep (NA, numberVarCI * lenghtAlpha)), ncol = lenghtAlpha)
 
-    # what are the actual degree of freedom?
+    colnames(upper) <- c(1 - alpha[c(1:lenghtAlpha)] / 2)
+    colnames(lower) <- c(alpha[c(1:lenghtAlpha)] / 2)
 
-    for (i in 1:length (standerror) && dim (fisher_info)[1] > 0){
+    # Computation of CIs. The sigmas are chi-squared distributed
+    for (i in 1:numberVarCI && dim (fisher_info)[1] > 0){
       if( any (names (estimates[1]) == c("sigma_u", "sigma_v"))){
         upper[i, ] <- df * estimates[i] / qchisq (alpha / 2, df)
         lower[i, ] <- df * estimates[i] / qchisq (1 - alpha / 2, df)
@@ -54,9 +57,11 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
     }
 
     # Create output data.frame for CIs  ---------------------------
+
     interval <- data.frame (value = estimates, lower = lower, upper = upper, standerror = standerror)
     return (interval)
-  } else {
+
+  } else { # We don`t compute any CIs
     # User is informed that the Hessian Matrix is not valid.
     # It does not stop() terminate other functions applying this function.
     warning ("Hessian Matrix is singular / indefinite. Could not calculate CIs")
