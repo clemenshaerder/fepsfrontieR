@@ -35,8 +35,8 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   printCoefmat(mat1)
 
   cat("log.Likelihood:", deparse(round(x$objective, digits)),
-      "; AIC:", round(deparse(x$aic), digits),
-      "; BIC:", round(deparse(x$bic), digits), "\n\n")
+      "; AIC:", deparse(round(x$aic, digits)),
+      "; BIC:", deparse(round(x$bic, digits)), "\n\n")
 
   printCoefmat(mat2)
 
