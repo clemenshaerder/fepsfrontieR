@@ -392,8 +392,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   # Model Selection Criterion  ---------------------------
 
   # Adjusted formula with "* -1" as the used objective is the "-"log.ll (needed for optimization)
-  AIC <- -2 * -1 * optim.SFM$objective + 2 * length (optim.SFM$par)
-  BIC <- -2 * -1 * optim.SFM$objective + length (optim.SFM$par) * log(dim (y.dat)[1])
+  AIC <- 2  * optim.SFM$objective + 2 * length (optim.SFM$par)
+  BIC <- 2  * optim.SFM$objective + length (optim.SFM$par) * log(dim (y.dat)[1])
 
 
   # Output  ---------------------------
