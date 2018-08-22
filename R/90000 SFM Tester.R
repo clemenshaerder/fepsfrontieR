@@ -12,7 +12,7 @@
 # TODO(Clemens) sfmfep ------ Done
 # TODO(Clemens) unit tester ------ Done
 # TODO() output
-
+# TODO(Oli) check BIC/AIC
 # TODO(Clemens) check within model & first diff model ------ Done
 
 # TODO(Oli) Alpha & Inefficency Index -> check results

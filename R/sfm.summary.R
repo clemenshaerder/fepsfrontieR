@@ -11,7 +11,7 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   mat1[, 1] <- x$estimates
   mat1[, 2] <- x$standerror
-  mat1[, 3] <- x$tvalue
+  #mat1[, 3] <- x$tvalue
   mat1 <- cbind(mat1, x$conf)
 
   mat2[, 1] <- x$alpha
@@ -35,8 +35,8 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   printCoefmat(mat1)
 
   cat("log.Likelihood:", deparse(round(x$objective, digits)),
-      "; AIC:", deparse(x$aic),
-      "; BIC:", deparse(x$bic), "\n\n")
+      "; AIC:", round(deparse(x$aic), digits),
+      "; BIC:", round(deparse(x$bic), digits), "\n\n")
 
   printCoefmat(mat2)
 
