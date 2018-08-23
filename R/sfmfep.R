@@ -409,11 +409,13 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
       # A data frame is returned
       conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
                               alpha = sigmaCI, df = df)
+      standerror <- conf.Interval$standerror
     } else {
       conf.Interval <- "NULL" # TODO(Authors) : what is required for Output Oli?
     }
   } else { # else bootstrap = T
     conf.Interval <- optim.SFM$conf.Interval # CI is calculated by Bootstrapping
+    standerror <- optim.SFM$standerror
   }
 
   # Model Selection Criterion  ---------------------------
