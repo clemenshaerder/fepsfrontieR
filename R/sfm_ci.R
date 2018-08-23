@@ -12,12 +12,12 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
   try (fisher_info <- solve(hessianMatrix), silent = T)
 
   # Exclusion of improper Fisher entries  ---------------------------
+  indexIncludeVar <- which (diag (fisher_info) >= 0)
 
   if (any (diag (fisher_info) < 0) == T){
     # If the Hessian Matrix is indefinite, we can not calculate Standard Errors.
     # Occures if eigenvalues of the Hessian are != 0 (estimates are saddle points)
-    indexIncludeVar <- which (diag (fisher_info) >= 0)
-
+    indexExcludeVar <- which (diag (fisher_info) < 0)
     cat ("Could not compute Standard Errors & Confidence Interval for:",
          names(estimates)[indexExcludeVar],"(negative Fisher Information )")
   }

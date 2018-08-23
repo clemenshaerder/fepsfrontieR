@@ -7,7 +7,6 @@
 #' @param y is a n*t x 1 vector (response)
 #' @param N is a integer (n - panels)
 #' @param Time is a integer (observations per panel)
-#' @param group an optional vector specifying the panels to be used in the fitting process.
 #' @param mu is a integer (mean of the truncated normal distribution of the inefficency)
 #' @param optim is a boolean (set F to obtain a list of model variables.
 #'     T to obtain the -sum of log.likelihood)
@@ -16,10 +15,8 @@
 #' @export
 
 SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
-                          xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
-
-  K <- dim (as.matrix (xv))[2]  # K beta variables
-  R <- dim (as.matrix (z))[2]  # R delta variables
+                          xv, y, z, N = NULL,  Time = NULL, mu=0, optim = F,
+                          K = NULL, R = NULL){
 
   # First-difference Transformations ---------------------------
 

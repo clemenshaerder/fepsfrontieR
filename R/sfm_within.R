@@ -10,46 +10,50 @@
 #' @param mu is a number (mean of the truncated normal distribution of the inefficency)
 #' @param optim is a boolean (set F to obtain a list of model variables.
 #'     T to obtain the -sum of log.likelihood)
-#' @param group an optional vector specifying the panels to be used in the fitting process.
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
 #' @export
 
 
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
-                       xv, y, z, N = NULL,  Time = NULL, group = NULL, mu=0, optim = F){
+                       xv, y, z, N = NULL,  Time = NULL, mu=0, optim = F,
+                       K = NULL, R = NULL){
 
-  K <- dim (as.matrix (xv))[2]  # K beta variables
-  R <- dim (as.matrix (z))[2]  # R delta variables
 
   # Within Transformations ---------------------------
 
+  seqN <- seq(1:N)  # required for within transfomrations with lapply
+
   # Within transformation of X
+
   x.wthn <- matrix(c(rep (NA, sum (Time) * K)), ncol = K)
-  for(u in 1:K){  # for k explenatory variables
+  # x.wthn <- replicate(K, list(), simplify = F)
+
+  for(k in 1:K){
+    # A vector of length Ti (obseravations per panel) is created and binded to the existing
+    # vector until the vector is of length N*(Ti). We do this for K parameters.
     repMeans <- c()
-    for(i in 1:N){  # do it for each panel
-      repMeans <- c(repMeans, rep(mean (xv[(cumTime[i] + 1) : cumTime[i + 1],u]), Time[i]))
-    }
-    x.wthn[, u] <- (xv[, u] - repMeans)
+    repMeans <- lapply (seqN, function(x)
+                repMeans <- c(repMeans, rep (mean (xv[(cumTime[x] + 1):cumTime[x+1], k] ), Time[x])))
+    repMeans <- matrix (unlist (repMeans))
+    x.wthn[, k] <- (xv[, k] - repMeans)
   }
-  x.wthn <- as.matrix (x.wthn, ncol = K)
 
   # Within transformation of Y
+  # Same transformation procedure as for x
   repYMeans <- c()
-  for(i in 1:N){
-    repYMeans <- c(repYMeans, rep(mean (y[(cumTime[i]+1):cumTime[i+1], ] ), Time[i]))
-  }
-  y.wthn <- as.matrix(y - repYMeans)
+  repYMeans <- lapply (seqN, function(x)
+               repYMeans <- c(repYMeans, rep (mean (y[(cumTime[x]+1):cumTime[x+1], ] ), Time[x])))
+  repYMeans <- matrix (unlist (repYMeans))
 
+  y.wthn <- y - repYMeans
 
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
-  epsilon <- y.wthn - x.wthn %*% par[3:(3+K-1)]
+  epsilon <- as.matrix(y.wthn - x.wthn %*% par[3:(3+K-1)])
   splitInterval <- findInterval (seq_along (epsilon), cumTime, left.open = TRUE)
 
   # Within transformation of epsilon is not required (already mean 0).
   # Note, that epsilon is a vector that needs to be split to lists for the likelihood computation
-
   eps.wthn <- unname (split (epsilon, splitInterval))
 
   # Within Transformation of h
@@ -58,6 +62,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
   h.wthn <- lapply (unname (split (h, splitInterval)),
                      function(x) x - rep (mean (x), length (x)))
 
+
   # Log-Likelihood computation for each panel ---------------------------
 
   # PI-Matrix is the Variance-Covariance Matrix of v
@@ -65,34 +70,39 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
   mTime <- max(Time)
 
   PI <- par[2] * (diag (mTime) - 1/mTime * (matrix (c(rep (1, mTime * mTime)), ncol = mTime)))
-  try(gPI <- MASS::ginv(PI), silent=T)
+  try(gPI <- ginv(PI), silent=T)
   if (!exists("gPI")){
     stop ("Could not calculate log.likelihood.
           SVD of the g-Inverse of PI failed.
-          PI is sigma_v * M (M is the TxT orthogonal projection matrix).")
+          PI is sigma_v * M (M is the TxT orthogonal projection matrix).
+          Try instead *method = firstdiff*.")
   }
 
   log.ll      <- c(rep (NA, N))
   mu_2star    <- c(rep (NA, N))
   sigma_2star <- c(rep (NA, N))
 
-  # the likelihood for each panel is computed applying the list entries of e.wthn & h.wthn.
-  for (i in 1:N){
+  # PI matrix is adjusted for each panel to Ti x Ti
+  itPI <- lapply(Time, function(x) gPI[(1:x), (1:x)])
 
-    # for each panel we adapt the dimensions of the gPI which was calculated based on the max(Time)
-    itPI <- gPI[(1:Time[i]), (1:Time[i])]
+  mu_2star <- lapply (seqN, function(x)
+                            (mu/par[1] - t(eps.wthn[[x]]) %*% itPI[[x]] %*% h.wthn[[x]]) /
+                            (t(h.wthn[[x]]) %*% itPI[[x]] %*% h.wthn[[x]] + 1 / par[1]))
+  mu_2star <- matrix (unlist (mu_2star))
 
-    mu_2star[i] <- (mu/par[1] - t(eps.wthn[[i]]) %*% itPI %*% h.wthn[[i]]) /
-                   (t(h.wthn[[i]]) %*% itPI %*% h.wthn[[i]] + 1 / par[1])
+  sigma_2star <- lapply (seqN, function(x) 1 / ((t(h.wthn[[x]]) %*% itPI[[x]] %*%
+                                                       h.wthn[[x]] + 1 / par[1])))
+  sigma_2star <- matrix (unlist (sigma_2star))
 
-    sigma_2star[i] <- 1 / ((t(h.wthn[[i]]) %*% itPI %*% h.wthn[[i]] + 1 / par[1]))
+  log.ll <- lapply (seqN, function(x)
+                               -0.5 * (Time[x] - 1) * log(2 * pi) - 0.5 * (Time[x] - 1) *
+                               log(par[2]) - 0.5 * t(eps.wthn[[x]]) %*% itPI[[x]] %*%
+                               eps.wthn[[x]] + 0.5 * ((mu_2star[x]^2) / sigma_2star[x] -
+                               (mu^2) / par[1]) + log (sqrt (sigma_2star[x]) *
+                               pnorm(mu_2star[x] /  sqrt (sigma_2star[x]))) -
+                               log (sqrt (par[1]) * pnorm (mu / sqrt (par[1]))))
+  log.ll <- matrix (unlist (log.ll))
 
-    log.ll[i] <-  -0.5 * (Time[i] - 1) * log(2 * pi) - 0.5 * (Time[i] - 1) * log(par[2]) -
-                  0.5 * t(eps.wthn[[i]]) %*% itPI %*% eps.wthn[[i]] +
-                  0.5 * ((mu_2star[i]^2) / sigma_2star[i] - (mu^2) / par[1]) +
-                  log (sqrt (sigma_2star[i]) * pnorm(mu_2star[i] /  sqrt (sigma_2star[i]))) -
-                  log (sqrt (par[1]) * pnorm (mu / sqrt (par[1])))
-  }
 
   # Return values ---------------------------
   if (optim == T){
@@ -101,7 +111,8 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
 
   } else {
     ret.list         <- list(x.trans = x.wthn, y.trans = y.wthn, PI, eps.trans = eps.wthn,
-                             h.trans = h.wthn, h, mu_2star, sigma_2star, log.ll)
+                             h.trans = h.wthn, h = h, mu_2star = mu_2star,
+                             sigma_2star = sigma_2star, log.ll = log.ll)
     names (ret.list) <- c("x.trans","y.trans", "PI", "eps.trans", "h.trans", "h",
                           "mu_2star", "sigma_2star", "log.ll" )
     return (ret.list)

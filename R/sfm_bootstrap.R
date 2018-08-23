@@ -59,6 +59,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                       z = as.matrix (x[, (2+K):cols]),
                                                       mu = mu,
                                                       optim = T,
+                                                      K = K, R = R,
                                                       objective = SFM.within,
                                                       cumTime = cumTime
                                                       )$par)  # we want only the estimates
@@ -72,6 +73,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                              z = as.matrix (x[, (2+K):cols]),
                                                              mu = mu,
                                                              optim = T,
+                                                             K = K, R = R,
                                                              objective = SFM.firstDiff,
                                                              cumTime = cumTime
                                                              )$par)  # we want only the estimates

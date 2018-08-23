@@ -223,7 +223,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
       delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat  # OLS for delta
 
       e <- y.dat - x.dat %*% beta.start
-      startSigma <- (t(e) %*% e) / (N.input * min (Time.input) - (K+R))  # OLS for both sigmas
+      startSigma <- (t(e) %*% e) / (N.input * min (Time.input) - (K + R))  # OLS for both sigmas
 
       myPar      <- c(sigma_u = startSigma,
                       sigma_v = startSigma,
@@ -240,6 +240,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                                N = N.input,
                                xv = x.dat, y = y.dat, z = z.dat,
                                mu = mu,
+                               K = K, R = R,
                                cumTime = cumTime,
                                optim = T)
         } else {
@@ -251,6 +252,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                                N = N.input,
                                xv = x.dat, y = y.dat, z = z.dat,
                                mu = mu,
+                               K = K, R = R,
                                cumTime = cumTime,
                                optim = T)
         }
@@ -277,6 +279,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                                Time = Time.input,
                                N = N.input,
                                cumTime = cumTime,
+                               K = K, R = R,
                                xv = x.dat, y = y.dat, z = z.dat,
                                optim = T)
         } else {  # else use first-difference method
@@ -287,6 +290,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                                Time = Time.input,
                                N = N.input,
                                cumTime = cumTime,
+                               K = K, R = R,
                                xv = x.dat, y = y.dat, z = z.dat,
                                optim = T)
         }
@@ -313,16 +317,31 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
 
   # derive the Hessian Matrix based on estimates from the optimization
   if (bootstrap == F){ # not required when bootstrapping is chosen
-    hes <- numDeriv::hessian(SFM.within,
-                           method = "Richardson",
-                           x = optim.SFM$par,
-                           xv = x.dat, y = y.dat, z = z.dat,
-                           N = N.input,
-                           Time = Time.input,
-                           mu = mu,
-                           cumTime = cumTime,
-                           # optim = T required for computation
-                           optim = T)
+    if (method == "within"){
+      hes <- numDeriv::hessian(SFM.within,
+                               method = "Richardson",
+                               x = optim.SFM$par,
+                               xv = x.dat, y = y.dat, z = z.dat,
+                               N = N.input,
+                               Time = Time.input,
+                               mu = mu,
+                               cumTime = cumTime,
+                               K = K, R = R,
+                               # optim = T required for computation
+                               optim = T)
+    } else { # else use firstDiff
+      hes <- numDeriv::hessian(SFM.firstDiff,
+                               method = "Richardson",
+                               x = optim.SFM$par,
+                               xv = x.dat, y = y.dat, z = z.dat,
+                               N = N.input,
+                               Time = Time.input,
+                               mu = mu,
+                               cumTime = cumTime,
+                               K = K, R = R,
+                               # optim = T required for computation
+                               optim = T)
+    }
   }
 
 
@@ -335,6 +354,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                             N = N.input,
                             Time = Time.input,
                             xv = x.dat , y = y.dat ,z = z.dat,
+                            K = K, R = R,
                             cumTime = cumTime,
                             par = optim.SFM$par)
   } else {  # else use firstDiff
@@ -343,6 +363,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                                Time = Time.input,
                                xv = x.dat, y = y.dat ,z = z.dat,
                                cumTime = cumTime,
+                               K = K, R = R,
                                par = optim.SFM$par)
   }
 
@@ -433,7 +454,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
 
   class (res) <- c(res$class, "sfmfep")
   res
-  #return(optim.SFM)
 }
 
 

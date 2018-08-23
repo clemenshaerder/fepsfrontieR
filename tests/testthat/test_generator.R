@@ -25,17 +25,17 @@ test_that ("sfmfep works", {
   panel = NULL
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = method,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 2, method = method,
                           N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 
   # tests if bootstrapping works for method = "within"
-  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = "within",
+  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 2, method = "within",
                        N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = withinBoot, type = "list")
 
   # Tests if optim " N & T" works & mu > 0
-  balancedNT <- sfmfep(formula = t.formula, N = 2,Time = 30, bootstrap = boot, B, method = method,
+  balancedNT <- sfmfep(formula = t.formula, N = 2, Time = 30, bootstrap = boot, B, method = method,
                        data = test.data, mu = 1, myPar = myPar)
   expect_type (object = balancedNT, type = "list")
 
@@ -129,6 +129,7 @@ context ("SFM.within / SFM.firstDiff")
 
    output <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
                         xv <- sfm.data[2:3], y <- sfm.data[4], z <- sfm.data[5:6],
+                        K = length(beta), R = length(delta),
                         N <- N,  Time <- Time, mu = 0, optim = T, cumTime = cumTime)  # optim=T for a double (log.l)
    expect_type(object = output, type ="double")
 
@@ -139,8 +140,8 @@ context ("SFM.within / SFM.firstDiff")
    Time <- c(10,5)
    data <- data.frame(y = y, xv = xv, z = z)
    ret.list <- SFM.within(par = c(sigma_u = sigma_u, sigma_v = sigma_v, beta = beta, delta = delta),
-                        x <- xv, y <- y, z <- z,
-                        N <- N,  Time <- Time, mu = 0, optim = F, cumTime = c(0,10,15))  # optim = F for a list
+                        xv = xv, y = y, z = z, K = length(beta), R = length(delta),
+                        N = N,  Time = Time, mu = 0, optim = F, cumTime = c(0,10,15))  # optim = F for a list
    expect_type(object = ret.list, type ="list")
 
    rm(list=ls(all=TRUE))
