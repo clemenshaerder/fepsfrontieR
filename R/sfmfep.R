@@ -380,7 +380,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
 
   # Calculate Confidence Intervals  ---------------------------
 
-  df = sum (Time.input) - length (optim.SFM$par)
+  df = sum (Time.input) - length (optim.SFM$par)  # get degrees of freedom
 
   # sigmaCI can be a vector of significance levels
   if (bootstrap == F){

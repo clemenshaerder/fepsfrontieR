@@ -9,61 +9,61 @@
 
 SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
-  # Exclusion of improper Fisher entries  ---------------------------
-
-  # If the Hessian Matrix is indefinite, we can not calculate Confidence Intervals.
-  # Can occure when eigenvalues of the Hessian are != 0 (estimates are saddle points)
   try (fisher_info <- solve(hessianMatrix), silent = T)
 
-  # If diagonal entries of the fisher are negative, these variables are excluded and
-  # CIs are calculated for the remaining variables
+  # Exclusion of improper Fisher entries  ---------------------------
 
   if (any (diag (fisher_info) < 0) == T){
+    # If the Hessian Matrix is indefinite, we can not calculate Standard Errors.
+    # Occures if eigenvalues of the Hessian are != 0 (estimates are saddle points)
+    indexIncludeVar <- which (diag (fisher_info) >= 0)
 
-    indexExcludeVar <- which (diag (fisher_info) < 0)
-    fisher_info <- fisher_info[-indexExcludeVar, -indexExcludeVar]
-
-    cat ("Could not compute Confidence Interval for:",
+    cat ("Could not compute Standard Errors & Confidence Interval for:",
          names(estimates)[indexExcludeVar],"(negative Fisher Information )")
-
-    estimates <- estimates[-indexExcludeVar]
-
   }
 
-  if (exists ("fisher_info")){  # if dim == 0 no CI is calculated
+  standerror <- rep(NA, length (estimates))
 
-    standerror <- sqrt (diag (fisher_info))
-    numberVarCI <- length (estimates)  # used as an index
-    lenghtAlpha <- length (alpha) # used as an index
+  # Calculation of CIs  ---------------------------
 
-    # Calculation of CIs  ---------------------------
+  if (exists ("fisher_info") && dim(fisher_info)[1] > 0){
 
-    # Alpha can be a vector of different significance values
-    upper <- matrix (c(rep (NA, numberVarCI * lenghtAlpha)), ncol = lenghtAlpha)
-    lower <- matrix (c(rep (NA, numberVarCI * lenghtAlpha)), ncol = lenghtAlpha)
+    # Calculates standarderror only for valid optimas
+    standerror[indexIncludeVar] <- sqrt (diag (fisher_info[indexIncludeVar,
+                                                           indexIncludeVar]))
 
-    colnames(upper) <- c(1 - alpha[c(1:lenghtAlpha)] / 2)
-    colnames(lower) <- c(alpha[c(1:lenghtAlpha)] / 2)
+    # generate matrices for lower & upper bounds.
+    upper <- matrix (c(rep (NA, length (estimates) * length (alpha))),
+                     ncol = length (alpha))
+    lower <- matrix (c(rep (NA, length (estimates) * length (alpha))),
+                     ncol = length (alpha))
 
-    # Computation of CIs. The sigmas are chi-squared distributed
-    for (i in 1:numberVarCI && dim (fisher_info)[1] > 0){
-      if( any (names (estimates[1]) == c("sigma_u", "sigma_v"))){
-        upper[i, ] <- df * estimates[i] / qchisq (alpha / 2, df)
-        lower[i, ] <- df * estimates[i] / qchisq (1 - alpha / 2, df)
-      } else {
-        upper[i, ] <- estimates[i] + qnorm (1 - alpha / 2)  * standerror[i]
-        lower[i, ] <- estimates[i] + qnorm (alpha / 2) * standerror[i]
-      }
-    }
+    # colname is the probability bound.
+    colnames(upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
+    colnames(lower) <- c(alpha[c(1:length (alpha))] / 2)
+
+    # Sigmas are asymptotically chi-sq distributed, thus calculated separately
+    # "<= 2 " as the first two estimates are always the sigmas
+    IndexSigmaCI <- indexIncludeVar[which(indexIncludeVar <= 2)]
+    upper[IndexSigmaCI, ] <- df * estimates[IndexSigmaCI] / qchisq (alpha / 2, df)
+    lower[IndexSigmaCI, ] <- df * estimates[IndexSigmaCI] / qchisq (1 - alpha / 2, df)
+
+    # Calculation of the asymptotic normally distributed betas & deltas
+    indexCoeff <- indexIncludeVar[which(indexIncludeVar > 2)]
+    upper[indexCoeff, ] <- estimates[indexCoeff] +
+                           qt (1 - alpha / 2, df) * standerror[indexCoeff]
+    lower[indexCoeff, ] <- estimates[indexCoeff] +
+                           qt (alpha / 2, df) * standerror[indexCoeff]
 
     # Create output data.frame for CIs  ---------------------------
 
-    interval <- data.frame (value = estimates, lower = lower, upper = upper, standerror = standerror)
+    interval <- data.frame (value = estimates, lower = lower,
+                            upper = upper, standerror = standerror)
     return (interval)
 
-  } else { # We don`t compute any CIs
+  } else {  # else exist(fisher_info) = F -> We don`t compute any CIs
     # User is informed that the Hessian Matrix is not valid.
     # It does not stop() terminate other functions applying this function.
-    warning ("Hessian Matrix is singular / indefinite. Could not calculate CIs")
+    cat ("Hessian Matrix is singular / indefinite. Could not calculate CIs")
   }
 }
