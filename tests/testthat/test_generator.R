@@ -25,6 +25,7 @@ test_that ("sfmfep works", {
   panel = NULL
 
   # tests if bootstrapping works for method = "firstdiff"
+
   firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 2, method = method,
                           N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
@@ -145,4 +146,8 @@ context ("SFM.within / SFM.firstDiff")
    expect_type(object = ret.list, type ="list")
 
    rm(list=ls(all=TRUE))
+
+   # TODO(Oli) füg nen test für die summary hinzu, dass die läuft
+   # test_that ("SFM.within / SFM.firstDiff", {
+
 })
