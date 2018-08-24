@@ -17,15 +17,12 @@
 
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
                        xv, y, z, N = NULL,  Time = NULL, mu=0, optim = F,
-                       K = NULL, R = NULL){
+                       K = NULL, R = NULL, seqN = 1:N){
 
 
   # Within Transformations ---------------------------
 
-  seqN <- seq(1:N)  # required for within transfomrations with lapply
-
   # Within transformation of X
-
   x.wthn <- matrix(c(rep (NA, sum (Time) * K)), ncol = K)
   # x.wthn <- replicate(K, list(), simplify = F)
 
@@ -77,10 +74,6 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
           PI is sigma_v * M (M is the TxT orthogonal projection matrix).
           Try instead *method = firstdiff*.")
   }
-
-  log.ll      <- c(rep (NA, N))
-  mu_2star    <- c(rep (NA, N))
-  sigma_2star <- c(rep (NA, N))
 
   # PI matrix is adjusted for each panel to Ti x Ti
   itPI <- lapply(Time, function(x) gPI[(1:x), (1:x)])

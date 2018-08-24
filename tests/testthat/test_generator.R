@@ -25,7 +25,7 @@ test_that ("sfmfep works", {
   panel = NULL
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 2, method = method,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 2, method = method,
                           N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 

@@ -234,7 +234,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
         if (method == "within"){
           optim.SFM <- nlminb (objective = SFM.within,
                                lower = l.int,
-                               hessian = T,
+                               # hessian = T,
                                start = myPar,
                                Time = Time.input,
                                N = N.input,
@@ -246,7 +246,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
         } else {
           optim.SFM <- nlminb (objective = SFM.firstDiff,
                                lower = l.int,
-                               hessian = T,
+                               # hessian = T,
                                start = myPar,
                                Time = Time.input,
                                N = N.input,
