@@ -11,7 +11,9 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
   try (fisher_info <- solve(hessianMatrix), silent = T)
 
+
   # Exclusion of improper Fisher entries  ---------------------------
+
   indexIncludeVar <- which (diag (fisher_info) >= 0)
 
   if (any (diag (fisher_info) < 0) == T){
@@ -23,6 +25,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
   }
 
   standerror <- rep(NA, length (estimates))
+
 
   # Calculation of CIs  ---------------------------
 
@@ -38,7 +41,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
     lower <- matrix (c(rep (NA, length (estimates) * length (alpha))),
                      ncol = length (alpha))
 
-    # colname is the probability bound.
+    # colname is the probability bound
     colnames(upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
     colnames(lower) <- c(alpha[c(1:length (alpha))] / 2)
 
@@ -54,6 +57,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
                            qt (1 - alpha / 2, df) * standerror[indexCoeff]
     lower[indexCoeff, ] <- estimates[indexCoeff] +
                            qt (alpha / 2, df) * standerror[indexCoeff]
+
 
     # Create output data.frame for CIs  ---------------------------
 

@@ -116,6 +116,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     }
   }
 
+
   # Data Wrangling & Error handling of group, N & T  & myPar ---------------------------
 
   formula <- as.character (formula)
@@ -311,39 +312,38 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   } else { # we dont estimate (estimate = F)
       # As we dont estimate optim.SFM list doesn´t exit.
       # To perform further calculations we create and assign essential inputs.
-      optim.SFM <- NULL
+      optim.SFM     <- NULL
       optim.SFM$par <- myPar  # provided parameters are used as parameters
   }
 
   # derive the Hessian Matrix based on estimates from the optimization
   if (bootstrap == F){ # not required when bootstrapping is chosen
     if (method == "within"){
-      hes <- numDeriv::hessian(SFM.within,
-                               method = "Richardson",
-                               x = optim.SFM$par,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               N = N.input,
-                               Time = Time.input,
-                               mu = mu,
-                               cumTime = cumTime,
-                               K = K, R = R,
-                               # optim = T required for computation
-                               optim = T)
+      hes <- hessian(SFM.within,
+                     method = "Richardson",
+                     x = optim.SFM$par,
+                     xv = x.dat, y = y.dat, z = z.dat,
+                     N = N.input,
+                     Time = Time.input,
+                     mu = mu,
+                     cumTime = cumTime,
+                     K = K, R = R,
+                     # optim = T required for computation
+                     optim = T)
     } else { # else use firstDiff
-      hes <- numDeriv::hessian(SFM.firstDiff,
-                               method = "Richardson",
-                               x = optim.SFM$par,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               N = N.input,
-                               Time = Time.input,
-                               mu = mu,
-                               cumTime = cumTime,
-                               K = K, R = R,
-                               # optim = T required for computation
-                               optim = T)
+      hes <- hessian(SFM.firstDiff,
+                     method = "Richardson",
+                     x = optim.SFM$par,
+                     xv = x.dat, y = y.dat, z = z.dat,
+                     N = N.input,
+                     Time = Time.input,
+                     mu = mu,
+                     cumTime = cumTime,
+                     K = K, R = R,
+                     # optim = T required for computation
+                     optim = T)
     }
   }
-
 
 
   # Fit the model based on the estimation  ---------------------------
@@ -372,6 +372,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     optim.SFM$objective <- sum (ret.list$log.ll*-1)
   }
 
+
   # Calculate Inefficencys  ---------------------------
 
   inefficency <- SFM.inindex (h = ret.list$h, sigma2star = ret.list$sigma_2star, cumTime = cumTime,
@@ -380,6 +381,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     # if panel is specified, we assign the respective names to the inefficencys
     rownames (inefficency) <- as.matrix (panelName)
   }
+
 
   # Recover Alpha  ---------------------------
 
@@ -399,6 +401,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     rownames(alpha) <- as.matrix(panelName)
   }
 
+
   # Calculate Confidence Intervals  ---------------------------
 
   df = sum (Time.input) - length (optim.SFM$par)  # get degrees of freedom
@@ -411,12 +414,13 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                               alpha = sigmaCI, df = df)
       standerror <- conf.Interval$standerror
     } else {
-      conf.Interval <- "NULL" # TODO(Authors) : what is required for Output Oli?
+      conf.Interval <- "NULL"
     }
   } else { # else bootstrap = T
     conf.Interval <- optim.SFM$conf.Interval # CI is calculated by Bootstrapping
     standerror <- optim.SFM$standerror
   }
+
 
   # Model Selection Criterion  ---------------------------
 

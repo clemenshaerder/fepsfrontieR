@@ -98,10 +98,10 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
 
 
   # Return values ---------------------------
+
   if (optim == T){
     # If SFM.within() is called by an optimizer, we need a negative sum of log.ll
     return (sum ((log.ll)*-1))
-
   } else {
     ret.list         <- list(x.trans = x.wthn, y.trans = y.wthn, PI, eps.trans = eps.wthn,
                              h.trans = h.wthn, h = h, mu_2star = mu_2star,

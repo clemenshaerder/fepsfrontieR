@@ -9,21 +9,13 @@
 SFM.inindex <- function(h, sigma2star, mu2star, N, Time, method, cumTime){
 
   sigmaStar <- sqrt (sigma2star)
-  h <- as.matrix(h)
-  inIndex_i <- c()
-  inefficencyIndex <- c()
+  h <- as.matrix (h)
 
-  for (i in 1:N){
-    inIndex_i <- c(inIndex_i, h[(cumTime[i] + 1) : cumTime[i + 1]] *
-                  (mu2star[i] + (dnorm(mu2star[i] / sigmaStar[i]) *
-                                  sigmaStar[i]) / pnorm(mu2star[i]/ sigmaStar[i])))
-  }
+  inefficencyIndex <- lapply (1:N, function(x) mean (h[(cumTime[x] + 1) : cumTime[x + 1]] *
+                                               (mu2star[x] + (dnorm (mu2star[x] / sigmaStar[x]) *
+                                               sigmaStar[x]) / pnorm(mu2star[x]/ sigmaStar[x]))))
 
-  for(j in 1:N){
-    inefficencyIndex <- c(inefficencyIndex, mean( inIndex_i[(cumTime[j] + 1) : cumTime[j + 1]]))
-  }
-
-  inefficencyIndex <- as.matrix(inefficencyIndex)
+  inefficencyIndex <- as.matrix (unlist (inefficencyIndex))
 
   return(inefficencyIndex)
 }

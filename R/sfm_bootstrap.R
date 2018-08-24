@@ -22,8 +22,6 @@
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 #'      and a confidence interval for each estimate as a data frame.
 
-# TODO: estimates are off. try to recreate bootstrapping
-
 SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI, cumTime){
 
   # create data frame of input variables which helps
@@ -37,6 +35,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
 
   # draw R individual bootstrap samples. each list entry consists of N lists.
   bootList <- replicate(B, list(), simplify = F)  # create R bootstrap samples
+
   # for every entry of bootList we sample rowwise for each panel
   bootList <- lapply (bootList, function(x)
                                 by (data, simplify = F, INDICES = index,
@@ -87,7 +86,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
 
   # Calculate CIs based on the quantiles of the estimate distribution
   if (!is.null(sigmaCI)){
-    conf.Interval <- t (apply (estimatesMat, 2, function(x) quantile(x, probs = c(sigmaCI/2, 1-sigmaCI/2))))
+    conf.Interval <- t (apply (estimatesMat, 2,
+                               function(x) quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
   } else{
     conf.Interval <- "NULL"
   }
