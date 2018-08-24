@@ -14,7 +14,7 @@ test_that ("sfmfep works", {
   sigma_v <- 1
   t.formula <- formula(y  ~ x1 + x2 + (z1 + z2))
   test.data <- sfm.data  # package data
-  method <- "firstdiff"
+  method <- "within"
   boot <- F
   mu = 0
   myPar = NULL
