@@ -46,6 +46,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   # take the square root of sigma*** since we only need this for alpha
   sqrt_sigma_3star <- sqrt(sigma_3star)
 
+
   # recover alpha for each panel N -----------------------------
 
   pro_xb  <- x_mean %*% beta
