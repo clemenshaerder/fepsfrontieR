@@ -22,7 +22,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   x_mean <- matrix(x_mean, ncol = K)
 
   # splitInterval <- findInterval ( seq_along (y), cumTime, left.open = TRUE)
-
+  y_mean <- c()
   y_mean <- lapply (1:N, function(x)
                          y_mean <- c(y_mean, mean(y [(cumTime[x] + 1) : cumTime[x + 1], ])))
   y_mean <- as.matrix (unlist (y_mean))
