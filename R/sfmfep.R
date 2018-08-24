@@ -448,7 +448,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                alpha = alpha,
                Ineff = inefficency,
               # hessian = hes,
-               standerror = optim.SFM$standerror,
+               standerror = standerror,
                contrasts = c(attr (optim.SFM$par, "names")),
                objective = optim.SFM$objective,
                bootstrap = bootstrap,
