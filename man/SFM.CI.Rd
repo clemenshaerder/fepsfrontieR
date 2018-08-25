@@ -4,7 +4,7 @@
 \alias{SFM.CI}
 \title{< Computes Confidence Intervals for the regression coefficients based on the Hessian Matrix>}
 \usage{
-SFM.CI(estimates, hessianMatrix, alpha)
+SFM.CI(estimates, hessianMatrix, alpha, N, Time, df)
 }
 \arguments{
 \item{par}{is a vector of regression coefficients & variance parameters.

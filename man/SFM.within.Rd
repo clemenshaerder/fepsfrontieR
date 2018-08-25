@@ -2,10 +2,11 @@
 % Please edit documentation in R/sfm_within.R
 \name{SFM.within}
 \alias{SFM.within}
-\title{< Within transformation & calculation of log.likelihood >}
+\title{Performs a within transformation to a Stochastic Frontier Model}
 \usage{
-SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), xv, y, z,
-  N = NULL, Time = NULL, group = NULL, mu = 0, optim = F)
+SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
+  xv, y, z, N = NULL, Time = NULL, mu = 0, optim = F, K = NULL,
+  R = NULL, seqN = 1:N)
 }
 \arguments{
 \item{par}{is a vector of regression coefficients & variance parameters.
@@ -21,8 +22,6 @@ SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), xv, y, z,
 
 \item{Time}{is a integer (observations per panel)}
 
-\item{group}{an optional vector specifying the panels to be used in the fitting process.}
-
 \item{mu}{is a number (mean of the truncated normal distribution of the inefficency)}
 
 \item{optim}{is a boolean (set F to obtain a list of model variables.
@@ -33,5 +32,5 @@ If optim = T the log.likelihood is returned of all panels.
     If optim = F the model fit is returned including all important model variables.
 }
 \description{
-< Within transformation & calculation of log.likelihood >
+Performs a within transformation to a Stochastic Frontier Model
 }

@@ -4,7 +4,7 @@
 \alias{SFM.alpha}
 \title{< Recovers the individual fixed effects for each individuum >}
 \usage{
-SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu)
+SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime)
 }
 \arguments{
 \item{y}{is a n*t x 1 vector (response)}

@@ -5,25 +5,27 @@
 \title{Estimates a Stochastic Frontier Model for Fixed-Effects using
 within transformation}
 \usage{
-sfmfep(formula, data, group = NULL, N = NULL, Time = NULL, mu = 0,
-  sigmaCI = 0.05, estimate = T, method = "firstdiff",
+sfmfep(formula, data, panel = NULL, N = NULL, Time = NULL,
+  method = "firstdiff", mu = 0, sigmaCI = 0.05, estimate = T,
   bootstrap = F, B = NULL, myPar = c(sigma_u = NULL, sigma_v = NULL,
   beta = c(NULL), delta = c(NULL)))
 }
 \arguments{
-\item{formula}{an object of class "fomrula" in the form of
+\item{formula}{an object of class "formula" in the form of
 y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details}
 
 \item{data}{an optional data frame, list or environment (or object coercible by
 as.data.frame to a data frame) containing the variables in the model.}
 
-\item{group}{an optional vector specifying the panels to be used in the fitting process.}
+\item{panel}{an optional vector specifying the panels to be used in the fitting process.}
 
 \item{N}{an optional integer specifying the total amount of panels in the data set.
 If N is entered, Time is also a required input.}
 
 \item{Time}{an optional integer specifying the amount of observations per panel.
 If Time is entered, N is also a required input.}
+
+\item{method}{a required string specifying the method ("within" or "firstdiff").}
 
 \item{mu}{is the mean of a truncated normal distribution of the stochastic inefficiency.}
 
@@ -33,8 +35,6 @@ values of the confidence intervals for the MLE estimates.}
 \item{estimate}{TRUE or FALSE specifies if "myPar" is used as
 starting point of the estimation, or if "myPar" is used to fit
 a given stochastic frontier model.}
-
-\item{method}{a required string specifying the method ("within" or "firstdiff").}
 
 \item{B}{is a required input for Bootstrap = TRUE. It defines
 the amount of bootstrap samples.}

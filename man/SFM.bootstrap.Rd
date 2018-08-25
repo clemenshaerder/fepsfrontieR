@@ -5,7 +5,7 @@
 \title{SFM.bootstrap performs estimation with B Individual Bootstrap Samples}
 \usage{
 SFM.bootstrap(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL,
-  lowerInt, sigmaCI)
+  lowerInt, sigmaCI, cumTime)
 }
 \arguments{
 \item{y}{is a n*t x 1 vector (response)}
