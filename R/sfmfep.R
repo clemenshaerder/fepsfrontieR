@@ -35,11 +35,9 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-#' data <- sfm.pdata
-#'
-#' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
-#'         B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
-#' summary(wh.1)
+#' p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
+#'          method = "firstdiff", N = 82, Time = 28, data = panelgdp)
+#' summary(p.gdp)
 #' @export
 
 
@@ -394,7 +392,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   estimate.sigma_v  <- optim.SFM$par[2]
   estimate.beta     <- optim.SFM$par[3:(3+K-1)]
 
-  alpha <- SFM.alpha (y = y.dat, x = x.dat, beta = estimate.beta,
+  alpha <- SFM.alpha (y = y.dat , x = x.dat, beta = estimate.beta,
                       sigma_u = estimate.sigma_u, sigma_v = estimate.sigma_v,
                       h = ret.list$h.trans, epsilon = ret.list$eps.trans,
                       cumTime = cumTime,
