@@ -53,7 +53,7 @@
 # lower <- c(0.05,0.05, rep(-Inf,K), rep(-Inf,R)); upper <-  c(1000,1000,1000,1000,1000,1000)
 # # # # # # #
 # # # # # # # # Generates data for the optimization & does it "Iteration" times
-# Iteration <- 30
+# Iteration <- 10
 # estimateW <- matrix(c(rep(NA, (2+K+R)*Iteration)), nrow= 2 + K + R, ncol=Iteration)
 # estimateF <- matrix(c(rep(NA, (2+K+R)*Iteration)), nrow= 2 + K + R, ncol=Iteration)
 # profvis(
@@ -64,16 +64,16 @@
 #   x    <- as.matrix(data[, 1:length(beta)]); y <- as.matrix(data[, (length(beta)+1)])
 #   z    <- as.matrix(data[, (length(beta)+2):(length(beta)+2+length(delta)-1)])
 #
-#   # optim.SFMwithin <- nlminb (objective = SFM.within,
-#   #                      start = c(sigma_u,sigma_v,beta,delta),
-#   #                      lower = c(0.001,0.001,rep(-Inf, R+K)),
-#   #                      mu = mu,
-#   #                      Time = Time,
-#   #                      N = N,
-#   #                      R = length(delta), K = length(beta),
-#   #                      cumTime = cumTime,
-#   #                      xv = x, y = y, z = z,
-#   #                      optim = T)
+#   optim.SFMwithin <- nlminb (objective = SFM.within,
+#                        start = c(sigma_u,sigma_v,beta,delta),
+#                        lower = c(0.001,0.001,rep(-Inf, R+K)),
+#                        mu = mu,
+#                        Time = Time,
+#                        N = N,
+#                        R = length(delta), K = length(beta),
+#                        cumTime = cumTime,
+#                        xv = x, y = y, z = z,
+#                        optim = T)
 #
 #   optim.SFMfirstDiff <- nlminb (objective = SFM.firstDiff,
 #                        start = c(sigma_u,sigma_v,beta,delta),
@@ -85,13 +85,19 @@
 #                        K = K, R = R,
 #                        xv = x, y = y, z = z,
 #                        optim = T)
+#   # summary(test)
+#   # test <- sfmfep(formula = y ~ x + (z), data = data, panel = NULL, N = N, Time = Time, method = "firstdiff",
+#   #                    mu = 0,  sigmaCI = 0.05, estimate = T, bootstrap = F, B = NULL,
+#   #                    myPar = c(sigma_u,sigma_v,beta,delta))
 #
-#    # estimateW[, i] <- optim.SFMwithin$par
+#    estimateW[, i] <- optim.SFMwithin$par
 #   estimateF[, i] <- optim.SFMfirstDiff$par
-# })
-#
-# apply(estimateF, 1, median); apply(estimateF, 1, mean)
-#
+# }
+# )
+# #
+# # apply(estimateF, 1, median); apply(estimateF, 1, mean)
+# apply(estimateW, 1, median); apply(estimateW, 1, mean)
+
 # t.formula <- y ~ x + (z)
 # ttt <- sfmfep(formula = t.formula, data = data, N = 100, Time = 5, mu = 0.5,
 #        sigmaCI = 0.05, estimate = T, method = "firstdiff", bootstrap = T, B = 100,
