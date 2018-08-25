@@ -150,7 +150,7 @@ context ("SFM.within / SFM.firstDiff")
 
 })
 
- p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10, method = "firstdiff",
-                 N = NULL, Time = NULL, data = panelgdp, panel= "country")
+ p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = F, B = 10, method = "firstdiff",
+                 N = 82, Time = 28, data = panelgdp, panel= "country")
  summary(p.gdp)
  (panelgdp)

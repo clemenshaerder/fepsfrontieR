@@ -420,6 +420,9 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
       conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
                               alpha = sigmaCI, df = df)
       standerror <- conf.Interval$standerror
+    } else if( any(is.nan(hes) == T)){
+      conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
+      standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
     } else {
       conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
       standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
