@@ -1,6 +1,6 @@
 summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
-  head1 <- c("Estimates", "Std.Error", "t-value")
+  head1 <- c("Coefficients", "Std.Error", "t-value")
   head2 <- c("alpha", "inefficiency")
 
   mat1 <- matrix(NA, length(x$contrasts), length(head1),
@@ -9,7 +9,7 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
                  dimnames = list(1:length(x$alpha), head2))
 
 
-  mat1[, 1] <- x$estimates
+  mat1[, 1] <- x$coefficients
   mat1[, 2] <- x$standerror
   #mat1[, 3] <- x$tvalue
   mat1 <- cbind(mat1, x$conf)
@@ -27,9 +27,9 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   }
 
   if(!is.null(x$conf)){
-    cat("Estimates:\t\t\t\tconfInterval\n")
+    cat("Coefficients:\t\t\t\tconfInterval\n")
     } else {
-    cat("Estimates:\n")
+    cat("Coefficients:\n")
     }
 
   printCoefmat(mat1)

@@ -30,7 +30,7 @@ test_that ("sfmfep works", {
   expect_type (object = firstdiffBoot, type = "list")
 
   # tests if bootstrapping works for method = "within"
-  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 2, method = "within",
+  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = "within",
                        N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = withinBoot, type = "list")
 

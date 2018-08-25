@@ -46,11 +46,23 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
 
   # TODO(): OPTIMIZATION by parallization??
   # parallel::parLapply(lapply (bootList, function(x) by (data, INDICES = index, FUN = function(x) sample_n (tbl = x, size = dim(x)[1], replace = T))))
-
+  # Sys.info()
   # calculate estimates for each entry of the list depending on the method
+  # library("parallel")
+  # no_of_cores = detectCores()
+  # cl = makeCluster(2, type="PSOCK")
+  # if (Sys.info()[1] == "Windows")
+
+  # optim = T
+  # clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "bootListMat", "mu", "optim",
+                # "K", "R", "method", "cumTime"))
+  # clusterEvalQ(cl, {library(fepsfrontieR)})
+
   if (method == "within"){
     bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
-                                                      start = myPar,  # TBD by Rouven
+
+    # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+                                                      start = myPar,
                                                       Time = Time,
                                                       N = N,
                                                       xv = as.matrix (x[, 2:(2+K-1)]),
@@ -64,6 +76,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                       )$par)  # we want only the estimates
   } else {
     bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
+
+    # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
                                                              start = myPar,  # TBD by Rouven
                                                              Time = Time,
                                                              N = N,
@@ -77,6 +91,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                              cumTime = cumTime
                                                              )$par)  # we want only the estimates
   }
+  # stopCluster(cl)
 
   # creates a matrix of estimates to calculate colmeans & standard error
   estimatesMat <- do.call (rbind, bootEstimates)
@@ -97,4 +112,5 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   return(list (estimatesMat = estimatesMat, par = estimates,
                standerror = stderror, conf.Interval = conf.Interval))
 }
+
 
