@@ -13,6 +13,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
 
   K <- dim (as.matrix (x))[2]
 
+  # Calculate the mean of each panel for each explenatory variable
   x_mean <- NULL
   for(i in 1:K){
     for(j in 1:N){
@@ -60,6 +61,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   return(alpha)
 
 }
+
 
 
 

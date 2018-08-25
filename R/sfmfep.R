@@ -440,7 +440,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   } else {
     res <- list (call = call,
                par = myPar,
-               estimates = optim.SFM$par ,
+               coefficients = optim.SFM$par,
                aic = AIC,
                bic = BIC,
                estimate = estimate,

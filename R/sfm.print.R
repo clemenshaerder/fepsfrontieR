@@ -1,11 +1,11 @@
 print.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   if(x$estimate == T){
-    x$out <- setNames(x$estimates, x$contrasts)
+    x$out <- setNames(x$coefficients, x$contrasts)
 
     cat("\nCall: ", "\n",
         paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
-    cat("Estimates")
+    cat("Coefficients")
 
     cat(":\n")
     print.default(format(x$out, digits = digits),
