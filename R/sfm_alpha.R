@@ -25,7 +25,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   # splitInterval <- findInterval ( seq_along (y), cumTime, left.open = TRUE)
   y_mean <- c()
   y_mean <- lapply (1:N, function(x)
-                         y_mean <- c(y_mean, mean(y [(cumTime[x] + 1) : cumTime[x + 1], ])))
+    y_mean <- c(y_mean, mean(y [(cumTime[x] + 1) : cumTime[x + 1], ])))
   y_mean <- as.matrix (unlist (y_mean))
 
 
@@ -37,11 +37,11 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   sum_eh    <- lapply (eh, sum)
 
   mu_3star <- lapply (1:N, function(x) (mu * sigma_u^-1 - sigma_v^-Time[x] * sum_eh[[x]]) /
-                                       (sigma_v^-Time[x] * h2_sum[[x]] + sigma_u^-1))
+                        (sigma_v^-Time[x] * h2_sum[[x]] + sigma_u^-1))
   mu_3star <- as.matrix (unname (unlist (mu_3star)))
 
   sigma_3star <- lapply (1:N, function(x) sigma_v^Time[x] / (h2_sum[[x]] +
-                                          sigma_v^Time[x] * sigma_u^-1))
+                                                               sigma_v^Time[x] * sigma_u^-1))
   sigma_3star <- as.matrix (unname (unlist (sigma_3star)))
 
   # take the square root of sigma*** since we only need this for alpha
@@ -53,15 +53,15 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   pro_xb  <- x_mean %*% beta
 
   alpha <- lapply (1:N, function(x) y_mean[x] - pro_xb[x] + mu_3star[x] * h_mean[[x]] +
-                                    sqrt_sigma_3star[x] * h_mean[[x]] * (dnorm (mu_3star[x] /
-                                    sqrt_sigma_3star[x]) / pnorm (mu_3star[x] / sqrt_sigma_3star[x])))
+                     sqrt_sigma_3star[x] * h_mean[[x]] *
+                     if (pnorm (mu_3star[x] / sqrt_sigma_3star[x]) == 0){1} else {
+                       (dnorm (mu_3star[x] / sqrt_sigma_3star[x]) /
+                          pnorm (mu_3star[x] / sqrt_sigma_3star[x]))
+
+                     })
 
   alpha <- as.matrix (unname (unlist (alpha)))
 
   return(alpha)
 
 }
-
-
-
-

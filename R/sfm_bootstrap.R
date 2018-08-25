@@ -57,6 +57,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   # clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "bootListMat", "mu", "optim",
                 # "K", "R", "method", "cumTime"))
   # clusterEvalQ(cl, {library(fepsfrontieR)})
+  # clusterEvalQ(cl ,library(fepsfrontieR))
+
 
   if (method == "within"){
     bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
