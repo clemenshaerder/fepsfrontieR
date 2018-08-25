@@ -61,7 +61,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   #
 
   if (method == "within"){
-    bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
+    bootEstimates <- lapply (bootListMat, function(x) try( nlminb(lower = lowerInt,
 
     # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
                                                       start = myPar,
@@ -75,9 +75,9 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                       K = K, R = R,
                                                       objective = SFM.within,
                                                       cumTime = cumTime
-                                                      )$par)  # we want only the estimates
+                                                      )$par, silent = T))  # we want only the estimates
   } else {
-    bootEstimates <- lapply (bootListMat, function(x) nlminb(lower = lowerInt,
+    bootEstimates <- lapply (bootListMat, function(x) try (nlminb(lower = lowerInt,
 
     # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
                                                              start = myPar,  # TBD by Rouven
@@ -91,7 +91,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                              K = K, R = R,
                                                              objective = SFM.firstDiff,
                                                              cumTime = cumTime
-                                                             )$par)  # we want only the estimates
+                                                             )$par, silent = T))  # we want only the estimates
   }
   # stopCluster(cl)
 

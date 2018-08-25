@@ -149,4 +149,3 @@ context ("SFM.within / SFM.firstDiff")
    # test_that ("SFM.within / SFM.firstDiff", {
 
 })
-

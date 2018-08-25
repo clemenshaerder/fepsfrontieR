@@ -241,29 +241,29 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
 
       if (bootstrap == F) {
         if (method == "within"){
-          optim.SFM <- nlminb (objective = SFM.within,
-                               lower = l.int,
-                               # hessian = T,
-                               start = myPar,
-                               Time = Time.input,
-                               N = N.input,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               mu = mu,
-                               K = K, R = R,
-                               cumTime = cumTime,
-                               optim = T)
+          optim.SFM <- try (nlminb (objective = SFM.within,
+                                    lower = l.int,
+                                    # hessian = T,
+                                    start = myPar,
+                                    Time = Time.input,
+                                    N = N.input,
+                                    xv = x.dat, y = y.dat, z = z.dat,
+                                    mu = mu,
+                                    K = K, R = R,
+                                    cumTime = cumTime,
+                                    optim = T), silent = T)
         } else {
-          optim.SFM <- nlminb (objective = SFM.firstDiff,
-                               lower = l.int,
-                               # hessian = T,
-                               start = myPar,
-                               Time = Time.input,
-                               N = N.input,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               mu = mu,
-                               K = K, R = R,
-                               cumTime = cumTime,
-                               optim = T)
+          optim.SFM <- try (nlminb (objective = SFM.firstDiff,
+                                    lower = l.int,
+                                    # hessian = T,
+                                    start = myPar,
+                                    Time = Time.input,
+                                    N = N.input,
+                                    xv = x.dat, y = y.dat, z = z.dat,
+                                    mu = mu,
+                                    K = K, R = R,
+                                    cumTime = cumTime,
+                                    optim = T), silent = T)
         }
       } else { # else bootstrap = T use bootstrapping
         optim.SFM <- SFM.bootstrap (y = y.dat, xv = x.dat, z = z.dat,
@@ -281,27 +281,27 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     } else { # else myPar is defined & not NULL
       if (bootstrap == F){
         if (method == "within"){
-          optim.SFM <- nlminb (objective = SFM.within,
-                               start = c(myPar),
-                               lower = l.int,
-                               mu = mu,
-                               Time = Time.input,
-                               N = N.input,
-                               cumTime = cumTime,
-                               K = K, R = R,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               optim = T)
+          optim.SFM <- try (nlminb (objective = SFM.within,
+                                    start = c(myPar),
+                                    lower = l.int,
+                                    mu = mu,
+                                    Time = Time.input,
+                                    N = N.input,
+                                    cumTime = cumTime,
+                                    K = K, R = R,
+                                    xv = x.dat, y = y.dat, z = z.dat,
+                                    optim = T), silent = T)
         } else {  # else use first-difference method
-          optim.SFM <- nlminb (objective = SFM.firstDiff,
-                               start = c(myPar),
-                               lower = l.int,
-                               mu = mu,
-                               Time = Time.input,
-                               N = N.input,
-                               cumTime = cumTime,
-                               K = K, R = R,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               optim = T)
+          optim.SFM <- try (nlminb (objective = SFM.firstDiff,
+                                    start = c(myPar),
+                                    lower = l.int,
+                                    mu = mu,
+                                    Time = Time.input,
+                                    N = N.input,
+                                    cumTime = cumTime,
+                                    K = K, R = R,
+                                    xv = x.dat, y = y.dat, z = z.dat,
+                                    optim = T), silent = T)
         }
       } else {  # else bootstrap = T use bootstrapping
         optim.SFM <- SFM.bootstrap (y = y.dat, xv = x.dat, z = z.dat,
