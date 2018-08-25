@@ -35,7 +35,7 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-#' data <- sfm.pdata1
+#' data <- sfm.pdata
 #'
 #' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
 #'         B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
