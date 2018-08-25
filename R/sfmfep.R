@@ -5,7 +5,7 @@
 #' using a specified model transformation. Bootstrapping can be performed to
 #' calculate the standard errors instead of a numerical deriviation
 #' via the hessian matrix.
-#' @param formula an object of class "fomrula" in the form of
+#' @param formula an object of class "formula" in the form of
 #' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
 #' @param data an optional data frame, list or environment (or object coercible by
 #' as.data.frame to a data frame) containing the variables in the model.
