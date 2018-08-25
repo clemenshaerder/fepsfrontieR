@@ -324,6 +324,11 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
       optim.SFM$par <- myPar  # provided parameters are used as parameters
   }
 
+  if (optim.SFM$objective == Inf | optim.SFM$objective < 0){
+    stop ("Optimizer nlminb( ) could not find a valid solution.
+           Try different starting points.")
+  }
+
   # derive the Hessian Matrix based on estimates from the optimization
   if (bootstrap == F){ # not required when bootstrapping is chosen
     if (method == "within"){
@@ -420,6 +425,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
       conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
                               alpha = sigmaCI, df = df)
       standerror <- conf.Interval$standerror
+      # If the optimizer is not finding a valid ouput hessian(..)
+      # creates a matrix of nans
     } else if( any(is.nan(hes) == T)){
       conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
       standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
