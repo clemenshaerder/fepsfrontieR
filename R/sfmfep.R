@@ -35,17 +35,14 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-<<<<<<< HEAD
 #' data <- sfm.pdata1
 #'
 #' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
 #'         B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
 #' summary(wh.1)
-=======
 #' p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
 #'          method = "firstdiff", N = 82, Time = 28, data = panelgdp)
 #' summary(p.gdp)
->>>>>>> 7bf415763cdec19dfccebf46a7017991e5d72f83
 #' @export
 
 
