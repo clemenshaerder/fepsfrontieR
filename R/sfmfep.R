@@ -35,7 +35,7 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-#' data <- sfm.pdata
+#' data <- sfm.pdata1
 #'
 #' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
 #'         B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
@@ -78,7 +78,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   }
 
   # Tests if any NAs exist in the data sel.data
-  dataInvalid <- sapply (data, function (sel.data) sum (is.na (sel.data)) +
+  dataInvalid <- sapply (sel.data, function (sel.data) sum (is.na (sel.data)) +
                                                    sum (is.infinite (sel.data)) +
                                                    sum (is.null (sel.data)))
   if (sum (dataInvalid) > 0){

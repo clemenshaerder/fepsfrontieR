@@ -25,7 +25,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   # splitInterval <- findInterval ( seq_along (y), cumTime, left.open = TRUE)
   y_mean <- c()
   y_mean <- lapply (1:N, function(x)
-    y_mean <- c(y_mean, mean(y [(cumTime[x] + 1) : cumTime[x + 1], ])))
+                         y_mean <- c(y_mean, mean(y [(cumTime[x] + 1) : cumTime[x + 1], ])))
   y_mean <- as.matrix (unlist (y_mean))
 
 
@@ -54,7 +54,7 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
 
   alpha <- lapply (1:N, function(x) y_mean[x] - pro_xb[x] + mu_3star[x] * h_mean[[x]] +
                      sqrt_sigma_3star[x] * h_mean[[x]] *
-                     if (pnorm (mu_3star[x] / sqrt_sigma_3star[x]) == 0){
+                     if (sqrt_sigma_3star[x] == 0 || pnorm (mu_3star[x] / sqrt_sigma_3star[x] ) == 0){
                        1
                        } else {
                        (dnorm (mu_3star[x] / sqrt_sigma_3star[x]) /
@@ -67,3 +67,4 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   return(alpha)
 
 }
+

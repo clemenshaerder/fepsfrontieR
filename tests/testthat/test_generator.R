@@ -149,8 +149,8 @@ context ("SFM.within / SFM.firstDiff")
    # test_that ("SFM.within / SFM.firstDiff", {
 
 })
- wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T, B = 2, method = "within",
-                N = 100, Time = 6, data = pdata1)
- summary(wh.1)
- hist(wh.1$alpha)
 
+ p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10, method = "firstdiff",
+                 N = NULL, Time = NULL, data = panelgdp, panel= "country")
+ summary(p.gdp)
+ (panelgdp)
