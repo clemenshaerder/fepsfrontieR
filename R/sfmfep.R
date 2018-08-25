@@ -380,7 +380,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     optim.SFM$objective <- sum (ret.list$log.ll*-1)
   }
 
-  if (optim.SFM$objective == Inf ||  optim.SFM$objective < 0){
+  # Need an error handler when the model isnt well defined
+  if (is.nan(optim.SFM$objective) || optim.SFM$objective == Inf ||  optim.SFM$objective < 0){
     stop ("Optimizer nlminb( ) could not find a valid solution.
            Try different starting points.")
   }
