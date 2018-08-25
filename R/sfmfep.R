@@ -353,7 +353,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     ret.list <- SFM.within (optim = F,  # Note optim = F
                             N = N.input,
                             Time = Time.input,
-                            xv = x.dat , y = y.dat ,z = z.dat,
+                            xv = x.dat , y = y.dat, z = z.dat,
                             K = K, R = R,
                             cumTime = cumTime,
                             par = optim.SFM$par)
@@ -361,7 +361,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
     ret.list <- SFM.firstDiff (optim = F,  # Note optim = F
                                N = N.input,
                                Time = Time.input,
-                               xv = x.dat, y = y.dat ,z = z.dat,
+                               xv = x.dat, y = y.dat, z = z.dat,
                                cumTime = cumTime,
                                K = K, R = R,
                                par = optim.SFM$par)
@@ -388,7 +388,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   estimate.sigma_u  <- optim.SFM$par[1]
   estimate.sigma_v  <- optim.SFM$par[2]
   estimate.beta     <- optim.SFM$par[3:(3+K-1)]
-  # estimate.delta    <- optim.SFM$par[(3+K):(3+R-1)]
 
   alpha <- SFM.alpha (y = y.dat , x = x.dat, beta = estimate.beta,
                       sigma_u = estimate.sigma_u, sigma_v = estimate.sigma_v,
@@ -414,7 +413,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
                               alpha = sigmaCI, df = df)
       standerror <- conf.Interval$standerror
     } else {
-      conf.Interval <- "NULL"
+      conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
+      standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
     }
   } else { # else bootstrap = T
     conf.Interval <- optim.SFM$conf.Interval # CI is calculated by Bootstrapping

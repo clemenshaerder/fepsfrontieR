@@ -61,7 +61,7 @@ test_that ("sfmfep works", {
   panelEstimateF <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
                        data = test.data, mu = mu, estimate = F,
                        myPar = c(sigma_u = 1, sigma_v = 2, beta = c(1,2), delta = c(1, 2)))
-  expect_type(object = panelEstimateF, type = "list")
+  expect_type (object = panelEstimateF, type = "list")
 
   # Tests if it works when CIs are not wanted
   panelNoCI <- sfmfep(formula = t.formula, method = method, panel = "gr", bootstrap = boot, B = B,
@@ -70,7 +70,6 @@ test_that ("sfmfep works", {
   expect_type (object = panelNoCI, type = "list")
 
   # Tests unbalanced panels with panels without CI
-
   test.data <- test.data[-60, ]
   unbalancedpanel <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
                        data = test.data, mu = mu, sigmaCI = NULL,

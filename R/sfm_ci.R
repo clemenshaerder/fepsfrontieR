@@ -9,7 +9,7 @@
 
 SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
-  try (fisher_info <- solve(hessianMatrix), silent = T)
+  try (fisher_info <- solve (hessianMatrix), silent = T)
 
 
   # Exclusion of improper Fisher entries  ---------------------------
@@ -29,7 +29,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
   # Calculation of CIs  ---------------------------
 
-  if (exists ("fisher_info") && dim(fisher_info)[1] > 0){
+  if (exists ("fisher_info") && dim (fisher_info)[1] > 0){
 
     # Calculates standarderror only for valid optimas
     standerror[indexIncludeVar] <- sqrt (diag (fisher_info[indexIncludeVar,
@@ -42,8 +42,8 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
                      ncol = length (alpha))
 
     # colname is the probability bound
-    colnames(upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
-    colnames(lower) <- c(alpha[c(1:length (alpha))] / 2)
+    colnames (upper) <- c(1 - alpha[c(1:length (alpha))] / 2)
+    colnames (lower) <- c(alpha[c(1:length (alpha))] / 2)
 
     # Sigmas are asymptotically chi-sq distributed, thus calculated separately
     # "<= 2 " as the first two estimates are always the sigmas
@@ -52,7 +52,7 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
     lower[IndexSigmaCI, ] <- df * estimates[IndexSigmaCI] / qchisq (1 - alpha / 2, df)
 
     # Calculation of the asymptotic normally distributed betas & deltas
-    indexCoeff <- indexIncludeVar[which(indexIncludeVar > 2)]
+    indexCoeff          <- indexIncludeVar[which(indexIncludeVar > 2)]
     upper[indexCoeff, ] <- estimates[indexCoeff] +
                            qt (1 - alpha / 2, df) * standerror[indexCoeff]
     lower[indexCoeff, ] <- estimates[indexCoeff] +

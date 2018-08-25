@@ -22,19 +22,18 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
 
   # Within Transformations ---------------------------
 
-  # Within transformation of X
-  x.wthn <- matrix(c(rep (NA, sum (Time) * K)), ncol = K)
-  # x.wthn <- replicate(K, list(), simplify = F)
+  # compute interval for within transformations of x, epsilon & h
+  splitInterval <- findInterval (seq_along (y[, ]), cumTime, left.open = TRUE)
 
-  for(k in 1:K){
-    # A vector of length Ti (obseravations per panel) is created and binded to the existing
-    # vector until the vector is of length N*(Ti). We do this for K parameters.
-    repMeans <- c()
-    repMeans <- lapply (seqN, function(x)
-                repMeans <- c(repMeans, rep (mean (xv[(cumTime[x] + 1):cumTime[x+1], k] ), Time[x])))
-    repMeans <- matrix (unlist (repMeans))
-    x.wthn[, k] <- (xv[, k] - repMeans)
-  }
+
+  # Within transformation of X
+  # A vector of length Ti (obseravations per panel) is created and binded to the existing
+  # vector until the vector is of length N*(Ti). We do this for K parameters.
+
+  x.wthn <- lapply(1:K, function(k)
+                        by (xv[, k], INDICES = splitInterval, FUN = function(x) x - mean(x))
+  )
+  x.wthn <- matrix (unname (unlist (x.wthn)), ncol = K)
 
   # Within transformation of Y
   # Same transformation procedure as for x
@@ -47,10 +46,9 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
 
   # Computes the residuals of the centered response & explanatory variables based on beta-estimates
   epsilon <- as.matrix(y.wthn - x.wthn %*% par[3:(3+K-1)])
-  splitInterval <- findInterval (seq_along (epsilon), cumTime, left.open = TRUE)
 
   # Within transformation of epsilon is not required (already mean 0).
-  # Note, that epsilon is a vector that needs to be split to lists for the likelihood computation
+  # Note, that epsilon is   a vector that needs to be split to lists for the likelihood computation
   eps.wthn <- unname (split (epsilon, splitInterval))
 
   # Within Transformation of h
@@ -64,7 +62,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTi
 
   # PI-Matrix is the Variance-Covariance Matrix of v
   # It is a Time_i x Time_i symmetric matrix. Thus we can just compute it once for max Time
-  mTime <- max(Time)
+  mTime <- max (Time)
 
   PI <- par[2] * (diag (mTime) - 1/mTime * (matrix (c(rep (1, mTime * mTime)), ncol = mTime)))
   try(gPI <- ginv(PI), silent=T)
