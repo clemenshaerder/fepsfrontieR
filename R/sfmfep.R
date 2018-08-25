@@ -324,11 +324,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
       optim.SFM$par <- myPar  # provided parameters are used as parameters
   }
 
-  if (optim.SFM$objective == Inf | optim.SFM$objective < 0){
-    stop ("Optimizer nlminb( ) could not find a valid solution.
-           Try different starting points.")
-  }
-
   # derive the Hessian Matrix based on estimates from the optimization
   if (bootstrap == F){ # not required when bootstrapping is chosen
     if (method == "within"){
@@ -383,6 +378,11 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   # log.ll is obtained from the model as nlminb is not primarily used.
   if (estimate == F || bootstrap == T){
     optim.SFM$objective <- sum (ret.list$log.ll*-1)
+  }
+
+  if (optim.SFM$objective == Inf ||  optim.SFM$objective < 0){
+    stop ("Optimizer nlminb( ) could not find a valid solution.
+           Try different starting points.")
   }
 
 
