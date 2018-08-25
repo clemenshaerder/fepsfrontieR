@@ -17,7 +17,7 @@ SFM.inindex <- function(h, sigma2star, mu2star, N, Time, method, cumTime){
                                                sigmaStar[x]) / pnorm(mu2star[x]/ sigmaStar[x]))))
 
   inefficencyIndex <- as.matrix (unlist (inefficencyIndex))
-  # TODO(): add exp inefficency and maybe plot? for evaluation of quality of results?
+
   return(inefficencyIndex)
 }
 

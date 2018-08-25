@@ -54,13 +54,15 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
 
   alpha <- lapply (1:N, function(x) y_mean[x] - pro_xb[x] + mu_3star[x] * h_mean[[x]] +
                      sqrt_sigma_3star[x] * h_mean[[x]] *
-                     if (sqrt_sigma_3star[x] == 0 || pnorm (mu_3star[x] / sqrt_sigma_3star[x] ) == 0){
-                       1
+                     # if values are 0 we set it to 1  to get a valid result
+                     if (sqrt_sigma_3star[x] == 0 ||
+                         pnorm (mu_3star[x] / sqrt_sigma_3star[x] ) == 0){
+                            1
                        } else {
                        (dnorm (mu_3star[x] / sqrt_sigma_3star[x]) /
                           pnorm (mu_3star[x] / sqrt_sigma_3star[x]))
-
-                     })
+                       }
+                   )
 
   alpha <- as.matrix (unname (unlist (alpha)))
 
