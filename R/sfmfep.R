@@ -35,8 +35,13 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-#' < an example where a data set is created via sfm.generate>
+#' data <- sfm.pdata1
+#'
+#' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
+#'         B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
+#' summary(wh.1)
 #' @export
+
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = "firstdiff",
                    mu = 0,  sigmaCI = 0.05, estimate = T, bootstrap = F, B = NULL,
