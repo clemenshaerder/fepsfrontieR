@@ -1,10 +1,11 @@
 #' SFM.bootstrap performs estimation with B Individual Bootstrap Samples
 #'
-#' B Individual Bootstrap Samples are genereated from the input and MLE is performed
-#' for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
-#' the rows with replacement individually for each panel instead from all samples.
-#' In addition to the mean and the standard error of the estimates,
-#' a confidence interval is returned based on the quantiles of the distribution of estimates.
+#' B Individual Bootstrap Samples are genereated from the input and MLE is
+#' performed for each sample. Unlike i.i.d. bootstrapping, individual
+#' bootrapping samples the rows with replacement individually for each panel
+#' instead from all samples. In addition to the mean and the standard error of
+#' the estimates, a confidence interval is returned based on the quantiles of
+#' the distribution of estimates.
 #' @param B is an integer (# of Bootstraps)
 #' @param xv is a n*t x k matrix (explantatory variables)
 #' @param z is a n*t x r matrix (inefficency determinants)
@@ -38,8 +39,17 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
 
   # for every entry of bootList we sample rowwise for each panel
   bootList <- lapply (bootList, function(x)
-                                by (data, simplify = F, INDICES = index,
-                                FUN = function(x) sample_n (tbl = x, size = dim (x)[1], replace = T)))
+    by (
+      data,
+      simplify = F,
+      INDICES = index,
+      FUN = function(x)
+        sample_n (
+          tbl = x,
+          size = dim (x)[1],
+          replace = T
+        )
+    ))
 
   # transforms the N-lists in the list to a matrices which can be used for bootstrapping
   bootListMat <- lapply(bootList, function(x) do.call (rbind, x))
@@ -60,38 +70,52 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   # clusterEvalQ(cl ,library(cubature))
   #
 
-  if (method == "within"){
-    bootEstimates <- lapply (bootListMat, function(x) try( nlminb(lower = lowerInt,
+  if (method == "within") {
+    bootEstimates <-
+      lapply (bootListMat, function(x)
+        try(nlminb(
+          lower = lowerInt,
 
-    # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
-                                                      start = myPar,
-                                                      Time = Time,
-                                                      N = N,
-                                                      xv = as.matrix (x[, 2:(2+K-1)]),
-                                                      y = as.matrix (x[, 1]),
-                                                      z = as.matrix (x[, (2+K):cols]),
-                                                      mu = mu,
-                                                      optim = T,
-                                                      K = K, R = R,
-                                                      objective = SFM.within,
-                                                      cumTime = cumTime
-                                                      )$par, silent = T))  # we want only the estimates
+          # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+          start = myPar,
+          Time = Time,
+          N = N,
+          xv = as.matrix (x[, 2:(2 + K - 1)]),
+          y = as.matrix (x[, 1]),
+          z = as.matrix (x[, (2 + K):cols]),
+          mu = mu,
+          optim = T,
+          K = K,
+          R = R,
+          objective = SFM.within,
+          cumTime = cumTime
+        )$par,
+        silent = T)
+      )  # we want only the estimates
   } else {
-    bootEstimates <- lapply (bootListMat, function(x) try (nlminb(lower = lowerInt,
 
-    # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
-                                                             start = myPar,  # TBD by Rouven
-                                                             Time = Time,
-                                                             N = N,
-                                                             xv = as.matrix (x[, 2:(2+K-1)]),
-                                                             y = as.matrix (x[, 1]),
-                                                             z = as.matrix (x[, (2+K):cols]),
-                                                             mu = mu,
-                                                             optim = T,
-                                                             K = K, R = R,
-                                                             objective = SFM.firstDiff,
-                                                             cumTime = cumTime
-                                                             )$par, silent = T))  # we want only the estimates
+    bootEstimates <-
+      lapply (bootListMat, function(x)
+        try (nlminb(
+          lower = lowerInt,
+
+          # bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+          start = myPar,
+          # TBD by Rouven
+          Time = Time,
+          N = N,
+          xv = as.matrix (x[, 2:(2 + K - 1)]),
+          y = as.matrix (x[, 1]),
+          z = as.matrix (x[, (2 + K):cols]),
+          mu = mu,
+          optim = T,
+          K = K,
+          R = R,
+          objective = SFM.firstDiff,
+          cumTime = cumTime
+        )$par,
+        silent = T)
+      )  # we want only the estimates
   }
   # stopCluster(cl)
 
@@ -102,17 +126,27 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   stderror <- apply (estimatesMat, 2, sd)
 
   # Calculate CIs based on the quantiles of the estimate distribution
-  if (!is.null(sigmaCI)){
+  if (!is.null(sigmaCI)) {
     conf.Interval <- t (apply (estimatesMat, 2,
-                               function(x) quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
+                               function(x)
+                                 quantile(x,
+                                          probs = c(
+                                            sigmaCI / 2, 1 - sigmaCI / 2
+                                          ))))
   } else{
     conf.Interval <- "NULL"
   }
 
   # TODO() we could include a histogram of the estimates and QQ-Plot.
   # would be nice but not a must.
-  return(list (estimatesMat = estimatesMat, par = estimates,
-               standerror = stderror, conf.Interval = conf.Interval))
+  return(
+    list (
+      estimatesMat = estimatesMat,
+      par = estimates,
+      standerror = stderror,
+      conf.Interval = conf.Interval
+    )
+  )
 }
 
 
