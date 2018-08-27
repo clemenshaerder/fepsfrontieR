@@ -6,7 +6,7 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   mat1 <- matrix(NA, length(x$contrasts), length(head1),
                 dimnames = list(x$contrasts, head1))
   mat2 <- matrix(NA, length(x$alpha), length(head2),
-                 dimnames = list(1:length(x$alpha), head2))
+                 dimnames = list(rownames(x$alpha), head2))
 
 
   mat1[, 1] <- x$coefficients
