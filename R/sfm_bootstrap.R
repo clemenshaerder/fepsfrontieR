@@ -1,4 +1,5 @@
-#' SFM.bootstrap performs estimation with B Individual Bootstrap Samples
+#' @title Bootstrap
+#' @description Performs estimation with B Individual Bootstrap Samples
 #'
 #' B Individual Bootstrap Samples are genereated from the input and MLE is
 #' performed for each sample. Unlike i.i.d. bootstrapping, individual
@@ -23,7 +24,8 @@
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 #'      and a confidence interval for each estimate as a data frame.
 
-SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI, cumTime){
+SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
+                          myPar = NULL, lowerInt, sigmaCI, cumTime){
 
   # create data frame of input variables which helps
   # to conduct the rowise bootstrapping

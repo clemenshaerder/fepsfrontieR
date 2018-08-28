@@ -1,5 +1,5 @@
-#' SFM.generate creates a fixed-effects panel stochastic frontier model
-#'
+#' @title Data Generation
+#' @description Creates a fixed-effects panel stochastic frontier model
 #' Data sets created by this function can be applied for sfmfep( ) of
 #' this package fepsfrontieR. The model specificiation are:
 #' alpha_i are fixed-effect parameters drawn from a uniform distribution in [0, 1].
@@ -29,28 +29,43 @@
 # TODO(Clemens): Extend to unbalanced panels
 SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
 
-  if (!is.double (N) | !is.double (Time) | !is.vector (beta) | !is.vector (delta) |
-      !is.numeric (sigma_u) | !is.numeric (sigma_v)  | !is.numeric (mu) |
-      sigma_u <= 0 | sigma_v <= 0){
+  if (!is.double (N) |
+      !is.double (Time) |
+      !is.vector (beta) |
+      !is.vector (delta) |
+      !is.numeric (sigma_u) |
+      !is.numeric (sigma_v)  |
+      !is.numeric (mu) |
+      sigma_u <= 0 |
+      sigma_v <= 0) {
     stop ("Invalid input format of parameters.")
   }
 
   K <- length (beta)
   R <- length (delta)
 
-  # Generate inefficencys for each panel and repeat it from truncated normal distribution (x>a)
-  u_star <- rep (rtruncnorm (N, a = 0, mean = mu, sd = sqrt (sigma_u)), each = Time)
+  # Generate inefficencys for each panel and repeat it
+  # from truncated normal distribution (x>a)
+  u_star <-
+    rep (rtruncnorm (
+      N,
+      a = 0,
+      mean = mu,
+      sd = sqrt (sigma_u)
+    ), each = Time)
 
-  # Generate one alpha intercepts for each panel and repeat it from a uniform distribution
+  # Generate one alpha intercepts for each
+  # panel and repeat it from a uniform distribution
   alpha  <- rep (runif (N, 0, 1), each = Time)
 
 
   # Generate data of the model ---------------------------
   v <- c(rnorm (Time*N, 0, sqrt (sigma_v)))
-  z <- matrix(rnorm (Time*N*R, 0, 1), nrow = Time*N, ncol = R)  # R inefficency determinants
-  x <- matrix(c(rnorm (Time*N*K, rep(alpha, each = K), 1)),
-              nrow = Time*N, ncol = K)  # K explenatory variables using alpha as mean
-
+  # R inefficency determinants
+  z <- matrix(rnorm (Time*N*R, 0, 1), nrow = Time*N, ncol = R)
+  # K explenatory variables using alpha as mean
+  x <- matrix(c(rnorm (Time * N * K, rep(alpha, each = K), 1)),
+              nrow = Time * N, ncol = K)
   h <- exp (z %*% delta)
   u <- h * u_star
   epsilon <- v - u
