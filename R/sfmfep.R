@@ -424,9 +424,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   if (bootstrap == F){
     if (!is.null(sigmaCI)){
       # A data frame is returned
-      conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
+      c.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
                               alpha = sigmaCI, df = df)
-      standerror <- conf.Interval$standerror
+      conf.Interval <- c.Interval[, c(2,3)]
+      standerror <- c.Interval$standerror
       # If the optimizer is not finding a valid ouput hessian(..)
       # creates a matrix of nans
     } else if( any(is.nan(hes) == T)){
