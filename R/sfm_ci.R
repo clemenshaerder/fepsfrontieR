@@ -12,24 +12,24 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
   # Exclusion of improper Fisher entries  ---------------------------
 
-  indexIncludeVar <- which (diag (fisher_info) >= 0)
-
-  if (any (diag (fisher_info) < 0) == T) {
-    # If the Hessian Matrix is indefinite, we can not calculate Standard Errors.
-    # Occures if eigenvalues of the Hessian are != 0 (estimates are saddle points)
-    indexExcludeVar <- which (diag (fisher_info) < 0)
-    cat (
-      "Could not compute Standard Errors & Confidence Interval for:",
-      names(estimates)[indexExcludeVar],
-      "(negative Fisher Information )"
-    )
-  }
-
-  standerror <- rep(NA, length (estimates))
-
-  # Calculation of CIs  ---------------------------
-
   if (exists ("fisher_info") && dim (fisher_info)[1] > 0){
+
+    indexIncludeVar <- which (diag (fisher_info) >= 0)
+
+    if (any (diag (fisher_info) < 0) == T) {
+      # If the Hessian Matrix is indefinite, we can not calculate Standard Errors.
+      # Occures if eigenvalues of the Hessian are != 0 (estimates are saddle points)
+      indexExcludeVar <- which (diag (fisher_info) < 0)
+      cat (
+        "Could not compute Standard Errors & Confidence Interval for:",
+        names(estimates)[indexExcludeVar],
+        "(negative Fisher Information )"
+      )
+    }
+
+    standerror <- rep(NA, length (estimates))
+
+    # Calculation of CIs  ---------------------------
 
     # Calculates standarderror only for valid optimas
     standerror[indexIncludeVar] <-
@@ -83,6 +83,6 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
     # else exist(fisher_info) = F -> We don`t compute any CIs
     # User is informed that the Hessian Matrix is not valid.
     # It does not stop() terminate other functions applying this function.
-    cat ("Hessian Matrix is singular / indefinite. Could not calculate CIs")
+    warning ("Hessian Matrix is singular / indefinite. Could not calculate CIs")
   }
 }
