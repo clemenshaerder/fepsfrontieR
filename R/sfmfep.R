@@ -34,14 +34,14 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-#' data <- sfm.pdata1
+#' paneldata <- panelgdp
 #'
 #' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
-#'         B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
+#'     B = 500, method = "firstdiff", N = 100, Time = 6, data = paneldata)
 #' summary(wh.1)
-#' p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
-#'          method = "firstdiff", N = 82, Time = 28, data = panelgdp)
-#' summary(p.gdp)
+#' fit.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
+#'     method = "firstdiff", N = 82, Time = 28, data = paneldata)
+#' summary(fit.gdp)
 #' @export
 
 
@@ -196,6 +196,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     if (is.null (panel) || try (exists (panel, data) == F, silent = T)){
       stop ("Couldnt match input *panel* with colnames")
     } else {
+      require(dplyr)  # TODO(Clemens) -> delete that. Just added it, cuase Rouven can not install it
       # Finally, if only panel is chosen or all three options we use panel to get N & T
       sel.data <- cbind (sel.data, data[panel])  # adds panel to the selected data
       sel.data <- sel.data %>% arrange_(.dots = panel)  # sort the panels
