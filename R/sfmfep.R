@@ -46,8 +46,6 @@
 #' summary(fit.gdp)
 #' @export
 
-sfmfep(formula = l ~ y + (h), bootstrap = F, method = "firstdiff", panel="country", data = panelgdp)
-
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
                    bootstrap = F, B = NULL, myPar = c(sigma_u = NULL,
@@ -127,10 +125,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     }
   }
 
-  if ( (!is.vector (panel) || !is.character(panel)) && !is.null(panel)){
-    stop("*panel* must be either a vector or a column name of your data,
-         describing the affiliation of your data.")
-  }
+  # if ( !any(!is.vector (panel) | !is.character(panel)) && is.null(panel)){
+  #   stop("*panel* must be either a vector or a column name of your data,
+  #        describing the affiliation of your data.")
+  # }
 
   # Data Wrangling & Error handling of group, N & T  & myPar ---------------------------
 
