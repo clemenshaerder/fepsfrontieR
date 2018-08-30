@@ -7,12 +7,12 @@
 \format{A data frame with 60 rows and k+r+1 variables:
 \describe{
   \item{gr}{2 groups of producers (unsorted)}
-  \item{x...}{..}
-  ...
+  \item{x1}{First explenatory variable}
+  \item{x2}{Second explenatory variable}
+  \item{y}{The response variable}
+  \item{z1}{First inefficency determinant}
+  \item{z2}{Second inefficency determinant}
 }}
-\source{
-\url{http://www.diamondse.info/}
-}
 \usage{
 sfm.data
 }

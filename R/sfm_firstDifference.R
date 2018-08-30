@@ -12,7 +12,6 @@
 #'     T to obtain the -sum of log.likelihood)
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
-#' @export
 
 SFM.firstDiff <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                           cumTime, xv, y, z, N = NULL,  Time = NULL, mu=0,

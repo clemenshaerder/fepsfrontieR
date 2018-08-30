@@ -52,9 +52,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   call <- match.call ()
 
+
   # Error handling of input ---------------------------
-
-
 
   # Tests if a correct formula has been plugged in (i.e. y ~ x...)
   # We do not include the option to add y ~ . , as it is not possible to identify the z variables.
@@ -125,6 +124,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     }
   }
 
+  if ( (!is.vector (panel) || !is.character(panel)) && !is.null(panel)){
+    stop("*panel* must be either a vector or a column name of your data,
+         describing the affiliation of your data.")
+  }
 
   # Data Wrangling & Error handling of group, N & T  & myPar ---------------------------
 
@@ -158,8 +161,15 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # N & T, or panel must be assign, else we can not compute N & T
   # If only panel and N & T is assigned, we use panel
-
   # First, we check if no option is defined
+  if (length (panel) > 1){
+    # get the column of the specified vector (e.g. data$panel)
+    try (colPanel <- which(data == panel,  arr.ind = T)[1,2], silent = F)
+    if (!exists("colPanel")){
+      stop ("*panel* must be a column in your data.")
+    }
+    panel <- colnames (data)[colPanel]
+  }
   if ((is.null (N) | is.null (Time)) & is.null (panel) ){
     stop ("You have to either specify N = panels & Time = obs. per panel
           or provide a panel column")
@@ -320,6 +330,9 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       # As we dont estimate optim.SFM list doesn´t exit.
       # To perform further calculations we create and assign essential inputs.
       optim.SFM     <- NULL
+      if (is.null (myPar)){
+        stop ("*myPar* must be specified to fit your model.")
+      }
       optim.SFM$par <- myPar  # provided parameters are used as parameters
   }
 
