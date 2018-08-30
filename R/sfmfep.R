@@ -52,9 +52,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   call <- match.call ()
 
+
   # Error handling of input ---------------------------
-
-
 
   # Tests if a correct formula has been plugged in (i.e. y ~ x...)
   # We do not include the option to add y ~ . , as it is not possible to identify the z variables.
@@ -125,6 +124,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     }
   }
 
+  if ( (!is.vector (panel) || !is.character(panel)) && !is.null(panel)){
+    stop("*panel* must be either a vector or a column name of your data,
+         describing the affiliation of your data.")
+  }
 
   # Data Wrangling & Error handling of group, N & T  & myPar ---------------------------
 
@@ -158,8 +161,15 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # N & T, or panel must be assign, else we can not compute N & T
   # If only panel and N & T is assigned, we use panel
-
   # First, we check if no option is defined
+  if (length (panel) > 1){
+    # get the column of the specified vector (e.g. data$panel)
+    try (colPanel <- which(data == panel,  arr.ind = T)[1,2], silent = F)
+    if (!exists("colPanel")){
+      stop ("*panel* must be a column in your data.")
+    }
+    panel <- colnames (data)[colPanel]
+  }
   if ((is.null (N) | is.null (Time)) & is.null (panel) ){
     stop ("You have to either specify N = panels & Time = obs. per panel
           or provide a panel column")
@@ -244,7 +254,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
         if (method == "within"){
           optim.SFM <- try (nlminb (objective = SFM.within,
                                     lower = l.int,
-                                    # hessian = T,
                                     start = myPar,
                                     Time = Time.input,
                                     N = N.input,
@@ -256,7 +265,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
         } else {
           optim.SFM <- try (nlminb (objective = SFM.firstDiff,
                                     lower = l.int,
-                                    # hessian = T,
                                     start = myPar,
                                     Time = Time.input,
                                     N = N.input,
@@ -322,35 +330,36 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       # As we dont estimate optim.SFM list doesn´t exit.
       # To perform further calculations we create and assign essential inputs.
       optim.SFM     <- NULL
+      if (is.null (myPar)){
+        stop ("*myPar* must be specified to fit your model.")
+      }
       optim.SFM$par <- myPar  # provided parameters are used as parameters
   }
 
   # derive the Hessian Matrix based on estimates from the optimization
   if (bootstrap == F){ # not required when bootstrapping is chosen
     if (method == "within"){
-      hes <- hessian(SFM.within,
-                     method = "Richardson",
-                     x = optim.SFM$par,
-                     xv = x.dat, y = y.dat, z = z.dat,
-                     N = N.input,
-                     Time = Time.input,
-                     mu = mu,
-                     cumTime = cumTime,
-                     K = K, R = R,
-                     # optim = T required for computation
-                     optim = T)
+      hes <- numDeriv::hessian(SFM.within,
+                               x = optim.SFM$par,
+                               xv = x.dat, y = y.dat, z = z.dat,
+                               N = N.input,
+                               Time = Time.input,
+                               mu = mu,
+                               cumTime = cumTime,
+                               K = K, R = R,
+                               # optim = T required for computation
+                               optim = T)
     } else { # else use firstDiff
-      hes <- hessian(SFM.firstDiff,
-                     method = "Richardson",
-                     x = optim.SFM$par,
-                     xv = x.dat, y = y.dat, z = z.dat,
-                     N = N.input,
-                     Time = Time.input,
-                     mu = mu,
-                     cumTime = cumTime,
-                     K = K, R = R,
-                     # optim = T required for computation
-                     optim = T)
+      hes <- numDeriv::hessian(SFM.firstDiff,
+                               x = optim.SFM$par,
+                               xv = x.dat, y = y.dat, z = z.dat,
+                               N = N.input,
+                               Time = Time.input,
+                               mu = mu,
+                               cumTime = cumTime,
+                               K = K, R = R,
+                               # optim = T required for computation
+                               optim = T)
     }
   }
 
@@ -378,27 +387,29 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # log.ll is obtained from the model as nlminb is not primarily used.
   if (estimate == F || bootstrap == T){
-    optim.SFM$objective <- sum (ret.list$log.ll*-1)
+    optim.SFM$objective <- sum (ret.list$log.ll * -1)
   }
 
   # Need an error handler when the model isnt well defined
-  if (is.nan(optim.SFM$objective) || optim.SFM$objective == Inf ||  optim.SFM$objective < 0){
+  if (is.nan(optim.SFM$objective) || optim.SFM$objective == Inf ||
+      optim.SFM$objective < 0){
     stop ("Optimizer nlminb( ) could not find a valid solution.
-           Try different starting points.")
+           Try different starting points with *myPar* or adapt the model.")
   }
 
 
   # Calculate Inefficencys  ---------------------------
 
-  inefficency <- SFM.inindex (h = ret.list$h, sigma2star = ret.list$sigma_2star, cumTime = cumTime,
-                              mu2star = ret.list$mu_2star, N = N.input, Time = Time.input)
+  inefficency <- SFM.inindex (h = ret.list$h, sigma2star = ret.list$sigma_2star,
+                              cumTime = cumTime, mu2star = ret.list$mu_2star,
+                              N = N.input, Time = Time.input)
   if (!is.null (panel)){
     # if panel is specified, we assign the respective names to the inefficencys
     rownames (inefficency) <- as.matrix (panelName)
   }
 
 
-  # Recover Alpha  ---------------------------
+  # Recover Alpha (fixed-effects) ---------------------------
 
   estimate.sigma_u  <- optim.SFM$par[1]
   estimate.sigma_v  <- optim.SFM$par[2]
@@ -422,24 +433,25 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # sigmaCI can be a vector of significance levels
   if (bootstrap == F){
-    if (!is.null(sigmaCI)){
+    if (!is.null (sigmaCI)){
       # A data frame is returned
-      c.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
-                              alpha = sigmaCI, df = df)
+      c.Interval <- SFM.CI (estimates = optim.SFM$par, hessianMatrix = hes,
+                            alpha = sigmaCI, df = df)
+
       conf.Interval <- c.Interval[, c(2,3)]
-      standerror <- c.Interval$standerror
+      standerror    <- c.Interval$standerror
       # If the optimizer is not finding a valid ouput hessian(..)
-      # creates a matrix of nans
+      # creates a matrix of nans # check if this is still required
     } else if( any(is.nan(hes) == T)){
       conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
       standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
-    } else {
+    } else { # if no CI is wanted we return NAs
       conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
       standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
     }
   } else { # else bootstrap = T
     conf.Interval <- optim.SFM$conf.Interval # CI is calculated by Bootstrapping
-    standerror <- optim.SFM$standerror
+    standerror    <- optim.SFM$standerror
   }
 
 
@@ -449,10 +461,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   AIC <- -2 * -1 * optim.SFM$objective + 2 * length (optim.SFM$par)
   BIC <- -2 * -1 * optim.SFM$objective + length (optim.SFM$par) * log (dim (y.dat)[1])
 
-  # What is correct?
-  # AIC <- 2  * optim.SFM$objective + 2 * length (optim.SFM$par)
-  # BIC <- 2  * optim.SFM$objective + length (optim.SFM$par) * log(dim (y.dat)[1])
-
 
   # Output  ---------------------------
 
@@ -461,22 +469,22 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                  estimate = estimate)
   } else {
     res <- list (call = call,
-               par = myPar,
-               coefficients = optim.SFM$par,
-               aic = AIC,
-               bic = BIC,
-               estimate = estimate,
-               conf = conf.Interval,
-               alpha = alpha,
-               Ineff = inefficency,
-              # hessian = hes,
-               standerror = standerror,
-               contrasts = c(attr (optim.SFM$par, "names")),
-               objective = optim.SFM$objective,
-               bootstrap = bootstrap,
-               method = method,
-               B = B,
-               tvalue = NULL
+                 par = myPar,
+                 coefficients = optim.SFM$par,
+                 aic = AIC,
+                 bic = BIC,
+                 estimate = estimate,
+                 conf = conf.Interval,
+                 alpha = alpha,
+                 Ineff = inefficency,
+                 # hessian = hes,
+                 standerror = standerror,
+                 contrasts = c(attr (optim.SFM$par, "names")),
+                 objective = optim.SFM$objective,
+                 bootstrap = bootstrap,
+                 method = method,
+                 B = B,
+                 tvalue = NULL
                )
   }
 

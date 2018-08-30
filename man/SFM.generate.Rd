@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_generate.R
 \name{SFM.generate}
 \alias{SFM.generate}
-\title{SFM.generate creates a fixed-effects panel stochastic frontier model}
+\title{Data Generation}
 \usage{
 SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu = 0)
 }
@@ -30,6 +30,7 @@ of the stochastic inefficency.}
 A data.frame( ) including x, y, z & alpha variables
 }
 \description{
+Creates a fixed-effects panel stochastic frontier model
 Data sets created by this function can be applied for sfmfep( ) of
 this package fepsfrontieR. The model specificiation are:
 alpha_i are fixed-effect parameters drawn from a uniform distribution in [0, 1].
@@ -38,7 +39,7 @@ z_it is drawn from a standard normal distribution.
 u_i (inefficency) is drawn from a truncated normal distribution with N(mu, sigma_u).
 }
 \examples{
-exampleSFM <- datsSFM.generate(N = 20, Time = 5, beta = c(0.5,0,9,3),
+exampleSFM <- SFM.generate(N = 20, Time = 5, beta = c(0.5,0.2,9,3),
 delta = (0.5,0.1,2), sigma_u = 0.2, sigma_v = 0.1)
 
 exampleSFM

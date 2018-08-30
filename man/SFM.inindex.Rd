@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_inefficency.R
 \name{SFM.inindex}
 \alias{SFM.inindex}
-\title{< calculate the inefficiency of each individuum >}
+\title{Inefficiency Index}
 \usage{
 SFM.inindex(h, sigma2star, mu2star, N, Time, method, cumTime)
 }
@@ -11,11 +11,10 @@ SFM.inindex(h, sigma2star, mu2star, N, Time, method, cumTime)
 1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients}
 }
 \value{
-< returns the inefficiency for each individuum >
+returns the mean ineffieciency of each panel
 }
 \description{
-< calculate the inefficiency of each individuum >
-}
-\examples{
-< an example >
+Estimator for the inefficiency based on the conditional expectation of "u"
+on "epsilon". The estimator does not require alpha and thus not suffer from the
+approximation problem.
 }

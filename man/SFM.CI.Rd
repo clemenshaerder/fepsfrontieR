@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_ci.R
 \name{SFM.CI}
 \alias{SFM.CI}
-\title{< Computes Confidence Intervals for the regression coefficients based on the Hessian Matrix>}
+\title{Confidence Intervals}
 \usage{
 SFM.CI(estimates, hessianMatrix, alpha, N, Time, df)
 }
@@ -14,7 +14,7 @@ SFM.CI(estimates, hessianMatrix, alpha, N, Time, df)
 < Describe what is returned when applying this functinon >
 }
 \description{
-< Computes Confidence Intervals for the regression coefficients based on the Hessian Matrix>
+Computes Confidence Intervals for the regression coefficients based on the Hessian Matrix
 }
 \examples{
 < an example >

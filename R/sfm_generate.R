@@ -20,13 +20,12 @@
 #' of the stochastic inefficency.
 #' @return A data.frame( ) including x, y, z & alpha variables
 #' @examples
-#' exampleSFM <- datsSFM.generate(N = 20, Time = 5, beta = c(0.5,0,9,3),
+#' exampleSFM <- SFM.generate(N = 20, Time = 5, beta = c(0.5,0.2,9,3),
 #' delta = (0.5,0.1,2), sigma_u = 0.2, sigma_v = 0.1)
 #'
 #' exampleSFM
 #' @export
 
-# TODO(Clemens): Extend to unbalanced panels
 SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
 
   if (!is.double (N) |
@@ -46,13 +45,8 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
 
   # Generate inefficencys for each panel and repeat it
   # from truncated normal distribution (x>a)
-  u_star <-
-    rep (rtruncnorm (
-      N,
-      a = 0,
-      mean = mu,
-      sd = sqrt (sigma_u)
-    ), each = Time)
+  u_star <- rep (truncnorm::rtruncnorm ( N, a = 0, mean = mu,
+                                         sd = sqrt (sigma_u)), each = Time)
 
   # Generate one alpha intercepts for each
   # panel and repeat it from a uniform distribution
@@ -75,7 +69,7 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
   y <- alpha + x%*%beta + epsilon
 
   # nice output with dplyr -> need dplyr dependency anyhow for bootstrapping
-  returnTibble <- as_tibble (data.frame (x = x, y = y, z = z, alpha = alpha))
+  returnTibble <- dplyr::as_tibble (data.frame (x = x, y = y, z = z, alpha = alpha))
   return (returnTibble)
 }
 

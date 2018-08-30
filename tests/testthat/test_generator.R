@@ -21,11 +21,11 @@ test_that ("sfmfep works", {
   boot = F
   B = NULL
   sigmaCI <- 0.05
-  estimate = T
+  estimate = F
   panel = NULL
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 2, method = method,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = method,
                           N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 
@@ -43,7 +43,17 @@ test_that ("sfmfep works", {
   expect_error ( sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
                          N=2,Time=c(30,29), data = test.data, mu = mu, myPar = myPar) )
 
-  # Tests if option "panel" works TODO:(currently throws a NaN but result is correct)
+  # Tests if option "panel" works when we specify the column.
+  panelColTest1 <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+                          panel = test.data$gr, data = test.data, mu = mu, myPar = myPar)
+  expect_type (object = panelColTest1, type = "list")
+
+  # Tests if option "panel" works when we specify the column.
+  panelColTest2 <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+                          panel = test.data[, 1], data = test.data, mu = mu, myPar = myPar)
+  expect_type (object = panelColTest2, type = "list")
+
+  # Tests if option "panel" works
   panelTest <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
                        panel = "gr", data = test.data, mu = mu, myPar = myPar)
   expect_type (object = panelTest, type = "list")
@@ -72,7 +82,7 @@ test_that ("sfmfep works", {
   # Tests unbalanced panels with panels without CI
   test.data <- test.data[-60, ]
   unbalancedpanel <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
-                       data = test.data, mu = mu, sigmaCI = NULL,
+                       data = test.data, mu = mu, sigmaCI = 0.05,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = unbalancedpanel, type = "list")
 
@@ -149,6 +159,9 @@ context ("SFM.within / SFM.firstDiff")
    # test_that ("SFM.within / SFM.firstDiff", {
 
 })
- # devtools::install_github("clemenshaerder/fepsfrontieR")
- # p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10, method = "firstdiff",
- #                 N = 82, Time = 28, data = panelgdp, panel= "country")
+# devtools::install_github("clemenshaerder/fepsfrontieR")
+# data <- SFM.generate(100,10,c(0.5,1,4),0.3,0.2,0.1, mu=1)
+# system.time(
+#  p.gdp <- sfmfep(formula = y ~ x.1 + x.2 + (z), bootstrap = T, B = 10, method = "within",
+#                   N = 100, Time = 10, data = data))
+# firstDiffBoot

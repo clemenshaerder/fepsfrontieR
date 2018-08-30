@@ -2,8 +2,7 @@
 % Please edit documentation in R/sfmfep.R
 \name{sfmfep}
 \alias{sfmfep}
-\title{Estimates a Stochastic Frontier Model for Fixed-Effects using
-within transformation}
+\title{Fixed effect stochastic Frontier Model}
 \usage{
 sfmfep(formula, data, panel = NULL, N = NULL, Time = NULL,
   method = "firstdiff", mu = 0, sigmaCI = 0.05, estimate = T,
@@ -53,11 +52,19 @@ sfmfep returns an object of class S3. The function summary( )
     TODO(): Add all output components here
 }
 \description{
+Estimates a Stochastic Frontier Model for Fixed-Effects.
 sfmfep is used to fit fixed-effect stochastic frontier models for panel data
 using a specified model transformation. Bootstrapping can be performed to
 calculate the standard errors instead of a numerical deriviation
 via the hessian matrix.
 }
 \examples{
-< an example where a data set is created via sfm.generate>
+data <- sfm.pdata1
+
+wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
+        B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
+summary(wh.1)
+p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
+         method = "firstdiff", N = 82, Time = 28, data = panelgdp)
+summary(p.gdp)
 }
