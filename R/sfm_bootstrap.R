@@ -82,8 +82,9 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
       if ((Sys.info()[1] == "Windows") == F){
         stop ("Parallel computing is currently only available for OS Windows.")
       }
+
       no_of_cores = parallel::detectCores()
-      cl = parallel::makeCluster(no_of_cores, type="PSOCK")
+      cl = parallel::makeCluster(no_of_cores, type = "PSOCK")
 
       # We provide each cluster all variables
       optim <- T

@@ -23,7 +23,7 @@ test_that ("sfmfep works", {
   sigmaCI <- 0.05
   estimate = F
   panel = NULL
-  parallel = T
+  parallel = F
 
   # tests if bootstrapping works for method = "firstdiff"
   firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10,

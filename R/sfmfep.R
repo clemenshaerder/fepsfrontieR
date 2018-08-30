@@ -1,13 +1,14 @@
 #' @title Fixed effect stochastic Frontier Model
 #' @description Estimates a Stochastic Frontier Model for Fixed-Effects.
-#' sfmfep is used to fit fixed-effect stochastic frontier models for panel data
-#' using a specified model transformation. Bootstrapping can be performed to
-#' calculate the standard errors instead of a numerical deriviation
-#' via the hessian matrix.
+#'     sfmfep is used to fit fixed-effect stochastic frontier models for panel data
+#'     using a specified model transformation. Bootstrapping can be performed to
+#'     calculate the standard errors instead of a numerical deriviation
+#'     via the hessian matrix. Windows user can further use parallization for
+#'     bootstrapping to enhance computational power.
 #' @param formula an object of class "formula" in the form of
-#' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
+#'     y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
 #' @param data an optional data frame, list or environment (or object coercible by
-#' as.data.frame to a data frame) containing the variables in the model.
+#'     as.data.frame to a data frame) containing the variables in the model.
 #' @param panel an optional vector specifying the panels to be used in the fitting process.
 #' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param N an optional integer specifying the total amount of panels in the data set.
@@ -19,6 +20,10 @@
 #'     performed. "B" must be specified.
 #' @param B is a required input for Bootstrap = TRUE. It defines
 #'     the amount of bootstrap samples.
+#' @param parallel is an optional input for Bootstrap = TRUE. If TRUE, bootstrapping
+#'     is parallized to all existing cores of the CPU to greatly enhance computational
+#'     power. Note, that it is only available for the operating system Windows.
+#'     Using method = "firstdiff" is adviced.
 #' @param sigmaCI is an optional vector specifying the significance
 #'     values of the confidence intervals for the MLE estimates.
 #' @param estimate TRUE or FALSE specifies if "myPar" is used as
@@ -42,7 +47,7 @@
 #' paneldata <- panelgdp
 #'
 #' fit.gdp <- sfmfep(formula = l ~ y + (h), bootstrap = T, B = 10,
-#'     method = "firstdiff", N = 82, Time = 28, data = paneldata)
+#'     method = "firstdiff", panel = "country", data = paneldata)
 #' summary(fit.gdp)
 #' @export
 
@@ -52,7 +57,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
   call <- match.call ()
-
 
   # Error handling of input ---------------------------
 
