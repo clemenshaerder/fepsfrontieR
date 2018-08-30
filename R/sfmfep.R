@@ -1,6 +1,5 @@
-#' Estimates a Stochastic Frontier Model for Fixed-Effects using
-#' within transformation
-#'
+#' @title Fixed effect stochastic Frontier Model
+#' @description Estimates a Stochastic Frontier Model for Fixed-Effects.
 #' sfmfep is used to fit fixed-effect stochastic frontier models for panel data
 #' using a specified model transformation. Bootstrapping can be performed to
 #' calculate the standard errors instead of a numerical deriviation
@@ -46,14 +45,16 @@
 #' @export
 
 
-sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = "firstdiff",
-                   mu = 0,  sigmaCI = 0.05, estimate = T, bootstrap = F, B = NULL,
-                   myPar = c(sigma_u = NULL, sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
+sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
+                   method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
+                   bootstrap = F, B = NULL, myPar = c(sigma_u = NULL,
+                   sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
+  call <- match.call ()
 
   # Error handling of input ---------------------------
 
-  call <- match.call ()
+
 
   # Tests if a correct formula has been plugged in (i.e. y ~ x...)
   # We do not include the option to add y ~ . , as it is not possible to identify the z variables.
@@ -423,9 +424,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   if (bootstrap == F){
     if (!is.null(sigmaCI)){
       # A data frame is returned
-      conf.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
+      c.Interval <- SFM.CI(estimates = optim.SFM$par, hessianMatrix = hes,
                               alpha = sigmaCI, df = df)
-      standerror <- conf.Interval$standerror
+      conf.Interval <- c.Interval[, c(2,3)]
+      standerror <- c.Interval$standerror
       # If the optimizer is not finding a valid ouput hessian(..)
       # creates a matrix of nans
     } else if( any(is.nan(hes) == T)){
@@ -478,6 +480,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL, method = 
   }
 
   class (res) <- c(res$class, "sfmfep")
+
   res
 }
 
