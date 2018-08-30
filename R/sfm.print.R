@@ -1,6 +1,6 @@
 print.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
-  if(x$estimate == T){
+  if(x$estimate){
     x$out <- setNames(x$coefficients, x$contrasts)
 
     cat("\nCall: ", "\n",
