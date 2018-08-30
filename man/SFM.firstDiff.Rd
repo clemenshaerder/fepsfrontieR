@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_firstDifference.R
 \name{SFM.firstDiff}
 \alias{SFM.firstDiff}
-\title{Performs a first-difference transformation to a Stochastic Frontier Model}
+\title{First Differnces}
 \usage{
 SFM.firstDiff(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   cumTime, xv, y, z, N = NULL, Time = NULL, mu = 0, optim = F,

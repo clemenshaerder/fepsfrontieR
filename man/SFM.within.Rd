@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_within.R
 \name{SFM.within}
 \alias{SFM.within}
-\title{Performs a within transformation to a Stochastic Frontier Model}
+\title{Within}
 \usage{
 SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
   xv, y, z, N = NULL, Time = NULL, mu = 0, optim = F, K = NULL,
@@ -32,5 +32,8 @@ If optim = T the log.likelihood is returned of all panels.
     If optim = F the model fit is returned including all important model variables.
 }
 \description{
-Performs a within transformation to a Stochastic Frontier Model
+Performs a within transformation to a Stochastic Frontier Model.
+By within-transformation, the sample mean of each panel is subtracted
+from every observation in the panel. The transformation thus removes
+the time-invariant individual effect from the model
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm_alpha.R
 \name{SFM.alpha}
 \alias{SFM.alpha}
-\title{< Recovers the individual fixed effects for each individuum >}
+\title{Alpha}
 \usage{
 SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime)
 }
@@ -21,8 +21,8 @@ SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime)
 recovered values of individual fixed effects
 }
 \description{
-< Recovers the individual fixed effects for each individuum >
-}
-\examples{
-< an example >
+Recovers the individual fixed effects by using the first-order condition for
+alpha from the untransformed log-likelihood function of the model assuming
+all other parameters are known. Altough, the variance of alpha is high for small
+sample sized date.
 }
