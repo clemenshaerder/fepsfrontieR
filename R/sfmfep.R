@@ -464,7 +464,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       # A data frame is returned
       c.Interval <- SFM.CI (estimates = optim.SFM$par, hessianMatrix = hes,
                             alpha = sigmaCI, df = df)
-      if(!is.null(c.Interval)){
+      if(!is.character(c.Interval)){
         conf.Interval <- c.Interval[, c(2,3)]
         standerror    <- c.Interval$standerror
       } else {
