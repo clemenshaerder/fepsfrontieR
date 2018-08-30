@@ -20,10 +20,10 @@ Imports:
     dplyr (>= 0.7.6),
     stats (>= 3.4.2),
     numDeriv (>= 2016.8-1),
-    parallel (>= 3.4.2)
-Suggests:
-    testthat,
+    parallel (>= 3.4.2),
     MASS (>= 7.3.0)
+Suggests:
+    testthat
 Depends:
     R (>= 3.4.0),
 RoxygenNote: 6.1.0

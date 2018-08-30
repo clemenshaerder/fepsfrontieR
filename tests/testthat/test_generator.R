@@ -23,44 +23,52 @@ test_that ("sfmfep works", {
   sigmaCI <- 0.05
   estimate = F
   panel = NULL
+  parallel = T
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = method,
-                          N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10,
+                          method = method,  N = N, Time = Time, parallel = parallel,
+                          data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 
   # tests if bootstrapping works for method = "within"
-  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = "within",
-                       N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
+  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, parallel = parallel,
+                       method = "firstdiff", N = N, Time = Time, data = test.data,
+                       mu = mu, myPar = myPar)
   expect_type (object = withinBoot, type = "list")
 
   # Tests if optim " N & T" works & mu > 0
-  balancedNT <- sfmfep(formula = t.formula, N = 2, Time = 30, bootstrap = boot, B, method = method,
+  balancedNT <- sfmfep(formula = t.formula, N = 2, Time = 30, bootstrap = boot, B,
+                       method = method, parallel = parallel,
                        data = test.data, mu = 1, myPar = myPar)
   expect_type (object = balancedNT, type = "list")
 
   # unbalanced & incorrect data dimension test
-  expect_error ( sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+  expect_error ( sfmfep (formula = t.formula, method = method,
+                         bootstrap = boot, B = B, parallel = parallel,
                          N=2,Time=c(30,29), data = test.data, mu = mu, myPar = myPar) )
 
   # Tests if option "panel" works when we specify the column.
-  panelColTest1 <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+  panelColTest1 <- sfmfep (formula = t.formula, method = method,
+                           bootstrap = boot, B = B, parallel = parallel,
                           panel = test.data$gr, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = panelColTest1, type = "list")
 
   # Tests if option "panel" works when we specify the column.
-  panelColTest2 <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+  panelColTest2 <- sfmfep (formula = t.formula, method = method,
+                           bootstrap = boot, B = B, parallel = parallel,
                           panel = test.data[, 1], data = test.data, mu = mu, myPar = myPar)
   expect_type (object = panelColTest2, type = "list")
 
   # Tests if option "panel" works
-  panelTest <- sfmfep (formula = t.formula, method = method, bootstrap = boot, B = B,
+  panelTest <- sfmfep (formula = t.formula, method = method,
+                       bootstrap = boot, B = B, parallel = parallel,
                        panel = "gr", data = test.data, mu = mu, myPar = myPar)
   expect_type (object = panelTest, type = "list")
 
   # Tests if defined starting points "myPar" works with Bootstrapping & panel
   panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
-                       data = test.data, mu = mu,
+                       data = test.data, mu = mu, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = panelMyParBoot, type = "list")
 
@@ -69,30 +77,30 @@ test_that ("sfmfep works", {
   # Anyhow, a CI is computed for the other parameters. Thus, there should still be an ouput.
 
   panelEstimateF <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
-                       data = test.data, mu = mu, estimate = F,
+                       data = test.data, mu = mu, estimate = F, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v = 2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = panelEstimateF, type = "list")
 
   # Tests if it works when CIs are not wanted
   panelNoCI <- sfmfep(formula = t.formula, method = method, panel = "gr", bootstrap = boot, B = B,
-                       data = test.data, mu = mu, sigmaCI = NULL,
+                       data = test.data, mu = mu, sigmaCI = NULL, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = panelNoCI, type = "list")
 
   # Tests unbalanced panels with panels without CI
   test.data <- test.data[-60, ]
   unbalancedpanel <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
-                       data = test.data, mu = mu, sigmaCI = 0.05,
+                       data = test.data, mu = mu, sigmaCI = 0.05, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = unbalancedpanel, type = "list")
 
   unbalancedBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
-                            data = test.data, mu = mu, sigmaCI = NULL,
+                            data = test.data, mu = mu, sigmaCI = NULL, parallel = parallel,
                             myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = unbalancedBoot, type = "list")
 
   unbalancedBootNT <- sfmfep(formula = t.formula, method = method, N = 2, Time =c(30,29), bootstrap = T, B = 5,
-                           data = test.data, mu = mu, sigmaCI = 0.05,
+                           data = test.data, mu = mu, sigmaCI = 0.05, parallel = parallel,
                            myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = unbalancedBoot, type = "list")
 

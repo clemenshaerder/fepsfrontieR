@@ -48,7 +48,7 @@
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
-                   bootstrap = F, B = NULL, myPar = c(sigma_u = NULL,
+                   bootstrap = F, B = NULL, parallel = F, myPar = c(sigma_u = NULL,
                    sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
   call <- match.call ()
@@ -114,7 +114,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # Test if bootstrap is correctly specified
   if (!any (bootstrap == c(T, F))){
-    stop ("Invalid input. *bootstrap* must be either True or False")
   }
 
   # Tests if B is correctly specified if bootstrapping is performed
@@ -123,6 +122,11 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       stop("Could not perform calculations.
            B must be an integer > 0")
     }
+  }
+
+  # Tests if parallel is correctly specified if bootstrapping is performed
+  if (!any (parallel == c(T, F))){
+    stop ("Invalid input. *parallel* must be either True or False")
   }
 
 
@@ -245,8 +249,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS for beta
       delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat  # OLS for delta
 
+      # OLS for both sigmas
       e           <- y.dat - x.dat %*% beta.start
-      startSigma  <- (t(e) %*% e) / (sum (Time.input) - (K + R))  # OLS for both sigmas
+      # log to reduce over estimation of "bad" models
+      startSigma  <- log( (t(e) %*% e) / (sum (Time.input) - (K + R)))
 
       myPar       <- c(sigma_u = startSigma,
                       sigma_v = startSigma,
@@ -284,17 +290,21 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                                optim = T)
         }
       } else { # else bootstrap = T use bootstrapping
-        optim.SFM <- SFM.bootstrap (y = y.dat, xv = x.dat, z = z.dat,
+        optim.SFM <- SFM.bootstrap (y = y.dat,
+                                    xv = x.dat,
+                                    z = z.dat,
                                     mu = mu,
                                     N = N.input,
                                     Time = Time.input,
                                     myPar = myPar,
-                                    R = R, K = K,
+                                    R = R,
+                                    K = K,
                                     B = B,
                                     method = method,
                                     lowerInt = l.int,
                                     cumTime = cumTime,
-                                    sigmaCI = sigmaCI)
+                                    sigmaCI = sigmaCI,
+                                    parallel = parallel)
       }
     } else { # else myPar is defined & not NULL
       if (bootstrap == F){
@@ -327,7 +337,9 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                                optim = T)
         }
       } else {  # else bootstrap = T use bootstrapping
-        optim.SFM <- SFM.bootstrap (y = y.dat, xv = x.dat, z = z.dat,
+        optim.SFM <- SFM.bootstrap (y = y.dat,
+                                    xv = x.dat,
+                                    z = z.dat,
                                     mu = mu,
                                     N = N.input,
                                     Time = Time.input,
@@ -337,7 +349,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                                     B = B,
                                     cumTime = cumTime,
                                     lowerInt = l.int,
-                                    sigmaCI = sigmaCI)
+                                    sigmaCI = sigmaCI,
+                                    parallel = parallel)
       }
     }
   } else { # we dont estimate (estimate = F)

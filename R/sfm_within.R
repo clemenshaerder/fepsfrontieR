@@ -15,7 +15,8 @@
 #'     T to obtain the -sum of log.likelihood)
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
-
+#' @export
+#'
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                        cumTime, xv, y, z, N = NULL,  Time = NULL, mu=0,
                        optim = F, K = NULL, R = NULL, seqN = 1:N){
@@ -68,11 +69,10 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   #Thus we can just compute it once for max Time
   mTime <- max (Time)
 
-  PI <-
-    par[2] * (diag (mTime) - 1 / mTime * (matrix (c(rep (1, mTime * mTime
-    )), ncol = mTime)))
+  PI <- par[2] * (diag (mTime) - 1 / mTime *
+        (matrix (c(rep (1, mTime * mTime)), ncol = mTime)))
 
-  try(gPI <- ginv(PI), silent = T)
+  try(gPI <- MASS::ginv(PI), silent = T)
   if (!exists("gPI")) {
     stop (
       "Could not calculate log.likelihood.
@@ -115,30 +115,24 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
     # If SFM.within() is called by an optimizer, we need a negative sum of log.ll
     return (sum ((log.ll) * -1))
   } else {
-    ret.list <-
-      list (
-        x.trans = x.wthn,
-        y.trans = y.wthn,
-        PI,
-        eps.trans = eps.wthn,
-        h.trans = h.wthn,
-        h = h,
-        mu_2star = mu_2star,
-        sigma_2star = sigma_2star,
-        log.ll = log.ll
-      )
-    names (ret.list) <-
-      c(
-        "x.trans",
-        "y.trans",
-        "PI",
-        "eps.trans",
-        "h.trans",
-        "h",
-        "mu_2star",
-        "sigma_2star",
-        "log.ll"
-        )
+    ret.list <- list (x.trans = x.wthn,
+                      y.trans = y.wthn,
+                      PI,
+                      eps.trans = eps.wthn,
+                      h.trans = h.wthn,
+                      h = h,
+                      mu_2star = mu_2star,
+                      sigma_2star = sigma_2star,
+                      log.ll = log.ll)
+    names (ret.list) <- c("x.trans",
+                          "y.trans",
+                          "PI",
+                          "eps.trans",
+                          "h.trans",
+                          "h",
+                          "mu_2star",
+                          "sigma_2star",
+                          "log.ll")
     return (ret.list)
   }
 }

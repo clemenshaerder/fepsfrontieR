@@ -22,7 +22,8 @@
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 #'      and a confidence interval for each estimate as a data frame.
 
-SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, lowerInt, sigmaCI, cumTime){
+SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
+                          myPar = NULL, lowerInt, sigmaCI, cumTime, parallel){
 
   # create data frame of input variables which helps
   # to conduct the rowise bootstrapping
@@ -45,7 +46,6 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
   bootListMat <- lapply(bootList, function(x) do.call (rbind, x))
 
 
-  parallel = F
   if (parallel == F){
     if (method == "within"){
       bootEstimates <- lapply (bootListMat, function(x) nlminb (lower = lowerInt,
@@ -60,10 +60,11 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                                 K = K,
                                                                 R = R,
                                                                 objective = SFM.within,
-                                                                cumTime = cumTime)$par)  # we want only the estimates
+                                                                # we want only the estimates $par
+                                                                cumTime = cumTime)$par)
     } else {
       bootEstimates <- lapply (bootListMat, function(x) nlminb (lower = lowerInt,
-                                                                start = myPar,  # TBD by Rouven
+                                                                start = myPar,
                                                                 Time = Time,
                                                                 N = N,
                                                                 xv = as.matrix (x[, 2:(2+K-1)]),
@@ -74,60 +75,67 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL, 
                                                                 K = K,
                                                                 R = R,
                                                                 objective = SFM.firstDiff,
-                                                                cumTime = cumTime)$par)  # we want only the estimates
+                                                                # we want only the estimates $par
+                                                                cumTime = cumTime)$par)
     }
   } else {  # parallel = T
-    no_of_cores = detectCores()
-    cl = makeCluster(no_of_cores, type="PSOCK")
-    # if (Sys.info()[1] == "Windows")
+      if ((Sys.info()[1] == "Windows") == F){
+        stop ("Parallel computing is currently only available for OS Windows.")
+      }
+      no_of_cores = parallel::detectCores()
+      cl = parallel::makeCluster(no_of_cores, type="PSOCK")
 
-    optim = T
-    myPar <- myPar
-    lowerInt <- lowerInt
-    Time <- Time
-    N <- N
-    bootListMat <- bootListMat
-    mu = mu
-    K <- K
-    R <- R
-    method <- method
-    cumTime <- cumTime
-    cols <- cols
+      # We provide each cluster all variables
+      optim <- T
+      myPar <- myPar
+      lowerInt <- lowerInt
+      Time <- Time
+      N <- N
+      bootListMat <- bootListMat
+      mu <- mu
+      K <- K
+      R <- R
+      method <- method
+      cumTime <- cumTime
+      cols <- cols
 
-    clusterEvalQ(cl, {library(fepsfrontieR)})
-    clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "bootListMat", "mu", "optim",
-                        "K", "R", "method", "cumTime", "cols"), envir=environment())
-    # clusterExport(cl, ls())
+      parallel::clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "cols",
+                          "bootListMat", "mu", "optim", "K", "R", "method", "cumTime"), envir = environment())
 
-    if (method == "within"){
-      bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
-                                                                           start = myPar,
-                                                                           Time = Time,
-                                                                           N = N,
-                                                                           xv = as.matrix (x[, 2:(2+K-1)]),
-                                                                           y = as.matrix (x[, 1]),
-                                                                           z = as.matrix (x[, (2+K):cols]),
-                                                                           mu = mu,
-                                                                           optim = T,
-                                                                           K = K, R = R,
-                                                                           objective = SFM.within,
-                                                                           cumTime = cumTime)$par)  # we want only the estimates
-    } else {
-      bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
-                                                                           start = myPar,  # TBD by Rouven
-                                                                           Time = Time,
-                                                                           N = N,
-                                                                           xv = as.matrix (x[, 2:(2+K-1)]),
-                                                                           y = as.matrix (x[, 1]),
-                                                                           z = as.matrix (x[, (2+K):cols]),
-                                                                           mu = mu,
-                                                                           optim = T,
-                                                                           K = K,
-                                                                           R = R,
-                                                                           objective = SFM.firstDiff,
-                                                                           cumTime = cumTime)$par)  # we want only the estimates
-    }
-    stopCluster(cl)
+      # we assign each cluster all required librarys
+      parallel::clusterEvalQ(cl, {library(fepsfrontieR)})
+
+      if (method == "within"){
+        bootEstimates <- parallel::parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+                                                                             start = myPar,
+                                                                             Time = Time,
+                                                                             N = N,
+                                                                             xv = as.matrix (x[, 2:(2+K-1)]),
+                                                                             y = as.matrix (x[, 1]),
+                                                                             z = as.matrix (x[, (2+K):cols]),
+                                                                             mu = mu,
+                                                                             optim = T,
+                                                                             K = K, R = R,
+                                                                             objective = SFM.within,
+                                                                             # we want only the estimates $par
+                                                                             cumTime = cumTime)$par)
+      } else {
+        bootEstimates <- parallel::parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+                                                                             start = myPar,
+                                                                             Time = Time,
+                                                                             N = N,
+                                                                             xv = as.matrix (x[, 2:(2+K-1)]),
+                                                                             y = as.matrix (x[, 1]),
+                                                                             z = as.matrix (x[, (2+K):cols]),
+                                                                             mu = mu,
+                                                                             optim = T,
+                                                                             K = K,
+                                                                             R = R,
+                                                                             objective = SFM.firstDiff,
+                                                                             # we want only the estimates $par
+                                                                             cumTime = cumTime)$par)
+      }
+      parallel::stopCluster(cl)
   }
 
 
