@@ -151,7 +151,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
     conf.Interval <- t (apply (estimatesMat, 2,
                                function(x) quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
   } else{
-    conf.Interval <- "NULL"
+    conf.Interval <- NULL
   }
 
   # TODO() we could include a histogram of the estimates and QQ-Plot.

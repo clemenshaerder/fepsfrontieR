@@ -19,7 +19,10 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
        mat1[, 1] <- x$coefficients
        mat1[, 2] <- x$standerror
-       mat1 <- cbind(mat1, x$conf)
+
+        if(!is.null(x$conf)){
+          mat1 <- cbind(mat1, x$conf)
+        }
        } else {
 
          head1 <- c("Coefficients")
@@ -28,7 +31,9 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
                         dimnames = list(x$contrasts, head1))
 
          mat1[, 1] <- x$coefficients
-         mat1 <- cbind(mat1, x$conf)
+         if(!is.null(x$conf)){
+           mat1 <- cbind(mat1, x$conf)
+         }
       }
 
     cat("Call:\n",
