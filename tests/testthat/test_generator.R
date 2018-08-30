@@ -68,8 +68,8 @@ test_that ("sfmfep works", {
 
   # Tests if defined starting points "myPar" works with Bootstrapping & panel
   panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
-                       data = test.data, mu = mu, parallel = parallel,
-                       myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
+                           data = test.data, mu = mu, parallel = parallel,
+                           myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = panelMyParBoot, type = "list")
 
   # Tests if it works when estimates are provided (estimate = F)

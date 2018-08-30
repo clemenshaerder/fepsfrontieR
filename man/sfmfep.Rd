@@ -6,8 +6,8 @@
 \usage{
 sfmfep(formula, data, panel = NULL, N = NULL, Time = NULL,
   method = "firstdiff", mu = 0, sigmaCI = 0.05, estimate = T,
-  bootstrap = F, B = NULL, myPar = c(sigma_u = NULL, sigma_v = NULL,
-  beta = c(NULL), delta = c(NULL)))
+  bootstrap = F, B = NULL, parallel = F, myPar = c(sigma_u = NULL,
+  sigma_v = NULL, beta = c(NULL), delta = c(NULL)))
 }
 \arguments{
 \item{formula}{an object of class "formula" in the form of
@@ -38,6 +38,11 @@ a given stochastic frontier model.}
 \item{B}{is a required input for Bootstrap = TRUE. It defines
 the amount of bootstrap samples.}
 
+\item{parallel}{is an optional input for Bootstrap = TRUE. If TRUE, bootstrapping
+is parallized to all existing cores of the CPU to greatly enhance computational
+power. Note, that it is only available for the operating system Windows.
+Using method = "firstdiff" is adviced.}
+
 \item{myPar}{is a vecor which has to be entered in the following order:
 c(sigma_v, sigma_u, beta = c(), delta = c())}
 
@@ -53,18 +58,21 @@ sfmfep returns an object of class S3. The function summary( )
 }
 \description{
 Estimates a Stochastic Frontier Model for Fixed-Effects.
-sfmfep is used to fit fixed-effect stochastic frontier models for panel data
-using a specified model transformation. Bootstrapping can be performed to
-calculate the standard errors instead of a numerical deriviation
-via the hessian matrix.
+    sfmfep is used to fit fixed-effect stochastic frontier models for panel data
+    using a specified model transformation. Bootstrapping can be performed to
+    calculate the standard errors instead of a numerical deriviation
+    via the hessian matrix. Windows user can further use parallization for
+    bootstrapping to enhance computational power.
 }
 \examples{
-data <- sfm.pdata1
 
-wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
-        B = 500, method = "firstdiff", N = 100, Time = 6, data = data)
+fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2), bootstrap = F,
+    method = "within", N = 30, Time = 2, data = sfm.data)
 summary(wh.1)
-p.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
-         method = "firstdiff", N = 82, Time = 28, data = panelgdp)
-summary(p.gdp)
+
+paneldata <- panelgdp
+
+fit.gdp <- sfmfep(formula = l ~ y + (h), bootstrap = T, B = 10,
+    method = "firstdiff", panel = "country", data = paneldata)
+summary(fit.gdp)
 }
