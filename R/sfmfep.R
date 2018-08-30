@@ -35,8 +35,8 @@
 #'
 #' @examples
 #'
-#' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
-#'     B = 500, method = "firstdiff", N = 100, Time = 6, data = sfm.data)
+#' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2), bootstrap = F,
+#'     method = "within", N = 30, Time = 2, data = sfm.data)
 #' summary(wh.1)
 #'
 #' paneldata <- panelgdp
@@ -45,7 +45,6 @@
 #'     method = "firstdiff", N = 82, Time = 28, data = paneldata)
 #' summary(fit.gdp)
 #' @export
-
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
@@ -246,10 +245,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       beta.start  <- solve (t(x.dat) %*% x.dat) %*% t(x.dat) %*% y.dat  # OLS for beta
       delta.start <- solve (t(z.dat) %*% z.dat) %*% t(z.dat) %*% y.dat  # OLS for delta
 
-      e <- y.dat - x.dat %*% beta.start
-      startSigma <- (t(e) %*% e) / (N.input * min (Time.input) - (K + R))  # OLS for both sigmas
+      e           <- y.dat - x.dat %*% beta.start
+      startSigma  <- (t(e) %*% e) / (sum (Time.input) - (K + R))  # OLS for both sigmas
 
-      myPar      <- c(sigma_u = startSigma,
+      myPar       <- c(sigma_u = startSigma,
                       sigma_v = startSigma,
                       beta = beta.start,
                       delta = delta.start)
