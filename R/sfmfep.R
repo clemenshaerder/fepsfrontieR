@@ -34,16 +34,19 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
+#'
+#' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
+#'     B = 500, method = "firstdiff", N = 100, Time = 6, data = sfm.data)
+#' summary(wh.1)
+#'
 #' paneldata <- panelgdp
 #'
-#' wh.1 <- sfmfep(formula = y ~ x1 + x2 + (z1), bootstrap = T,
-#'     B = 500, method = "firstdiff", N = 100, Time = 6, data = paneldata)
-#' summary(wh.1)
-#' fit.gdp <- sfmfep(formula = y ~ k + l + (h), bootstrap = T, B = 10,
+#' fit.gdp <- sfmfep(formula = l ~ y + (h), bootstrap = T, B = 10,
 #'     method = "firstdiff", N = 82, Time = 28, data = paneldata)
 #' summary(fit.gdp)
 #' @export
 
+sfmfep(formula = l ~ y + (h), bootstrap = F, method = "firstdiff", panel="country", data = panelgdp)
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
