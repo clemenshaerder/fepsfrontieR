@@ -19,7 +19,8 @@ Imports:
     truncnorm (>= 1.0),
     dplyr (>= 0.7.6),
     stats (>= 3.4.2),
-    numDeriv (>= 2016.8-1)
+    numDeriv (>= 2016.8-1),
+    parallel (>= 3.4.2)
 Suggests:
     testthat,
     MASS (>= 7.3.0)
