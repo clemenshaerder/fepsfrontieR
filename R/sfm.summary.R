@@ -1,5 +1,7 @@
 summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
+  if(x$estimate == TRUE){
+
   head1 <- c("Coefficients", "Std.Error", "T-stat")
   head2 <- c("alpha", "inefficiency")
 
@@ -41,6 +43,8 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
       "; BIC:", deparse(round(x$bic, digits)), "\n\n")
 
   printCoefmat(mat2)
-
+  } else {
+    cat("Likelihood:", deparse(round(x$objective, digits)))
+ }
 }
 
