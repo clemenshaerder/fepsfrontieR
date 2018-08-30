@@ -457,7 +457,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   # Output  ---------------------------
 
   if(estimate == F){
-    res <- list (objective = optim.SFM$objective)
+    res <- list (objective = optim.SFM$objective,
+                 estimate = estimate)
   } else {
     res <- list (call = call,
                par = myPar,
