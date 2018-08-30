@@ -1,6 +1,6 @@
 Package: fepsfrontieR
 Type: Package
-Title: Estimation of fixed-effect panel stochastic frontier models (of Wang & Ho) by MLE & Gibbs Sampler
+Title: Estimation of fixed-effect panel stochastic frontier models by MLE
 Version: 0.0.0.9000
 Author: Oliver Dippel, Clemens Haerder
 Maintainer: The package maintainer <clemens.haerder@gmail.com>
@@ -16,17 +16,15 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
-    MASS (>= 7.3.0),
+    truncnorm (>= 1.0),
+    dplyr (>= 0.7.6),
+    stats (>= 3.4.2),
+    numDeriv (>= 2016.8-1)
 Suggests:
-    MASS (>= 7.3.0),
-    testthat
+    testthat,
+    MASS (>= 7.3.0)
 Depends:
     R (>= 3.4.0),
-    dplyr,
-    MASS,
-    truncnorm,
-    stats,
-    numDeriv
 RoxygenNote: 6.1.0
 URL: https://github.com/clemenshaerder/fepsfrontieR
 BugReports: https://github.com/clemenshaerder/fepsfrontieR/issues

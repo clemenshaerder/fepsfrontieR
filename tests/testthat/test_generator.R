@@ -25,12 +25,12 @@ test_that ("sfmfep works", {
   panel = NULL
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = method,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 10, method = method,
                           N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 
   # tests if bootstrapping works for method = "within"
-  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, method = "within",
+  withinBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 10, method = "within",
                        N = N, Time = Time, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = withinBoot, type = "list")
 
@@ -49,7 +49,7 @@ test_that ("sfmfep works", {
   expect_type (object = panelTest, type = "list")
 
   # Tests if defined starting points "myPar" works with Bootstrapping & panel
-  panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
+  panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = F, B = 5,
                        data = test.data, mu = mu,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = panelMyParBoot, type = "list")
