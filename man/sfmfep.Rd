@@ -38,11 +38,6 @@ a given stochastic frontier model.}
 \item{B}{is a required input for Bootstrap = TRUE. It defines
 the amount of bootstrap samples.}
 
-\item{parallel}{is an optional input for Bootstrap = TRUE. If TRUE, bootstrapping
-is parallized to all existing cores of the CPU to greatly enhance computational
-power. Note, that it is only available for the operating system Windows.
-Using method = "firstdiff" is adviced.}
-
 \item{myPar}{is a vecor which has to be entered in the following order:
 c(sigma_v, sigma_u, beta = c(), delta = c())}
 
@@ -58,11 +53,10 @@ sfmfep returns an object of class S3. The function summary( )
 }
 \description{
 Estimates a Stochastic Frontier Model for Fixed-Effects.
-    sfmfep is used to fit fixed-effect stochastic frontier models for panel data
-    using a specified model transformation. Bootstrapping can be performed to
-    calculate the standard errors instead of a numerical deriviation
-    via the hessian matrix. Windows user can further use parallization for
-    bootstrapping to enhance computational power.
+sfmfep is used to fit fixed-effect stochastic frontier models for panel data
+using a specified model transformation. Bootstrapping can be performed to
+calculate the standard errors instead of a numerical deriviation
+via the hessian matrix.
 }
 \examples{
 
@@ -72,7 +66,7 @@ summary(wh.1)
 
 paneldata <- panelgdp
 
-fit.gdp <- sfmfep(formula = l ~ y + (h), bootstrap = T, B = 10,
-    method = "firstdiff", panel = "country", data = paneldata)
+fit.gdp <- sfmfep(formula = l ~ y + (h), method = "firstdiff",
+    panel = "country", data = paneldata)
 summary(fit.gdp)
 }
