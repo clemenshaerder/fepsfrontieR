@@ -6,6 +6,7 @@
 #' @param x is a data frame of the inefficencys per panel.
 #' @param digits defines the amount of digits for the values of the summary
 #' @importFrom stats printCoefmat
+#' @export
 
 summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
