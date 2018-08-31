@@ -4,11 +4,11 @@
 \alias{summary.sfmfep}
 \title{Summarizes a sfmfep fitted model}
 \usage{
-\method{summary}{sfmfep}(x, digits = max(3L, getOption("digits") - 3L),
-  ...)
+\method{summary}{sfmfep}(object, digits = max(3L, getOption("digits") -
+  3L), ...)
 }
 \arguments{
-\item{x}{is a data frame of the inefficencys per panel.}
+\item{object}{is a data frame of the inefficencys per panel.}
 
 \item{digits}{defines the amount of digits for the values of the summary}
 
