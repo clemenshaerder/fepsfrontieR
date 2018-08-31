@@ -1,3 +1,9 @@
+#' @title Print Output for sfmfep
+#' @description A print of valuable variables is done when sfmfep is called.
+#' @param ... Additional arguments to the function
+#' @param x is a data frame of the inefficencys per panel.
+#' @param digits defines the amount of digits for the values of the summary
+
 print.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   if(x$estimate){

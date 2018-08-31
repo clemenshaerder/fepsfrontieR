@@ -51,9 +51,7 @@ c(sigma_v, sigma_u, beta = c(), delta = c())}
 \value{
 sfmfep returns an object of class S3. The function summary( )
     can be used to obtain or print a summary of the results.
-    An object of class "sfmfep" is a list containing at least the
-    following components:
-    TODO(): Add all output components here
+    An object of class "sfmfep" is returned.
 }
 \description{
 Estimates a Stochastic Frontier Model for Fixed-Effects.
