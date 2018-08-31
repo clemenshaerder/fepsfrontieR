@@ -32,10 +32,7 @@
 #' @return
 #'     sfmfep returns an object of class S3. The function summary( )
 #'     can be used to obtain or print a summary of the results.
-#'     An object of class "sfmfep" is a list containing at least the
-#'     following components:
-#'     TODO(): Add all output components here
-#'
+#'     An object of class "sfmfep" is returned.
 #' @examples
 #' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
 #'     method = "within", N = 30, Time = 2, data = sfm.data)
