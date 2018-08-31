@@ -2,10 +2,10 @@
 % Please edit documentation in R/sfm.within.R
 \name{SFM.within}
 \alias{SFM.within}
-\title{Within}
+\title{Within Transformation of a Stochastic Frontier Model}
 \usage{
-SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
-  xv, y, z, N = NULL, Time = NULL, mu = 0, optim = F, K = NULL,
+SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), xv, y, z,
+  N = NULL, Time = NULL, cumTime, mu = 0, optim = F, K = NULL,
   R = NULL, seqN = 1:N)
 }
 \arguments{
@@ -22,10 +22,19 @@ SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), cumTime,
 
 \item{Time}{is a integer (observations per panel)}
 
+\item{cumTime}{ia a vector of the cumulated times of the Time vector.
+It serves as an index for computation.}
+
 \item{mu}{is a number (mean of the truncated normal distribution of the inefficency)}
 
 \item{optim}{is a boolean (set F to obtain a list of model variables.
 T to obtain the -sum of log.likelihood)}
+
+\item{K}{is an integer (# of xv variables)}
+
+\item{R}{is an integer (# of z variables)}
+
+\item{seqN}{is a sequence from 1 to N}
 }
 \value{
 If optim = T the log.likelihood is returned of all panels.
@@ -33,7 +42,7 @@ If optim = T the log.likelihood is returned of all panels.
 }
 \description{
 Performs a within transformation to a Stochastic Frontier Model.
-By within-transformation, the sample mean of each panel is subtracted
-from every observation in the panel. The transformation thus removes
-the time-invariant individual effect from the model
+    By within-transformation, the sample mean of each panel is subtracted
+    from every observation in the panel. The transformation thus removes
+    the time-invariant individual effect from the model
 }

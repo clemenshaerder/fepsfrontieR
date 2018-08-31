@@ -1,29 +1,29 @@
-#' @title Data Generation
+#' @title Data Generation for Stochastic Frontier Models
 #' @description Creates a fixed-effects panel stochastic frontier model
-#' Data sets created by this function can be applied for sfmfep( ) of
-#' this package fepsfrontieR. The model specificiation are:
-#' alpha_i are fixed-effect parameters drawn from a uniform distribution in [0, 1].
-#' x_it is drawn from a normal distribution N(alpha_i, 1).
-#' z_it is drawn from a standard normal distribution.
-#' u_i (inefficency) is drawn from a truncated normal distribution with N(mu, sigma_u).
+#'     Data sets created by this function can be applied for sfmfep( ) of
+#'     this package fepsfrontieR. The model specificiation are:
+#'     alpha_i are fixed-effect parameters drawn from a uniform distribution in [0, 1].
+#'     x_it is drawn from a normal distribution N(alpha_i, 1).
+#'     z_it is drawn from a standard normal distribution.
+#'     u_i (inefficency) is drawn from a truncated normal distribution with N(mu, sigma_u).
 #' @param N is an integer and specifies the amount of panels
 #' @param Time is an integer and specifies the amount of observations per panel
 #' @param beta is a vector of k estimates.
-#' K explenatory varibles will be gerenated.
+#'     K explenatory varibles will be gerenated.
 #' @param delta is a vector of r estimates.
-#' R inefficency determinats will be gerenated.
+#'     R inefficency determinats will be gerenated.
 #' @param sigma_u is postivie numeric and is the variation
-#' of the stochastic inefficency
+#'     of the stochastic inefficency
 #' @param sigma_v is postivie numeric and is the variation
-#' of the zero-mean random error.
+#'     of the zero-mean random error.
 #' @param mu is numeric and is the mean of the truncated normal distribution
-#' of the stochastic inefficency.
+#'     of the stochastic inefficency.
 #' @return A data.frame( ) including x, y, z & alpha variables
 #' @examples
-#' exampleSFM <- SFM.generate(N = 20, Time = 5, beta = c(0.5,0.2,9,3),
-#' delta = (0.5,0.1,2), sigma_u = 0.2, sigma_v = 0.1)
+#'     exampleSFM <- SFM.generate (N = 20, Time = 5, beta = c(0.5, 0.2, 9, 3),
+#'         delta = c(0.5, 0.1, 2), sigma_u = 0.2, sigma_v = 0.1)
 #'
-#' exampleSFM
+#'     exampleSFM
 #' @export
 
 SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
@@ -45,8 +45,8 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
 
   # Generate inefficencys for each panel and repeat it
   # from truncated normal distribution (x>a)
-  u_star <- rep (truncnorm::rtruncnorm ( N, a = 0, mean = mu,
-                                         sd = sqrt (sigma_u)), each = Time)
+  u_star <- rep (truncnorm::rtruncnorm (N, a = 0, mean = mu,
+                                        sd = sqrt (sigma_u)), each = Time)
 
   # Generate one alpha intercepts for each
   # panel and repeat it from a uniform distribution

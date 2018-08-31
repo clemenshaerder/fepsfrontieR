@@ -1,15 +1,20 @@
-#' @title First Differnces
+#' @title First Differnces Transformation of a Stochastic Frontier Model
 #' @description Performs a first-difference transformation to a Stochastic Frontier Model
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
+#' @param cumTime ia a vector of the cumulated times of the Time vector.
+#'     It serves as an index for computation.
 #' @param xv is a n*t x k matrix (explantatory variables)
-#' @param z is a n*t x r matrix (inefficency determinants)
 #' @param y is a n*t x 1 vector (response)
+#' @param z is a n*t x r matrix (inefficency determinants)
 #' @param N is a integer (n - panels)
 #' @param Time is a integer (observations per panel)
 #' @param mu is a integer (mean of the truncated normal distribution of the inefficency)
 #' @param optim is a boolean (set F to obtain a list of model variables.
 #'     T to obtain the -sum of log.likelihood)
+#' @param K is an integer (# of xv variables)
+#' @param R is an integer (# of z variables)
+#' @param seqN is a sequence from 1 to N
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
 

@@ -5,14 +5,6 @@
 \alias{fepsfrontieR}
 \alias{fepsfrontieR-package}
 \title{Estimating Fixed-Effects Panel Stochastic Frontier Models}
-\usage{
-sfmfep(formula, data, group = NULL, N = NULL,
-       Time = NULL, mu = 0,  sigmaCI = 0.05, estimate = T,
-       method = c("firstdifff, within"), bootstrap = F, B = NULL
-       myPar = c(sigma_u, sigma_v, beta = c( ), delta = c( )))
-
-SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu = 0)
-}
 \description{
 A package for estimation of fixed-effect panel stochastic
 frontier models by within or first-difference model transformation

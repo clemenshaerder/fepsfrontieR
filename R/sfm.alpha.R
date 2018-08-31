@@ -1,14 +1,22 @@
-#' @title Alpha
-#' @description Recovers the individual fixed effects by using the first-order condition for
-#' alpha from the untransformed log-likelihood function of the model assuming
-#' all other parameters are known. Altough, the variance of alpha is high for small
-#' sample sized date.
+#' @title Alpha (fixed-effects) Recovery
+#' @description Recovers the individual fixed-effects by using the first-order condition for
+#'     alpha from the untransformed log-likelihood function of the model assuming
+#'     all other parameters are known. Altough, the variance of alpha is high for small
+#'     sample sized date.
 #' @param y is a n*t x 1 vector (response)
 #' @param x is a n*t x k matrix (explantatory variables)
+#' @param beta is a vector of explenatory coefficients.
+#' @param sigma_u is the variance of the stochastic inefficency.
+#' @param sigma_v is the variance of the random error.
+#' @param h are the values of the positive non-stochastic inefficency determinants.
+#' @param epsilon are the random errors substracted the
+#'     positive non-stochastic inefficency determinants.
 #' @param N an optional integer specifying the total amount of panels in the data set.
 #' @param Time an optional integer specifying the amount of observations per panel.
 #' @param mu is the mean of a truncated normal distribution of the stochastic inefficencys.
-#' @return recovered values of individual fixed effects
+#' @param cumTime ia a vector of the cumulated times of the Time vector.
+#'     It serves as an index for computation.
+#' @return Returns a fixed-effect for each panel as a vector (N x 1)
 
 
 SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime){
@@ -25,15 +33,12 @@ SFM.alpha <- function(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cum
   }
   x_mean <- matrix (x_mean, ncol = K)
 
-  # splitInterval <- findInterval ( seq_along (y), cumTime, left.open = TRUE)
-
   # Calculate the mean over all observations within each panel of y
-  y_mean <- c()
-  y_mean <- lapply (1:N, function(x)
-    y_mean <-
-      c(y_mean, mean (y [(cumTime[x] + 1):cumTime[x + 1],])))
+  y_mean   <- c()
+  y_mean   <- lapply (1:N, function(x)
+              y_mean <- c(y_mean, mean (y [(cumTime[x] + 1):cumTime[x + 1],])))
 
-  y_mean <- as.matrix (unlist (y_mean))
+  y_mean   <- as.matrix (unlist (y_mean))
 
 
   # calculate sigma*** and mu*** for each panel ---------------------------

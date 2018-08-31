@@ -2,6 +2,14 @@ context ("sfmfep")
 
 library (MASS)
 library (dplyr)
+library (truncnorm)
+library (dplyr)
+library (stats)
+library (numDeriv)
+library (parallel)
+library (magrittr)
+library (stringr)
+library (bindrcpp)
 
 test_that ("sfmfep works", {
 
@@ -23,16 +31,16 @@ test_that ("sfmfep works", {
   sigmaCI <- 0.05
   estimate = F
   panel = NULL
-  parallel = T
+  parallel = F
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 10,
                           method = method,  N = N, Time = Time, parallel = parallel,
                           data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 
   # tests if bootstrapping works for method = "within"
-  withinBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, parallel = parallel,
+  withinBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 10, parallel = parallel,
                        method = "firstdiff", N = N, Time = Time, data = test.data,
                        mu = mu, myPar = myPar)
   expect_type (object = withinBoot, type = "list")
@@ -67,7 +75,7 @@ test_that ("sfmfep works", {
   expect_type (object = panelTest, type = "list")
 
   # Tests if defined starting points "myPar" works with Bootstrapping & panel
-  panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = T, B = 5,
+  panelMyParBoot <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = F, B = 5,
                            data = test.data, mu = mu, parallel = parallel,
                            myPar = c(sigma_u = 1, sigma_v=2, beta = c(1,2), delta = c(1, 2)))
   expect_type (object = panelMyParBoot, type = "list")

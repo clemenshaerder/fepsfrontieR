@@ -35,14 +35,18 @@ values of the confidence intervals for the MLE estimates.}
 starting point of the estimation, or if "myPar" is used to fit
 a given stochastic frontier model.}
 
+\item{bootstrap}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
+performed. "B" must be specified.}
+
 \item{B}{is a required input for Bootstrap = TRUE. It defines
 the amount of bootstrap samples.}
 
+\item{parallel}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
+performed with parallelization, using all available cores.
+Only available for OS Windows.}
+
 \item{myPar}{is a vecor which has to be entered in the following order:
 c(sigma_v, sigma_u, beta = c(), delta = c())}
-
-\item{Bootstrap}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
-performed. "B" must be specified.}
 }
 \value{
 sfmfep returns an object of class S3. The function summary( )
@@ -53,20 +57,14 @@ sfmfep returns an object of class S3. The function summary( )
 }
 \description{
 Estimates a Stochastic Frontier Model for Fixed-Effects.
-sfmfep is used to fit fixed-effect stochastic frontier models for panel data
-using a specified model transformation. Bootstrapping can be performed to
-calculate the standard errors instead of a numerical deriviation
-via the hessian matrix.
+    sfmfep is used to fit fixed-effect stochastic frontier models for panel data
+    using a specified model transformation. Bootstrapping can be performed to
+    calculate the standard errors instead of a numerical deriviation
+    via the hessian matrix.
 }
 \examples{
-
-fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2), bootstrap = F,
+fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
     method = "within", N = 30, Time = 2, data = sfm.data)
-summary(wh.1)
+summary(fit1)
 
-paneldata <- panelgdp
-
-fit.gdp <- sfmfep(formula = l ~ y + (h), method = "firstdiff",
-    panel = "country", data = paneldata)
-summary(fit.gdp)
 }

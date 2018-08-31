@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm.alpha.R
 \name{SFM.alpha}
 \alias{SFM.alpha}
-\title{Alpha}
+\title{Alpha (fixed-effects) Recovery}
 \usage{
 SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime)
 }
@@ -11,18 +11,32 @@ SFM.alpha(y, x, beta, sigma_u, sigma_v, h, epsilon, N, Time, mu, cumTime)
 
 \item{x}{is a n*t x k matrix (explantatory variables)}
 
+\item{beta}{is a vector of explenatory coefficients.}
+
+\item{sigma_u}{is the variance of the stochastic inefficency.}
+
+\item{sigma_v}{is the variance of the random error.}
+
+\item{h}{are the values of the positive non-stochastic inefficency determinants.}
+
+\item{epsilon}{are the random errors substracted the
+positive non-stochastic inefficency determinants.}
+
 \item{N}{an optional integer specifying the total amount of panels in the data set.}
 
 \item{Time}{an optional integer specifying the amount of observations per panel.}
 
 \item{mu}{is the mean of a truncated normal distribution of the stochastic inefficencys.}
+
+\item{cumTime}{ia a vector of the cumulated times of the Time vector.
+It serves as an index for computation.}
 }
 \value{
-recovered values of individual fixed effects
+Returns a fixed-effect for each panel as a vector (N x 1)
 }
 \description{
-Recovers the individual fixed effects by using the first-order condition for
-alpha from the untransformed log-likelihood function of the model assuming
-all other parameters are known. Altough, the variance of alpha is high for small
-sample sized date.
+Recovers the individual fixed-effects by using the first-order condition for
+    alpha from the untransformed log-likelihood function of the model assuming
+    all other parameters are known. Altough, the variance of alpha is high for small
+    sample sized date.
 }

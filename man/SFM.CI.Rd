@@ -2,20 +2,32 @@
 % Please edit documentation in R/sfm.ci.R
 \name{SFM.CI}
 \alias{SFM.CI}
-\title{Confidence Intervals}
+\title{Confidence Intervals for Estimates by MLE}
 \usage{
 SFM.CI(estimates, hessianMatrix, alpha, N, Time, df)
 }
 \arguments{
-\item{par}{is a vector of regression coefficients & variance parameters.
-1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients}
+\item{estimates}{is a vector of regression coefficients & variance parameters.
+1st parameter: sigma_u, 2nd parameter: sigma_v,
+followed by K beta & R delta coefficients.}
+
+\item{hessianMatrix}{is the Hessian Matrix of the MLE.}
+
+\item{alpha}{is a vector of significance levels.}
+
+\item{N}{is an integer (n - panels)}
+
+\item{Time}{is an integer (observations per panel)}
+
+\item{df}{are the degrees of freedom}
 }
 \value{
-< Describe what is returned when applying this functinon >
+A matrix is returned with the confidence interval and the
+     standard erros for each estimate as a data frame.
 }
 \description{
-Computes Confidence Intervals for the regression coefficients based on the Hessian Matrix
-}
-\examples{
-< an example >
+Computes a two-sided Confidence Intervals for the
+    regression coefficients based on the Hessian Matrix if they are computed
+    by MLE. The variance is asymptotically chi-squared distributed and
+    the regression coefficients asymptotically normal.
 }

@@ -1,3 +1,11 @@
+#' @title Summarizes a sfmfep fitted model
+#' @description  \code{summary.sfmfep} is the sfmfep specific method for
+#' the generic function \code{summary} which summarize objects
+#' returned by modelling functions.
+#' @param ... Additional arguments to the function
+#' @param x is a data frame of the inefficencys per panel.
+#' @param digits defines the amount of digits for the values of the summary
+
 summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   if(x$estimate){

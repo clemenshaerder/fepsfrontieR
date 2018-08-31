@@ -2,19 +2,27 @@
 % Please edit documentation in R/sfm.inefficency.R
 \name{SFM.inindex}
 \alias{SFM.inindex}
-\title{Inefficiency Index}
+\title{Inefficiency Index of the Stochastic Frontier Model}
 \usage{
-SFM.inindex(h, sigma2star, mu2star, N, Time, method, cumTime)
+SFM.inindex(h, sigma2star, mu2star, N, cumTime)
 }
 \arguments{
-\item{par}{is a vector of regression coefficients & variance parameters.
-1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients}
+\item{h}{are the values of the positive non-stochastic inefficency determinants.}
+
+\item{sigma2star}{is a vector of variance estimations based on a chosen transformation.}
+
+\item{mu2star}{is a vector of mean estimations based on a chosen transformation.}
+
+\item{N}{an optional integer specifying the total amount of panels in the data set.}
+
+\item{cumTime}{ia a vector of the cumulated times of the Time vector.
+It serves as an index for computation.}
 }
 \value{
-returns the mean ineffieciency of each panel
+returns the mean ineffieciency of each panel as a Nx1 vector
 }
 \description{
-Estimator for the inefficiency based on the conditional expectation of "u"
-on "epsilon". The estimator does not require alpha and thus not suffer from the
-approximation problem.
+Estimation of the inefficiency based on the conditional expectation of "u"
+    on "epsilon". The estimator does not require alpha and thus not suffer from the
+    approximation problem.
 }

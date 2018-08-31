@@ -11,7 +11,7 @@ Description: Esimation of fixed-effect panel stochastic frontier models by
     by individual Bootstrapping.
 Authors@R: as.person(c(
     "Clemens Haerder <clemens.haerder@gmail.com> [aut, cre]",
-    "Oliver Dippel <oliverdippel@gmx.de>  [aut, cre]"))
+    "Oliver Dippel <oliverdippel@gmx.de>  [ctb, cre]"))
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -21,7 +21,10 @@ Imports:
     stats (>= 3.4.2),
     numDeriv (>= 2016.8-1),
     parallel (>= 3.4.2),
-    MASS (>= 7.3.0)
+    MASS (>= 7.3.0),
+    magrittr (>= 1.5),
+    stringr (>= 1.2.0),
+    bindrcpp (>= 0.2.2)
 Suggests:
     testthat,
     Rcpp

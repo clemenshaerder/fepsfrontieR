@@ -1,3 +1,8 @@
+#' @title Plot of the Inefficencys
+#' @description Plots the Inefficencys of each panel.
+#' @param x is a data frame of the inefficencys per panel.
+#' @param ... Additional arguments to the function
+
 plot.sfmfep <- function(x, ...){
   par(mfrow=c(1,2))
 

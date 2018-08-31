@@ -29,11 +29,19 @@ SFM.bootstrap(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL,
 \item{B}{is an integer (# of Bootstraps)}
 
 \item{myPar}{is a vecor which has to be entered in the following order:
-c(sigma_v, sigma_u, beta = c(), delta = c()). Required as starting point for the estimation.}
+c(sigma_v, sigma_u, beta = c(), delta = c()).
+Required as starting point for the estimation.}
 
 \item{lowerInt}{is a vector of doubles (lower bound for the estimation)}
 
 \item{sigmaCI}{is a vector of doubles (significance of the Confidence Intervals)}
+
+\item{cumTime}{ia a vector of the cumulated times of the Time vector.
+It serves as an index for computation.}
+
+\item{parallel}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
+performed with parallelization, using all available cores.
+Only available for OS Windows.}
 }
 \value{
 A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error

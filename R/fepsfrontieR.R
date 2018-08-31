@@ -23,14 +23,6 @@
 #' Finally, the inefficency index & fixed-effects are calculated.
 #' A S3 object is returned.
 #'
-#' @usage
-#' sfmfep(formula, data, group = NULL, N = NULL,
-#'        Time = NULL, mu = 0,  sigmaCI = 0.05, estimate = T,
-#'        method = c("firstdifff, within"), bootstrap = F, B = NULL
-#'        myPar = c(sigma_u, sigma_v, beta = c( ), delta = c( )))
-#'
-#' SFM.generate(N, Time, beta, delta, sigma_u, sigma_v, mu = 0)
-#'
 #' @section SFM.generate:
 #' The SFM.generate function generates a balanced fixed-effects stochastic
 #' frontier model with exponential inefficencys. The amount of specified

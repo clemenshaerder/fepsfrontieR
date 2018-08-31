@@ -1,24 +1,31 @@
-#' SFM.bootstrap performs estimation with B Individual Bootstrap Samples
+#' @title SFM.bootstrap performs estimation with B Individual Bootstrap Samples
 #'
-#' B Individual Bootstrap Samples are genereated from the input and MLE is performed
+#' @description B Individual Bootstrap Samples are genereated from the input and MLE is performed
 #' for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
 #' the rows with replacement individually for each panel instead from all samples.
 #' In addition to the mean and the standard error of the estimates,
 #' a confidence interval is returned based on the quantiles of the distribution of estimates.
-#' @param B is an integer (# of Bootstraps)
+#' @param y is a n*t x 1 vector (response)
 #' @param xv is a n*t x k matrix (explantatory variables)
 #' @param z is a n*t x r matrix (inefficency determinants)
-#' @param y is a n*t x 1 vector (response)
 #' @param mu is an integer (mean of the truncated normal distribution of the inefficency)
-#' @param R is an integer (# of z variables)
-#' @param K is an integer (# of xv variables)
 #' @param N is an integer (n - panels)
 #' @param Time is an integer (observations per panel)
 #' @param method a required string specifying the method ("within" or "firstdiff").
+#' @param R is an integer (# of z variables)
+#' @param K is an integer (# of xv variables)
+#' @param B is an integer (# of Bootstraps)
+#' @param myPar is a vecor which has to be entered in the following order:
+#'      c(sigma_v, sigma_u, beta = c(), delta = c()).
+#'      Required as starting point for the estimation.
 #' @param lowerInt is a vector of doubles (lower bound for the estimation)
 #' @param sigmaCI is a vector of doubles (significance of the Confidence Intervals)
-#' @param myPar is a vecor which has to be entered in the following order:
-#'      c(sigma_v, sigma_u, beta = c(), delta = c()). Required as starting point for the estimation.
+#' @param cumTime ia a vector of the cumulated times of the Time vector.
+#'     It serves as an index for computation.
+#' @param parallel is an optional boolean variable. If it is set to TRUE, bootstrapping is
+#'     performed with parallelization, using all available cores.
+#'     Only available for OS Windows.
+
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 #'      and a confidence interval for each estimate as a data frame.
 

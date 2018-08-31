@@ -1,23 +1,28 @@
-#' @title Within
+#' @title Within Transformation of a Stochastic Frontier Model
 #' @description Performs a within transformation to a Stochastic Frontier Model.
-#' By within-transformation, the sample mean of each panel is subtracted
-#' from every observation in the panel. The transformation thus removes
-#' the time-invariant individual effect from the model
+#'     By within-transformation, the sample mean of each panel is subtracted
+#'     from every observation in the panel. The transformation thus removes
+#'     the time-invariant individual effect from the model
 #' @param par is a vector of regression coefficients & variance parameters.
 #'     1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients
 #' @param xv is a n*t x k matrix (explantatory variables)
-#' @param z is a n*t x r matrix (inefficency determinants)
 #' @param y is a n*t x 1 vector (response)
+#' @param z is a n*t x r matrix (inefficency determinants)
 #' @param N is a integer (n - panels)
 #' @param Time is a integer (observations per panel)
+#' @param cumTime ia a vector of the cumulated times of the Time vector.
+#'     It serves as an index for computation.
 #' @param mu is a number (mean of the truncated normal distribution of the inefficency)
 #' @param optim is a boolean (set F to obtain a list of model variables.
 #'     T to obtain the -sum of log.likelihood)
+#' @param K is an integer (# of xv variables)
+#' @param R is an integer (# of z variables)
+#' @param seqN is a sequence from 1 to N
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
 #'
 SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
-                       cumTime, xv, y, z, N = NULL,  Time = NULL, mu=0,
+                       xv, y, z, N = NULL, Time = NULL, cumTime, mu=0,
                        optim = F, K = NULL, R = NULL, seqN = 1:N){
 
   # Within Transformations ---------------------------
@@ -31,16 +36,15 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   # to the existing vector until the vector is of length N*(Ti).
   # We do this for K parameters.
   x.wthn <- lapply(1:K, function(k)
-    by (xv[, k], INDICES = splitInterval, FUN = function(x) x - mean(x)
-    ))
+    by (xv[, k], INDICES = splitInterval, FUN = function(x) x - mean(x)))
   x.wthn <- matrix (unname (unlist (x.wthn)), ncol = K)
 
   # Within transformation of Y
   # Same transformation procedure as for x
   repYMeans <- c()
   repYMeans <- lapply (seqN, function(x)
-    repYMeans <-
-      c(repYMeans, rep (mean (y[(cumTime[x] + 1):cumTime[x + 1],]), Time[x])))
+          repYMeans <- c(repYMeans, rep (mean (y[(cumTime[x] + 1):cumTime[x + 1],]), Time[x])))
+
   repYMeans <- matrix (unlist (repYMeans))
 
   y.wthn <- y - repYMeans
@@ -73,12 +77,10 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   try(gPI <- MASS::ginv(PI), silent = T)
   if (!exists("gPI")) {
-    stop (
-      "Could not calculate log.likelihood.
-      SVD of the g-Inverse of PI failed.
-      PI is sigma_v * M (M is the TxT orthogonal projection matrix).
-      Try instead *method = firstdiff*."
-    )
+    stop ("Could not calculate log.likelihood.
+           SVD of the g-Inverse of PI failed.
+           PI is sigma_v * M (M is the TxT orthogonal projection matrix).
+           Try instead *method = firstdiff*.")
   }
 
   # PI matrix is adjusted for each panel to Ti x Ti
@@ -86,23 +88,27 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
   # calculates "mu two star" needed for the log-likelihood for each panel
   mu_2star <- lapply (seqN, function(x)
-    (mu / par[1] - t(eps.wthn[[x]]) %*% itPI[[x]] %*% h.wthn[[x]]) /
-      (t(h.wthn[[x]]) %*% itPI[[x]] %*% h.wthn[[x]] + 1 / par[1]))
+                            (mu / par[1] - t(eps.wthn[[x]]) %*%
+                             itPI[[x]] %*% h.wthn[[x]]) /
+                            (t(h.wthn[[x]]) %*% itPI[[x]] %*%
+                               h.wthn[[x]] + 1 / par[1]))
   mu_2star <- matrix (unlist (mu_2star))
 
   # calculates "sigma two star" needed for the log-likelihood for each panel
   sigma_2star <- lapply (seqN, function(x)
-      1 / ((t(h.wthn[[x]]) %*% itPI[[x]] %*% h.wthn[[x]] + 1 / par[1])))
+                               1 / ((t(h.wthn[[x]]) %*% itPI[[x]] %*%
+                                       h.wthn[[x]] + 1 / par[1])))
   sigma_2star <- matrix (unlist (sigma_2star))
 
   # log-likelihood for N panels
   log.ll <- lapply (seqN, function(x)
-    - 0.5 * (Time[x] - 1) * log(2 * pi) -
-      0.5 * (Time[x] - 1) * log(par[2]) -
-      0.5 * t(eps.wthn[[x]]) %*% itPI[[x]] %*% eps.wthn[[x]] +
-      0.5 * ((mu_2star[x] ^ 2) / sigma_2star[x] - (mu ^ 2) / par[1]) +
-             log (sqrt (sigma_2star[x]) * pnorm(mu_2star[x] /  sqrt (sigma_2star[x]))) -
-      log (sqrt (par[1]) * pnorm (mu / sqrt (par[1]))))
+                          -0.5 * (Time[x] - 1) * log(2 * pi) -
+                          0.5 * (Time[x] - 1) * log(par[2]) -
+                          0.5 * t(eps.wthn[[x]]) %*% itPI[[x]] %*% eps.wthn[[x]] +
+                          0.5 * ((mu_2star[x] ^ 2) / sigma_2star[x] - (mu ^ 2) /
+                          par[1]) + log (sqrt (sigma_2star[x]) * pnorm(mu_2star[x] /
+                          sqrt (sigma_2star[x]))) - log (sqrt (par[1]) *
+                          pnorm (mu / sqrt (par[1]))))
   log.ll <- matrix (unlist (log.ll))
 
 
@@ -123,6 +129,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
                       mu_2star = mu_2star,
                       sigma_2star = sigma_2star,
                       log.ll = log.ll)
+
     names (ret.list) <- c("x.trans",
                           "y.trans",
                           "PI",

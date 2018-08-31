@@ -1,29 +1,32 @@
 #' @title Fixed effect stochastic Frontier Model
 #' @description Estimates a Stochastic Frontier Model for Fixed-Effects.
-#' sfmfep is used to fit fixed-effect stochastic frontier models for panel data
-#' using a specified model transformation. Bootstrapping can be performed to
-#' calculate the standard errors instead of a numerical deriviation
-#' via the hessian matrix.
+#'     sfmfep is used to fit fixed-effect stochastic frontier models for panel data
+#'     using a specified model transformation. Bootstrapping can be performed to
+#'     calculate the standard errors instead of a numerical deriviation
+#'     via the hessian matrix.
 #' @param formula an object of class "formula" in the form of
-#' y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
+#'     y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
 #' @param data an optional data frame, list or environment (or object coercible by
-#' as.data.frame to a data frame) containing the variables in the model.
+#'     as.data.frame to a data frame) containing the variables in the model.
 #' @param panel an optional vector specifying the panels to be used in the fitting process.
-#' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param N an optional integer specifying the total amount of panels in the data set.
 #'     If N is entered, Time is also a required input.
 #' @param Time an optional integer specifying the amount of observations per panel.
 #'     If Time is entered, N is also a required input.
+#' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param mu is the mean of a truncated normal distribution of the stochastic inefficiency.
-#' @param Bootstrap is an optional boolean variable. If it is set to TRUE, bootstrapping is
-#'     performed. "B" must be specified.
-#' @param B is a required input for Bootstrap = TRUE. It defines
-#'     the amount of bootstrap samples.
 #' @param sigmaCI is an optional vector specifying the significance
 #'     values of the confidence intervals for the MLE estimates.
 #' @param estimate TRUE or FALSE specifies if "myPar" is used as
 #'     starting point of the estimation, or if "myPar" is used to fit
 #'     a given stochastic frontier model.
+#' @param bootstrap is an optional boolean variable. If it is set to TRUE, bootstrapping is
+#'     performed. "B" must be specified.
+#' @param B is a required input for Bootstrap = TRUE. It defines
+#'     the amount of bootstrap samples.
+#' @param parallel is an optional boolean variable. If it is set to TRUE, bootstrapping is
+#'     performed with parallelization, using all available cores.
+#'     Only available for OS Windows.
 #' @param myPar is a vecor which has to be entered in the following order:
 #'     c(sigma_v, sigma_u, beta = c(), delta = c())
 #' @return
@@ -34,17 +37,12 @@
 #'     TODO(): Add all output components here
 #'
 #' @examples
-#'
-#' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2), bootstrap = F,
+#' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
 #'     method = "within", N = 30, Time = 2, data = sfm.data)
-#' summary(wh.1)
+#' summary(fit1)
 #'
-#' paneldata <- panelgdp
-#'
-#' fit.gdp <- sfmfep(formula = l ~ y + (h), method = "firstdiff",
-#'     panel = "country", data = paneldata)
-#' summary(fit.gdp)
 #' @export
+
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
@@ -52,7 +50,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
 
   call <- match.call ()
-
 
   # Error handling of input ---------------------------
 
@@ -92,7 +89,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # Test if method is correctly specified
   if (!any (method == c("within", "firstdiff"))){
-    stop ("Invalid input. A valid *method* must be chosen ´within´ or ´firstdiff´")
+    stop ("Invalid input. A valid *method* must be chosen *within* or *firstdiff*")
   }
 
   # Test if mu is correctly specified
@@ -188,12 +185,12 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     # We check if N & T match the data dimensions
     if (length (Time.input) == 1){
       if ( sum (N.input * Time.input) != dim (sel.data)[1]) {
-        stop ("Your input (N & T) doesn`t match the data dimensions.
+        stop ("Your input (N & T) doesn not match the data dimensions.
               Calculations could not be performed.")
       }
     } else {
       if ( sum (Time.input) != dim (sel.data)[1]) {
-        stop ("Your input (N & T) doesn`t match the data dimensions.
+        stop ("Your input (N & T) doesn not match the data dimensions.
             Calculations could not be performed.")
       }
     }
@@ -353,7 +350,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       }
     }
   } else { # we dont estimate (estimate = F)
-      # As we dont estimate optim.SFM list doesn´t exit.
+      # As we dont estimate optim.SFM list doesn not exit.
       # To perform further calculations we create and assign essential inputs.
       optim.SFM     <- NULL
       if (is.null (myPar)){
@@ -428,7 +425,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   inefficency <- SFM.inindex (h = ret.list$h, sigma2star = ret.list$sigma_2star,
                               cumTime = cumTime, mu2star = ret.list$mu_2star,
-                              N = N.input, Time = Time.input)
+                              N = N.input)
   if (!is.null (panel)){
     # if panel is specified, we assign the respective names to the inefficencys
     rownames (inefficency) <- as.matrix (panelName)
@@ -514,8 +511,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                  bootstrap = bootstrap,
                  method = method,
                  B = B,
-                 tvalue = NULL
-               )
+                 tvalue = NULL)
   }
 
   class (res) <- c(res$class, "sfmfep")

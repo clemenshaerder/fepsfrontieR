@@ -2,7 +2,7 @@
 % Please edit documentation in R/sfm.firstDifference.R
 \name{SFM.firstDiff}
 \alias{SFM.firstDiff}
-\title{First Differnces}
+\title{First Differnces Transformation of a Stochastic Frontier Model}
 \usage{
 SFM.firstDiff(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   cumTime, xv, y, z, N = NULL, Time = NULL, mu = 0, optim = F,
@@ -11,6 +11,9 @@ SFM.firstDiff(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 \arguments{
 \item{par}{is a vector of regression coefficients & variance parameters.
 1st parameter: sigma_u, 2nd parameter: sigma_v, followed by K beta & R delta coefficients}
+
+\item{cumTime}{ia a vector of the cumulated times of the Time vector.
+It serves as an index for computation.}
 
 \item{xv}{is a n*t x k matrix (explantatory variables)}
 
@@ -26,6 +29,12 @@ SFM.firstDiff(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
 
 \item{optim}{is a boolean (set F to obtain a list of model variables.
 T to obtain the -sum of log.likelihood)}
+
+\item{K}{is an integer (# of xv variables)}
+
+\item{R}{is an integer (# of z variables)}
+
+\item{seqN}{is a sequence from 1 to N}
 }
 \value{
 If optim = T the log.likelihood is returned of all panels.
