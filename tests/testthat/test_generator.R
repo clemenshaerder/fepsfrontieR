@@ -9,7 +9,6 @@ library (numDeriv)
 library (parallel)
 library (magrittr)
 library (stringr)
-library (bindrcpp)
 
 test_that ("sfmfep works", {
 
