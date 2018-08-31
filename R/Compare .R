@@ -60,5 +60,5 @@ compare <- function(N, Time, beta, delta,
   return(cbind(apply(estimateW, 1, sum), apply(estimateF, 1, sum)) / Iteration)
 }
 # compare this to the estimtes of Wang and HO
-compare(N = 100, Time = 10, beta = c(0.5), delta=c(0.5),
-        sigma_u = 0.2, sigma_v = 0.1, mu = 0, Iteration = 10)
+# compare(N = 100, Time = 10, beta = c(0.5), delta=c(0.5),
+#          sigma_u = 0.2, sigma_v = 0.1, mu = 0, Iteration = 10)

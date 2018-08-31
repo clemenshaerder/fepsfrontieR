@@ -14,7 +14,7 @@ test_that ("sfmfep works", {
   sigma_v <- 1
   t.formula <- formula(y  ~ x1 + x2 + (z1 + z2))
   test.data <- sfm.data  # package data
-  method <- "within"
+  method <- "firstdiff"
   boot <- F
   mu = 0
   myPar = NULL
@@ -23,7 +23,7 @@ test_that ("sfmfep works", {
   sigmaCI <- 0.05
   estimate = F
   panel = NULL
-  parallel = F
+  parallel = T
 
   # tests if bootstrapping works for method = "firstdiff"
   firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10,
@@ -73,9 +73,6 @@ test_that ("sfmfep works", {
   expect_type (object = panelMyParBoot, type = "list")
 
   # Tests if it works when estimates are provided (estimate = F)
-  # TODO(Olli) -> This test doenst provide an output. I guess it is due to the negative Fisher of sigma_v
-  # Anyhow, a CI is computed for the other parameters. Thus, there should still be an ouput.
-
   panelEstimateF <- sfmfep(formula = t.formula, method = method, panel ="gr", bootstrap = boot, B = B,
                        data = test.data, mu = mu, estimate = F, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v = 2, beta = c(1,2), delta = c(1, 2)))
@@ -167,9 +164,3 @@ context ("SFM.within / SFM.firstDiff")
    # test_that ("SFM.within / SFM.firstDiff", {
 
 })
-# devtools::install_github("clemenshaerder/fepsfrontieR")
-# data <- SFM.generate(100,10,c(0.5,1,4),0.3,0.2,0.1, mu=1)
-# system.time(
-#  p.gdp <- sfmfep(formula = y ~ x.1 + x.2 + (z), bootstrap = T, B = 10, method = "within",
-#                   N = 100, Time = 10, data = data))
-# firstDiffBoot

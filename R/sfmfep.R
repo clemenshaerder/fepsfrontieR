@@ -41,10 +41,11 @@
 #'
 #' paneldata <- panelgdp
 #'
-#' fit.gdp <- sfmfep(formula = l ~ y + (h), bootstrap = T, B = 10,
-#'     method = "firstdiff", N = 82, Time = 28, data = paneldata)
+#' fit.gdp <- sfmfep(formula = l ~ y + (h), method = "firstdiff",
+#'     panel = "country", data = paneldata)
 #' summary(fit.gdp)
 #' @export
+
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
@@ -251,8 +252,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
       # OLS for both sigmas
       e           <- y.dat - x.dat %*% beta.start
-      # log to reduce over estimation of "bad" models
-      startSigma  <- log( (t(e) %*% e) / (sum (Time.input) - (K + R)))
+      startSigma  <- (t(e) %*% e) / (sum (Time.input) - (K + R))
 
       myPar       <- c(sigma_u = startSigma,
                       sigma_v = startSigma,

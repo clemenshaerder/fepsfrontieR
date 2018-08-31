@@ -23,7 +23,8 @@ Imports:
     parallel (>= 3.4.2),
     MASS (>= 7.3.0)
 Suggests:
-    testthat
+    testthat,
+    Rcpp
 Depends:
     R (>= 3.4.0),
 RoxygenNote: 6.1.0
