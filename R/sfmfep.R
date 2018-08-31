@@ -42,7 +42,8 @@
 #' @importFrom stringr str_extract
 #' @importFrom numDeriv hessian
 #' @importFrom dplyr arrange_
-#' @importFrom stats as.formula dnorm nlminb pnorm rnorm runif sd setNames
+#' @importFrom stats as.formula dnorm nlminb pnorm rnorm runif sd setNames printCoefmat
+#' @importFrom MASS ginv
 #' @export
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,

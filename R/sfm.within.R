@@ -20,7 +20,6 @@
 #' @param seqN is a sequence from 1 to N
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
-#' @importFrom MASS ginv
 
 SFM.within <- function(par = c(sigma_u = NULL, sigma_v = NULL, beta = c(), delta = c()),
                        xv, y, z, N = NULL, Time = NULL, cumTime, mu=0,
