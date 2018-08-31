@@ -2,7 +2,7 @@ Package: fepsfrontieR
 Type: Package
 Title: Estimation of fixed-effect panel stochastic frontier models by MLE
 Version: 1.0.0.0
-Author: Oliver Dippel, Clemens Haerder
+Author: Clemens Haerder, Oliver Dippel
 Maintainer: The package maintainer <clemens.haerder@gmail.com>
 Description: Esimation of fixed-effect panel stochastic frontier models by
     whitin or first difference transformation as proposed by Wang & Ho (13. January 2010).
