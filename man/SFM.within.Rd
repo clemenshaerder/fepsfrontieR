@@ -4,9 +4,9 @@
 \alias{SFM.within}
 \title{Within Transformation of a Stochastic Frontier Model}
 \usage{
-SFM.within(par = c(sigma_u, sigma_v, beta = c(), delta = c()), xv, y, z,
-  N = NULL, Time = NULL, cumTime, mu = 0, optim = F, K = NULL,
-  R = NULL, seqN = 1:N)
+SFM.within(par = c(sigma_u = NULL, sigma_v = NULL, beta = c(), delta =
+  c()), xv, y, z, N = NULL, Time = NULL, cumTime, mu = 0,
+  optim = F, K = NULL, R = NULL, seqN = 1:N)
 }
 \arguments{
 \item{par}{is a vector of regression coefficients & variance parameters.

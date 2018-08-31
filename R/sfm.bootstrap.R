@@ -27,7 +27,11 @@
 #'     Only available for OS Windows.
 
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
-#'      and a confidence interval for each estimate as a data frame.
+#'     and a confidence interval for each estimate as a data frame.
+#' @importFrom parallel detectCores parLapply clusterExport clusterEvalQ stopCluster makeCluster
+#' @importFrom dplyr sample_n
+#' @importFrom stats quantile
+
 
 SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
                           myPar = NULL, lowerInt, sigmaCI, cumTime, parallel){
@@ -47,7 +51,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   # for every entry of bootList we sample rowwise for each panel
   bootList <- lapply (bootList, function(x)
                                 by (data, simplify = F, INDICES = index,
-                                FUN = function(x) dplyr::sample_n (tbl = x, size = dim (x)[1], replace = T)))
+                                FUN = function(x) sample_n (tbl = x, size = dim (x)[1], replace = T)))
 
   # transforms the N-lists in the list to a matrices which can be used for bootstrapping
   bootListMat <- lapply(bootList, function(x) do.call (rbind, x))
@@ -90,8 +94,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
         stop ("Parallel computing is currently only available for OS Windows.")
       }
 
-      no_of_cores = parallel::detectCores()
-      cl = parallel::makeCluster(no_of_cores, type = "PSOCK")
+      no_of_cores = detectCores()
+      cl = makeCluster(no_of_cores, type = "PSOCK")
 
       # We provide each cluster all variables
       optim <- T
@@ -107,14 +111,15 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
       cumTime <- cumTime
       cols <- cols
 
-      parallel::clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "cols",
-                          "bootListMat", "mu", "optim", "K", "R", "method", "cumTime"), envir = environment())
+      clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "cols",
+                          "bootListMat", "mu", "optim", "K", "R", "method", "cumTime"),
+                    envir = environment())
 
       # we assign each cluster all required librarys
-      parallel::clusterEvalQ(cl, {library(fepsfrontieR)})
+      clusterEvalQ(cl, {library(fepsfrontieR)})
 
       if (method == "within"){
-        bootEstimates <- parallel::parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+        bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
                                                                              start = myPar,
                                                                              Time = Time,
                                                                              N = N,
@@ -129,7 +134,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
                                                                              # we want only the estimates $par
                                                                              cumTime = cumTime)$par)
       } else {
-        bootEstimates <- parallel::parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
+        bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
                                                                              start = myPar,
                                                                              Time = Time,
                                                                              N = N,
@@ -144,7 +149,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
                                                                              # we want only the estimates $par
                                                                              cumTime = cumTime)$par)
       }
-      parallel::stopCluster(cl)
+      stopCluster(cl)
   }
 
 
@@ -157,7 +162,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   # Calculate CIs based on the quantiles of the estimate distribution
   if (!is.null(sigmaCI)){
     conf.Interval <- t (apply (estimatesMat, 2,
-                               function(x) stats::quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
+                               function(x) quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
   } else{
     conf.Interval <- NULL
   }

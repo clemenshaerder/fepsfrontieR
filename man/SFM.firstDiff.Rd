@@ -4,9 +4,9 @@
 \alias{SFM.firstDiff}
 \title{First Differnces Transformation of a Stochastic Frontier Model}
 \usage{
-SFM.firstDiff(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
-  cumTime, xv, y, z, N = NULL, Time = NULL, mu = 0, optim = F,
-  K = NULL, R = NULL, seqN = 1:N)
+SFM.firstDiff(par = c(sigma_u = NULL, sigma_v = NULL, beta = c(), delta =
+  c()), cumTime, xv, y, z, N = NULL, Time = NULL, mu = 0,
+  optim = F, K = NULL, R = NULL, seqN = 1:N)
 }
 \arguments{
 \item{par}{is a vector of regression coefficients & variance parameters.

@@ -17,15 +17,14 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     graphics,
-    MASS (>= 7.3.0),
-    bindrcpp (>= 0.2.2),
     dplyr (>= 0.7.6),
+    MASS (>= 7.3.0),
     magrittr (>= 1.5),
     numDeriv (>= 2016.8-1),
     parallel (>= 3.4.2),
     stringr (>= 1.2.0),
     truncnorm (>= 1.0),
-    stats (>= 3.4.2)
+    stats
 Suggests:
     testthat
 Depends:

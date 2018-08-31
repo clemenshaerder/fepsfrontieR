@@ -37,7 +37,12 @@
 #' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
 #'     method = "within", N = 30, Time = 2, data = sfm.data)
 #' summary(fit1)
-#' @import MASS bindrcpp dplyr magrittr numDeriv parallel stringr stats
+#' @importFrom magrittr %>%
+#' @importFrom numDeriv hessian
+#' @importFrom stringr str_extract
+#' @importFrom numDeriv hessian
+#' @importFrom dplyr arrange_
+#' @importFrom stats as.formula dnorm nlminb pnorm rnorm runif sd setNames
 #' @export
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
@@ -128,7 +133,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   formula <- as.character (formula)
 
   # extracts z-variables (in curly brackets) by regular expressions
-  zForm <- stringr::str_extract (formula, "(?<=\\().*?(?=\\))")[3]
+  zForm <- str_extract (formula, "(?<=\\().*?(?=\\))")[3]
   # create a new formula only with z variables to continue data wrangling
   extractZ <- as.formula (paste (formula[2], formula[1], zForm))
 
@@ -357,27 +362,33 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   # derive the Hessian Matrix based on estimates from the optimization
   if (bootstrap == F){ # not required when bootstrapping is chosen
     if (method == "within"){
-      hes <- numDeriv::hessian(SFM.within,
-                               x = optim.SFM$par,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               N = N.input,
-                               Time = Time.input,
-                               mu = mu,
-                               cumTime = cumTime,
-                               K = K, R = R,
-                               # optim = T required for computation
-                               optim = T)
+      hes <- hessian(SFM.within,
+                     x = optim.SFM$par,
+                     xv = x.dat,
+                     y = y.dat,
+                     z = z.dat,
+                     N = N.input,
+                     Time = Time.input,
+                     mu = mu,
+                     cumTime = cumTime,
+                     K = K,
+                     R = R,
+                     # optim = T required for computation
+                     optim = T)
     } else { # else use firstDiff
-      hes <- numDeriv::hessian(SFM.firstDiff,
-                               x = optim.SFM$par,
-                               xv = x.dat, y = y.dat, z = z.dat,
-                               N = N.input,
-                               Time = Time.input,
-                               mu = mu,
-                               cumTime = cumTime,
-                               K = K, R = R,
-                               # optim = T required for computation
-                               optim = T)
+      hes <- hessian(SFM.firstDiff,
+             x = optim.SFM$par,
+             xv = x.dat,
+             y = y.dat,
+             z = z.dat,
+             N = N.input,
+             Time = Time.input,
+             mu = mu,
+             cumTime = cumTime,
+             K = K,
+             R = R,
+             # optim = T required for computation
+             optim = T)
     }
   }
 

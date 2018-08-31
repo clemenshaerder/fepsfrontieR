@@ -20,8 +20,9 @@
 #' @param seqN is a sequence from 1 to N
 #' @return If optim = T the log.likelihood is returned of all panels.
 #'     If optim = F the model fit is returned including all important model variables.
-#'
-SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
+#' @importFrom MASS ginv
+
+SFM.within <- function(par = c(sigma_u = NULL, sigma_v = NULL, beta = c(), delta = c()),
                        xv, y, z, N = NULL, Time = NULL, cumTime, mu=0,
                        optim = F, K = NULL, R = NULL, seqN = 1:N){
 
@@ -75,7 +76,7 @@ SFM.within <- function(par = c(sigma_u, sigma_v, beta = c(), delta = c()),
   PI <- par[2] * (diag (mTime) - 1 / mTime *
         (matrix (c(rep (1, mTime * mTime)), ncol = mTime)))
 
-  try(gPI <- MASS::ginv(PI), silent = T)
+  try(gPI <- ginv(PI), silent = T)
   if (!exists("gPI")) {
     stop ("Could not calculate log.likelihood.
            SVD of the g-Inverse of PI failed.

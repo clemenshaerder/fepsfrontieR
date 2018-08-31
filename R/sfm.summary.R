@@ -1,10 +1,11 @@
 #' @title Summarizes a sfmfep fitted model
-#' @description  \code{summary.sfmfep} is the sfmfep specific method for
-#' the generic function \code{summary} which summarize objects
+#' @description  summary.sfmfep is the sfmfep specific method for
+#' the generic function summary which summarize objects
 #' returned by modelling functions.
 #' @param ... Additional arguments to the function
 #' @param x is a data frame of the inefficencys per panel.
 #' @param digits defines the amount of digits for the values of the summary
+#' @importFrom stats printCoefmat
 
 summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
@@ -60,13 +61,13 @@ summary.sfmfep <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
       cat("Coefficients:\n")
     }
 
-    printCoefmat(mat1)
+    printCoefmat (mat1)
 
     cat("\nlog.Likelihood:", deparse(round(x$objective, digits)),
         "; AIC:", deparse(round(x$aic, digits)),
         "; BIC:", deparse(round(x$bic, digits)), "\n\n")
 
-    printCoefmat(mat2)
+    printCoefmat (mat2)
   } else {
     cat("Likelihood:", deparse(round(x$objective, digits)))
  }

@@ -14,6 +14,7 @@
 #' @return A matrix is returned with the confidence interval and the
 #'      standard erros for each estimate as a data frame.
 #' @examples
+#' @importFrom stats qchisq qt
 
 SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
@@ -56,14 +57,14 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
 
     # Sigmas are asymptotically chi-sq distributed, thus calculated separately
     # "<= 2 " as the first two estimates are always the sigmas
-    IndexSigmaCI <- indexIncludeVar[which(indexIncludeVar <= 2)]
+    IndexSigmaCI <- indexIncludeVar[which (indexIncludeVar <= 2)]
 
     upper[IndexSigmaCI, ] <- df * estimates[IndexSigmaCI] / qchisq (alpha / 2, df)
 
     lower[IndexSigmaCI, ] <- df * estimates[IndexSigmaCI] / qchisq (1 - alpha / 2, df)
 
     # Calculation of the asymptotic normally distributed betas & deltas
-    indexCoeff          <- indexIncludeVar[which(indexIncludeVar > 2)]
+    indexCoeff          <- indexIncludeVar[which (indexIncludeVar > 2)]
 
     upper[indexCoeff, ] <- estimates[indexCoeff] +
                            qt (1 - alpha / 2, df) * standerror[indexCoeff]

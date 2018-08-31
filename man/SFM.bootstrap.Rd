@@ -45,7 +45,7 @@ Only available for OS Windows.}
 }
 \value{
 A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
-     and a confidence interval for each estimate as a data frame.
+    and a confidence interval for each estimate as a data frame.
 }
 \description{
 B Individual Bootstrap Samples are genereated from the input and MLE is performed

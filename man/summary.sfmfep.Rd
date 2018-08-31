@@ -15,7 +15,7 @@
 \item{...}{Additional arguments to the function}
 }
 \description{
-\code{summary.sfmfep} is the sfmfep specific method for
-the generic function \code{summary} which summarize objects
+summary.sfmfep is the sfmfep specific method for
+the generic function summary which summarize objects
 returned by modelling functions.
 }
