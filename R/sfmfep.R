@@ -421,7 +421,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   }
 
   # Need an error handler when the model isnt well defined
-  if (is.nan(optim.SFM$objective) || optim.SFM$objective == Inf ||
+  if (is.nan (optim.SFM$objective) || optim.SFM$objective == Inf ||
       optim.SFM$objective < 0){
     stop ("Optimizer nlminb( ) could not find a valid solution.
            Try different starting points with *myPar* or adapt the model.")
@@ -467,7 +467,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       # A data frame is returned
       c.Interval <- SFM.CI (estimates = optim.SFM$par, hessianMatrix = hes,
                             alpha = sigmaCI, df = df)
-      if(!is.character(c.Interval)){
+      if(!is.character (c.Interval)){
         conf.Interval <- c.Interval[, c(2,3)]
         standerror    <- c.Interval$standerror
       } else {
@@ -476,7 +476,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       }
       # If the optimizer is not finding a valid ouput hessian(..)
       # creates a matrix of nans # check if this is still required
-    } else if( any(is.nan(hes) == T)){
+    } else if( any (is.nan (hes) == T)){
       conf.Interval <- as.matrix(rep(NA, length(optim.SFM$par)))
       standerror    <- as.matrix(rep(NA, length(optim.SFM$par)))
     } else { # if no CI is wanted we return NAs
