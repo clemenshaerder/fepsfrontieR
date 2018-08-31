@@ -13,7 +13,6 @@
 #' @param df are the degrees of freedom
 #' @return A matrix is returned with the confidence interval and the
 #'      standard erros for each estimate as a data frame.
-#' @examples
 #' @importFrom stats qchisq qt
 
 SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
