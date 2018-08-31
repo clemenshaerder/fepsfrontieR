@@ -2,3 +2,12 @@
 
 export(SFM.generate)
 export(sfmfep)
+import(MASS)
+import(Rcpp)
+import(bindrcpp)
+import(dplyr)
+import(magrittr)
+import(numDeriv)
+import(parallel)
+import(stringr)
+import(truncnorm)

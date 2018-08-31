@@ -40,7 +40,7 @@
 #' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
 #'     method = "within", N = 30, Time = 2, data = sfm.data)
 #' summary(fit1)
-#'
+#' @import MASS Rcpp bindrcpp dplyr magrittr numDeriv parallel stringr truncnorm
 #' @export
 
 
@@ -199,7 +199,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     if (is.null (panel) || try (exists (panel, data) == F, silent = T)){
       stop ("Couldnt match input *panel* with colnames")
     } else {
-      require(dplyr)  # TODO(Clemens) -> delete that. Just added it, cuase Rouven can not install it
       # Finally, if only panel is chosen or all three options we use panel to get N & T
       sel.data <- cbind (sel.data, data[panel])  # adds panel to the selected data
       sel.data <- sel.data %>% arrange_(.dots = panel)  # sort the panels

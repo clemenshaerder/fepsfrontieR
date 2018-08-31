@@ -66,5 +66,4 @@ Estimates a Stochastic Frontier Model for Fixed-Effects.
 fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
     method = "within", N = 30, Time = 2, data = sfm.data)
 summary(fit1)
-
 }
