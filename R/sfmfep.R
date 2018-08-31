@@ -46,7 +46,6 @@
 #' summary(fit.gdp)
 #' @export
 
-
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                    method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
                    bootstrap = F, B = NULL, parallel = F, myPar = c(sigma_u = NULL,

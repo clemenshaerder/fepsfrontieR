@@ -40,7 +40,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   # for every entry of bootList we sample rowwise for each panel
   bootList <- lapply (bootList, function(x)
                                 by (data, simplify = F, INDICES = index,
-                                FUN = function(x) sample_n (tbl = x, size = dim (x)[1], replace = T)))
+                                FUN = function(x) dplyr::sample_n (tbl = x, size = dim (x)[1], replace = T)))
 
   # transforms the N-lists in the list to a matrices which can be used for bootstrapping
   bootListMat <- lapply(bootList, function(x) do.call (rbind, x))
@@ -150,7 +150,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   # Calculate CIs based on the quantiles of the estimate distribution
   if (!is.null(sigmaCI)){
     conf.Interval <- t (apply (estimatesMat, 2,
-                               function(x) quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
+                               function(x) stats::quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
   } else{
     conf.Interval <- NULL
   }
