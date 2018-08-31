@@ -18,7 +18,6 @@ LazyData: true
 Imports:
     graphics,
     MASS (>= 7.3.0),
-    Rcpp (>= 0.12.17),
     bindrcpp (>= 0.2.2),
     dplyr (>= 0.7.6),
     magrittr (>= 1.5),
@@ -27,7 +26,8 @@ Imports:
     stringr (>= 1.2.0),
     truncnorm (>= 1.0)
 Suggests:
-    testthat
+    testthat,
+    Rcpp (>= 0.12.17)
 Depends:
     R (>= 3.4.0),
     stats (>= 3.4.2)
