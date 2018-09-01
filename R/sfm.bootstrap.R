@@ -1,6 +1,6 @@
 #' @title SFM.bootstrap performs estimation with B Individual Bootstrap Samples
 #'
-#' @description B Individual Bootstrap Samples are genereated from the input and MLE is performed
+#' @description B Individual Bootstrap Samples are generated from the input and MLE is performed
 #'     for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
 #'     the rows with replacement individually for each panel instead from all samples.
 #'     In addition to the mean and the standard error of the estimates,
@@ -44,8 +44,8 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   # create the index to sample from the different panels
   index <- findInterval (seq (1:rows), cumTime, left.open = TRUE)
 
-  # draw R individual bootstrap samples. each list entry consists of N lists.
-  bootList <- replicate(B, list(), simplify = F)  # create R bootstrap samples
+  # draw B individual bootstrap samples. each list entry consists of N lists.
+  bootList <- replicate(B, list(), simplify = F)  # create B bootstrap samples
 
   # for every entry of bootList we sample rowwise for each panel
   bootList <- lapply (bootList, function(x)
@@ -157,7 +157,6 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
       }
       stopCluster (cl)
   }
-
 
   # creates a matrix of estimates to calculate colmeans & standard error
   estimatesMat <- do.call (rbind, bootEstimates)

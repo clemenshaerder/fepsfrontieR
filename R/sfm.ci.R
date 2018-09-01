@@ -43,10 +43,10 @@ SFM.CI <- function(estimates, hessianMatrix, alpha, N, Time, df){
     # if length is 1, diag (..) will produce a 0x0 matrix.
     if (length (indexIncludeVar) == 1){
       standerror[indexIncludeVar] <- sqrt (fisher_info[indexIncludeVar,
-                                                             indexIncludeVar])
+                                                       indexIncludeVar])
     } else {
-    standerror[indexIncludeVar] <- sqrt (diag (fisher_info[indexIncludeVar,
-                                                           indexIncludeVar]))
+      standerror[indexIncludeVar] <- sqrt (diag (fisher_info[indexIncludeVar,
+                                                             indexIncludeVar]))
     }
 
     # generate matrices for lower & upper bounds.

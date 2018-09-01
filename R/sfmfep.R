@@ -255,7 +255,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   if(length (Time.input) == 1){
     Time.input <- rep (Time, N)
   }
-?parallel
+
   # cumTime servves as an index for further computations in "estimation"
   cumTime <- c(0, cumsum (Time.input))
 

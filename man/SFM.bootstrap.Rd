@@ -48,7 +48,7 @@ A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
     and a confidence interval for each estimate as a data frame.
 }
 \description{
-B Individual Bootstrap Samples are genereated from the input and MLE is performed
+B Individual Bootstrap Samples are generated from the input and MLE is performed
     for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
     the rows with replacement individually for each panel instead from all samples.
     In addition to the mean and the standard error of the estimates,
