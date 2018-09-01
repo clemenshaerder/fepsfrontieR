@@ -255,7 +255,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   if(length (Time.input) == 1){
     Time.input <- rep (Time, N)
   }
-
+?parallel
   # cumTime servves as an index for further computations in "estimation"
   cumTime <- c(0, cumsum (Time.input))
 
@@ -399,39 +399,6 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       optim.SFM$par <- myPar  # provided parameters are used as parameters
   }
 
-  # derive the Hessian Matrix based on estimates from the optimization
-  if (bootstrap == F){ # not required when bootstrapping is chosen
-    if (method == "within"){
-      hes <- hessian(SFM.within,
-                     x = optim.SFM$par,
-                     xv = x.dat,
-                     y = y.dat,
-                     z = z.dat,
-                     N = N.input,
-                     Time = Time.input,
-                     mu = mu,
-                     cumTime = cumTime,
-                     K = K,
-                     R = R,
-                     # optim = T required for computation
-                     optim = T)
-    } else { # else use firstDiff
-      hes <- hessian(SFM.firstDiff,
-             x = optim.SFM$par,
-             xv = x.dat,
-             y = y.dat,
-             z = z.dat,
-             N = N.input,
-             Time = Time.input,
-             mu = mu,
-             cumTime = cumTime,
-             K = K,
-             R = R,
-             # optim = T required for computation
-             optim = T)
-    }
-  }
-
 
   # Fit the model based on the estimation  ---------------------------
 
@@ -498,6 +465,39 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # Calculate Confidence Intervals  ---------------------------
 
+  # derive the Hessian Matrix based on estimates from the optimization
+  if (bootstrap == F){ # not required when bootstrapping is chosen
+    if (method == "within"){
+      hes <- hessian(SFM.within,
+                     x = optim.SFM$par,
+                     xv = x.dat,
+                     y = y.dat,
+                     z = z.dat,
+                     N = N.input,
+                     Time = Time.input,
+                     mu = mu,
+                     cumTime = cumTime,
+                     K = K,
+                     R = R,
+                     # optim = T required for computation
+                     optim = T)
+    } else { # else use firstDiff
+      hes <- hessian(SFM.firstDiff,
+                     x = optim.SFM$par,
+                     xv = x.dat,
+                     y = y.dat,
+                     z = z.dat,
+                     N = N.input,
+                     Time = Time.input,
+                     mu = mu,
+                     cumTime = cumTime,
+                     K = K,
+                     R = R,
+                     # optim = T required for computation
+                     optim = T)
+    }
+  }
+
   df = sum (Time.input) - length (optim.SFM$par)  # get degrees of freedom
 
   # sigmaCI can be a vector of significance levels
@@ -506,10 +506,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
       # A data frame is returned
       c.Interval <- SFM.CI (estimates = optim.SFM$par, hessianMatrix = hes,
                             alpha = sigmaCI, df = df)
-      if(!is.character (c.Interval)){
-        conf.Interval <- c.Interval[, c(2,3)]
+      if(!is.character (c.Interval)){  # split the return for the output
+        conf.Interval <- c.Interval[, c(2, 3)]
         standerror    <- c.Interval$standerror
-      } else {
+      } else {  # if no CI is returned
         conf.Interval <- NULL
         standerror <- NULL
       }
