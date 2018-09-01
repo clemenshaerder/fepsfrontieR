@@ -39,8 +39,8 @@ Creates a fixed-effects panel stochastic frontier model
     u_i (inefficency) is drawn from a truncated normal distribution with N(mu, sigma_u).
 }
 \examples{
-    exampleSFM <- SFM.generate (N = 20, Time = 5, beta = c(0.5, 0.2, 9, 3),
+exampleSFM <- SFM.generate (N = 20, Time = 5, beta = c(0.5, 0.2, 9, 3),
         delta = c(0.5, 0.1, 2), sigma_u = 0.2, sigma_v = 0.1)
 
-    exampleSFM
+exampleSFM
 }
