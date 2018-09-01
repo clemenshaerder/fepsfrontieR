@@ -49,9 +49,10 @@
 #'
 #' # ---------------
 #' # Fit of a simple model with *Bootstrapping* using *method = firstdiff*
+#' # with different *sigmas* for *Confidence Intervals*
 #'
 #' fit3 <- sfmfep(formula = y ~ x + (z),
-#'     bootstrap = TRUE, B = 20,
+#'     bootstrap = TRUE, B = 20, sigmaCI = c(0.1, 0.05),
 #'     method = "firstdiff", panel = sfm.data$producer, data = sfm.data)
 #' summary(fit3)
 #'
