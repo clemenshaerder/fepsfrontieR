@@ -1,5 +1,5 @@
 #' @title Confidence Intervals for Estimates by MLE
-#' @description  Computes a two-sided Confidence Intervals for the
+#' @description  Computes two-sided Confidence Intervals for the
 #'     regression coefficients based on the Hessian Matrix if they are computed
 #'     by MLE. The variance is asymptotically chi-squared distributed and
 #'     the regression coefficients asymptotically normal.

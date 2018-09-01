@@ -1,5 +1,5 @@
 #' @title Data Generation for Stochastic Frontier Models
-#' @description Creates a fixed-effects panel stochastic frontier model
+#' @description Creates a fixed-effects panel stochastic frontier model.
 #'     Data sets created by this function can be applied for sfmfep( ) of
 #'     this package fepsfrontieR. The model specificiation are:
 #'     alpha_i are fixed-effect parameters drawn from a uniform distribution in [0, 1].
@@ -72,6 +72,7 @@ SFM.generate <- function(N, Time, beta, delta, sigma_u, sigma_v, mu = 0){
 
   # nice output with dplyr -> need dplyr dependency anyhow for bootstrapping
   returnTibble <- as_tibble (data.frame (x = x, y = y, z = z, alpha = alpha))
+
   return (returnTibble)
 }
 

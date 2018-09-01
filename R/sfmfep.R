@@ -1,4 +1,4 @@
-#' @title Fixed effect stochastic Frontier Model
+#' @title Fixed-Effect Stochastic Frontier Model Estimation for Panel Data
 #' @description Estimates a Stochastic Frontier Model for Fixed-Effects.
 #'     sfmfep is used to fit fixed-effect stochastic frontier models for panel data
 #'     using a specified model transformation. Bootstrapping can be performed to
@@ -28,13 +28,13 @@
 #'     performed with parallelization, using all available cores - 1.
 #'     Only available for OS Windows.
 #' @param myPar is a vecor which has to be entered in the following order:
-#'     c(sigma_v, sigma_u, beta = c(), delta = c())
+#'     c(sigma_v, sigma_u, beta = c( ), delta = c( ))
 #' @return
-#'     sfmfep returns an object of class S3. The function summary( )
+#'     sfmfep returns an object of class S3 "sfmfep". The function summary( )
 #'     can be used to obtain or print a summary of the results.
-#'     An object of class "sfmfep" is returned.
 #' @examples
-#' # Fit of a simple model with balanced panels. Definition with *N & T*.
+#' # Fit of a simple model with balanced panels.
+#' # Definition with *N & T*.
 #' # Data has 10 observations for each of the 20 panels.
 #'
 #' fit1 <- sfmfep(formula = y ~ x + (z),
@@ -42,14 +42,16 @@
 #' summary(fit1)
 #'
 #'# ---------------
-#' # Fit of a simple model with balanced panels. Definition with *panels*.
+#' # Fit of a simple model with balanced panels.
+#' # Definition with *panels*.
 #'
 #' fit2 <- sfmfep(formula = y ~ x + (z),
 #'      method = "within", panel = sfm.data$producer, data = sfm.data)
 #' summary(fit2)
 #'
 #' # ---------------
-#' # Fit of a simple model with *Bootstrapping* using *method = firstdiff*
+#' # Fit of a simple model with *Bootstrapping* using
+#' # *method = firstdiff*
 #' # with different *sigmas* for *Confidence Intervals*
 #'
 #' fit3 <- sfmfep(formula = y ~ x + (z),
