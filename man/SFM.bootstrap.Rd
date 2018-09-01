@@ -40,7 +40,7 @@ Required as starting point for the estimation.}
 It serves as an index for computation.}
 
 \item{parallel}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
-performed with parallelization, using all available cores.
+performed with parallelization, using all available cores - 1.
 Only available for OS Windows.}
 }
 \value{
@@ -49,8 +49,8 @@ A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 }
 \description{
 B Individual Bootstrap Samples are genereated from the input and MLE is performed
-for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
-the rows with replacement individually for each panel instead from all samples.
-In addition to the mean and the standard error of the estimates,
-a confidence interval is returned based on the quantiles of the distribution of estimates.
+    for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
+    the rows with replacement individually for each panel instead from all samples.
+    In addition to the mean and the standard error of the estimates,
+    a confidence interval is returned based on the quantiles of the distribution of estimates.
 }
