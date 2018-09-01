@@ -62,6 +62,7 @@ Estimates a Stochastic Frontier Model for Fixed-Effects.
 }
 \examples{
 # Fit of a simple model with balanced panels. Definition with *N & T*.
+# Data has 10 observations for each of the 20 panels.
 
 fit1 <- sfmfep(formula = y ~ x + (z),
     method = "within", N = 20, Time = 10, data = sfm.data)
@@ -76,28 +77,29 @@ summary(fit2)
 
 # ---------------
 # Fit of a simple model with *Bootstrapping* using *method = firstdiff*
+# with different *sigmas* for *Confidence Intervals*
 
 fit3 <- sfmfep(formula = y ~ x + (z),
-    bootstrap = TRUE, B = 20,
+    bootstrap = TRUE, B = 20, sigmaCI = c(0.1, 0.05),
     method = "firstdiff", panel = sfm.data$producer, data = sfm.data)
 summary(fit3)
 
 # ---------------
 # Fitting a model *without estimating*, providing model parameters.
 
-fit3 <- sfmfep(formula = y ~ x + (z),
+fit4 <- sfmfep(formula = y ~ x + (z),
     myPar = c(sigma_u = 0.2, sigma_v = 0.1, beta = 0.5, delta = 0.5),
     estimate = FALSE,
     method = "firstdiff", panel = sfm.data$producer, data = sfm.data)
-summary(fit3)
+summary(fit4)
 
 # ---------------
 # Perform Bootstrapping with starting points for the optimizier
 
-fit3 <- sfmfep(formula = y ~ x + (z),
+fit5 <- sfmfep(formula = y ~ x + (z),
     myPar = c(sigma_u = 0.2, sigma_v = 0.1, beta = 0.5, delta = 0.5),
     estimate = TRUE, bootstrap = TRUE, B = 20,
     method = "firstdiff", panel = sfm.data$producer, data = sfm.data)
-summary(fit3)
+summary(fit5)
 
 }
