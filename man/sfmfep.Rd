@@ -11,7 +11,7 @@ sfmfep(formula, data, panel = NULL, N = NULL, Time = NULL,
 }
 \arguments{
 \item{formula}{an object of class "formula" in the form of
-y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details}
+y ~ x1 + ... + x_k + (z1 + ... + z_r)}
 
 \item{data}{an optional data frame, list or environment (or object coercible by
 as.data.frame to a data frame) containing the variables in the model.}
@@ -38,7 +38,7 @@ a given stochastic frontier model.}
 \item{bootstrap}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
 performed. "B" must be specified.}
 
-\item{B}{is a required input for Bootstrap = TRUE. It defines
+\item{B}{is an integer which is a required input for Bootstrap = T. It defines
 the amount of bootstrap samples.}
 
 \item{parallel}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
@@ -61,9 +61,18 @@ Estimates a Stochastic Frontier Model for Fixed-Effects.
     via the hessian matrix.
 }
 \examples{
-Fit of a simple model with balanced panels.
-fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
+Fit of a simple model with balanced panels:
+
+fit2 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
     method = "within", N = 30, Time = 2, data = sfm.data)
-    summary(fit1)
+summary(fit1)
+
+---------------
+Fit of a simple model with balanced panels using Bootstrapping
+
+fit2 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
+    bootstrap = T, B = 10,
+    method = "within", N = 30, Time = 2, data = sfm.data)
+summary(fit2)
 
 }

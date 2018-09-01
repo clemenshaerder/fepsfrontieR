@@ -37,7 +37,7 @@
 #' Fit of a simple model with balanced panels:
 #'
 #' fit2 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
-#'     method = "within", N = 30, Time = 2, data = sfm.data)
+#'     method = "within", N = 10, Time = 5, data = sfm.data)
 #' summary(fit1)
 #'
 #'---------------
@@ -45,7 +45,7 @@
 #'
 #' fit2 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
 #'     bootstrap = T, B = 10,
-#'     method = "within", N = 30, Time = 2, data = sfm.data)
+#'     method = "within", N = 10, Time = 5, data = sfm.data)
 #' summary(fit2)
 #'
 #' @importFrom magrittr %>%
