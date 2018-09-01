@@ -35,6 +35,7 @@
 #'     An object of class "sfmfep" is returned.
 #' @examples
 #' # Fit of a simple model with balanced panels. Definition with *N & T*.
+#' # Data has 10 observations for each of the 20 panels.
 #'
 #' fit1 <- sfmfep(formula = y ~ x + (z),
 #'     method = "within", N = 20, Time = 10, data = sfm.data)
