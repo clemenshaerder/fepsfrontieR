@@ -5,7 +5,7 @@
 #'     calculate the standard errors instead of a numerical deriviation
 #'     via the hessian matrix.
 #' @param formula an object of class "formula" in the form of
-#'     y ~ x1 + ... + x_k + (z1 + ... + z_r). The details of model specification are given under Details
+#'     y ~ x1 + ... + x_k + (z1 + ... + z_r)
 #' @param data an optional data frame, list or environment (or object coercible by
 #'     as.data.frame to a data frame) containing the variables in the model.
 #' @param panel an optional vector specifying the panels to be used in the fitting process.
@@ -22,10 +22,10 @@
 #'     a given stochastic frontier model.
 #' @param bootstrap is an optional boolean variable. If it is set to TRUE, bootstrapping is
 #'     performed. "B" must be specified.
-#' @param B is a required input for Bootstrap = TRUE. It defines
+#' @param B is an integer which is a required input for Bootstrap = T. It defines
 #'     the amount of bootstrap samples.
 #' @param parallel is an optional boolean variable. If it is set to TRUE, bootstrapping is
-#'     performed with parallelization, using all available cores.
+#'     performed with parallelization, using all available cores - 1.
 #'     Only available for OS Windows.
 #' @param myPar is a vecor which has to be entered in the following order:
 #'     c(sigma_v, sigma_u, beta = c(), delta = c())
@@ -34,9 +34,20 @@
 #'     can be used to obtain or print a summary of the results.
 #'     An object of class "sfmfep" is returned.
 #' @examples
-#' fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
+#' Fit of a simple model with balanced panels:
+#'
+#' fit2 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
 #'     method = "within", N = 30, Time = 2, data = sfm.data)
 #' summary(fit1)
+#'
+#'---------------
+#' Fit of a simple model with balanced panels using Bootstrapping
+#'
+#' fit2 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
+#'     bootstrap = T, B = 10,
+#'     method = "within", N = 30, Time = 2, data = sfm.data)
+#' summary(fit2)
+#'
 #' @importFrom magrittr %>%
 #' @importFrom numDeriv hessian
 #' @importFrom stringr str_extract
@@ -82,8 +93,8 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # Tests if any NAs exist in the data sel.data
   dataInvalid <- sapply (sel.data, function (sel.data) sum (is.na (sel.data)) +
-                                                   sum (is.infinite (sel.data)) +
-                                                   sum (is.null (sel.data)))
+                                                       sum (is.infinite (sel.data)) +
+                                                       sum (is.null (sel.data)))
   if (sum (dataInvalid) > 0){
     print ("Function Stopped. You have NAs/Inf/NULL in your selected data. Summary:")
     stop (print (dataInvalid))
@@ -113,6 +124,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   # Test if bootstrap is correctly specified
   if (!any (bootstrap == c(T, F))){
+    stop ("Invalid input. *bootstrap* must be either True or False.")
   }
 
   # Tests if B is correctly specified if bootstrapping is performed

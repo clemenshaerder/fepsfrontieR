@@ -1,10 +1,10 @@
 #' @title SFM.bootstrap performs estimation with B Individual Bootstrap Samples
 #'
 #' @description B Individual Bootstrap Samples are genereated from the input and MLE is performed
-#' for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
-#' the rows with replacement individually for each panel instead from all samples.
-#' In addition to the mean and the standard error of the estimates,
-#' a confidence interval is returned based on the quantiles of the distribution of estimates.
+#'     for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
+#'     the rows with replacement individually for each panel instead from all samples.
+#'     In addition to the mean and the standard error of the estimates,
+#'     a confidence interval is returned based on the quantiles of the distribution of estimates.
 #' @param y is a n*t x 1 vector (response)
 #' @param xv is a n*t x k matrix (explantatory variables)
 #' @param z is a n*t x r matrix (inefficency determinants)
@@ -23,9 +23,8 @@
 #' @param cumTime ia a vector of the cumulated times of the Time vector.
 #'     It serves as an index for computation.
 #' @param parallel is an optional boolean variable. If it is set to TRUE, bootstrapping is
-#'     performed with parallelization, using all available cores.
+#'     performed with parallelization, using all available cores - 1.
 #'     Only available for OS Windows.
-
 #' @return A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 #'     and a confidence interval for each estimate as a data frame.
 #' @importFrom parallel detectCores parLapply clusterExport clusterEvalQ stopCluster makeCluster
@@ -95,6 +94,12 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
       }
 
       no_of_cores = detectCores()
+
+      # 1 core should have capacity to continue working while bootstrapping
+      if(no_of_cores > 1){
+        no_of_cores <- no_of_cores - 1
+      }
+
       cl = makeCluster(no_of_cores, type = "PSOCK")
 
       # We provide each cluster all variables
@@ -111,6 +116,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
       cumTime <- cumTime
       cols <- cols
 
+      # export all variables to the clusters
       clusterExport(cl, c("myPar", "lowerInt", "Time", "N", "cols",
                           "bootListMat", "mu", "optim", "K", "R", "method", "cumTime"),
                     envir = environment())
@@ -133,7 +139,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
                                                                              objective = SFM.within,
                                                                              # we want only the estimates $par
                                                                              cumTime = cumTime)$par)
-      } else {
+      } else {   # use first difference
         bootEstimates <- parLapply (cl = cl, bootListMat, function(x) nlminb(lower = lowerInt,
                                                                              start = myPar,
                                                                              Time = Time,
@@ -149,7 +155,7 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
                                                                              # we want only the estimates $par
                                                                              cumTime = cumTime)$par)
       }
-      stopCluster(cl)
+      stopCluster (cl)
   }
 
 
@@ -160,15 +166,13 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   stderror <- apply (estimatesMat, 2, sd)
 
   # Calculate CIs based on the quantiles of the estimate distribution
-  if (!is.null(sigmaCI)){
+  if (!is.null (sigmaCI)){
     conf.Interval <- t (apply (estimatesMat, 2,
-                               function(x) quantile(x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
+                               function(x) quantile (x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
   } else{
     conf.Interval <- NULL
   }
 
-  # TODO() we could include a histogram of the estimates and QQ-Plot.
-  # would be nice but not a must.
   return(list (estimatesMat = estimatesMat, par = estimates,
                standerror = stderror, conf.Interval = conf.Interval))
 }

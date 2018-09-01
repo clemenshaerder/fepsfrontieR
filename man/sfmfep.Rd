@@ -42,7 +42,7 @@ performed. "B" must be specified.}
 the amount of bootstrap samples.}
 
 \item{parallel}{is an optional boolean variable. If it is set to TRUE, bootstrapping is
-performed with parallelization, using all available cores.
+performed with parallelization, using all available cores - 1.
 Only available for OS Windows.}
 
 \item{myPar}{is a vecor which has to be entered in the following order:
@@ -61,7 +61,9 @@ Estimates a Stochastic Frontier Model for Fixed-Effects.
     via the hessian matrix.
 }
 \examples{
+Fit of a simple model with balanced panels.
 fit1 <- sfmfep(formula = y ~ x1 + x2 + (z1 + z2),
     method = "within", N = 30, Time = 2, data = sfm.data)
-summary(fit1)
+    summary(fit1)
+
 }
