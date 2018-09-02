@@ -566,5 +566,3 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
   class(res) <- c(res$class, "sfmfep")
   res
 }
-
-

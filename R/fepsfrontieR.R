@@ -14,9 +14,9 @@
 #' sfmfep can be either used to estimate model parameters based on a data input,
 #' or to fit a prespecified model.
 #' Estimation is performed by applying a within or first-difference transformation
-#' of the data. One can optionally chose Bootstrapping to calculate the estimates and
+#' of the data. One can optionally choose Bootstrapping to calculate the estimates and
 #' the associated standard errors. Otherwise, the Standard Errors are obtained
-#' from the Hessian matrix.
+#' from the hessian matrix.
 #' The estimation of the parameters is numerically done using the optimizer nlminb ( ).
 #' Starting points for the optimizer can be provided. Otherwise, OLS estimators
 #' are used as starting points.

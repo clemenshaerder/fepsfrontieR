@@ -13,8 +13,8 @@ library (stringr)
 test_that ("sfmfep works", {
 
   # Test input
-  N <- 20;
-  Time <- 10
+  N <- 40;
+  Time <- 5
   beta <- c(0.5)
   delta <- c(0.5)
   sigma_u <- 0.2
@@ -45,7 +45,7 @@ test_that ("sfmfep works", {
   expect_type (object = withinBoot, type = "list")
 
   # Tests if optim " N & T" works & mu > 0
-  balancedNT <- sfmfep(formula = t.formula, N = 20, Time = 10, bootstrap = boot, B,
+  balancedNT <- sfmfep(formula = t.formula, N = 40, Time = 5, bootstrap = boot, B,
                        method = method, parallel = parallel,
                        data = test.data, mu = 1, myPar = myPar)
   expect_type (object = balancedNT, type = "list")
@@ -53,7 +53,7 @@ test_that ("sfmfep works", {
   # unbalanced & incorrect data dimension test
   expect_error ( sfmfep (formula = t.formula, method = method,
                          bootstrap = boot, B = B, parallel = parallel,
-                         N=20,Time=c(10,9,8,3,1,6,7,7,8,9), data = test.data, mu = mu, myPar = myPar))
+                         N=40,Time=c(10,9,8,3,1,6,7,7,8,9), data = test.data, mu = mu, myPar = myPar))
 
   # Tests if option "panel" works when we specify the column.
   panelColTest1 <- sfmfep (formula = t.formula, method = method,
@@ -103,7 +103,7 @@ test_that ("sfmfep works", {
                             myPar = c(sigma_u = 1, sigma_v=2, beta = c(2), delta = c(1)))
   expect_type (object = unbalancedBoot, type = "list")
 
-  unbalancedBootNT <- sfmfep(formula = t.formula, method = method, N = 20, Time =c(rep(10,19),9), bootstrap = T, B = 5,
+  unbalancedBootNT <- sfmfep(formula = t.formula, method = method, N = 40, Time =c(rep(5,39),4), bootstrap = T, B = 5,
                            data = test.data, mu = mu, alphaCI = 0.05, parallel = parallel,
                            myPar = c(sigma_u = 1, sigma_v=2, beta = c(2), delta = c(1)))
   expect_type (object = unbalancedBoot, type = "list")

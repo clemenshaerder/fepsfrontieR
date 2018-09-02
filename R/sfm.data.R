@@ -2,7 +2,7 @@
 #'
 #' The data set was created using the in-package function SFM.generate with
 #' parameters:
-#' N = 20, Time = 10,
+#' N = 40, Time = 5,
 #' beta <- c(0.5); K <- length(beta);
 #' delta <- c(0.5); R <- length(delta)
 #' sigma_u <- 0.2; sigma_v <- 0.1

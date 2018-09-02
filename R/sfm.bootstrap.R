@@ -175,5 +175,3 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   return(list (estimatesMat = estimatesMat, par = estimates,
                standerror = stderror, conf.Interval = conf.Interval))
 }
-
-
