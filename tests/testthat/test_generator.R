@@ -33,8 +33,7 @@ test_that ("sfmfep works", {
   parallel = F
 
   # tests if bootstrapping works for method = "firstdiff"
-  summary(firstdiffBoot)
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 30, alphaCI = c(0.1, 0.05),
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 30, alphaCI = c(0.1, 0.05),
                           method = method,  N = N, Time = Time, parallel = parallel,
                           data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
