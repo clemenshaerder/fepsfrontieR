@@ -21,7 +21,7 @@ test_that ("sfmfep works", {
   sigma_v <- 0.1
   t.formula <- formula(y  ~ x + (z))
   test.data <- sfm.data  # package data
-  method <- "within"
+  method <- "firstdiff"
   boot <- F
   mu = 0
   myPar = NULL
@@ -33,8 +33,8 @@ test_that ("sfmfep works", {
   parallel = F
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = F, B = 30, alphaCI = c(0.1, 0.05),
-                          method = method,  N = N, Time = Time, parallel = parallel,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, alphaCI = c(0.1, 0.05),
+                          method = method,  N = N, Time = Time, parallel = F,
                           data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
 
