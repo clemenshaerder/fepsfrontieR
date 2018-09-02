@@ -28,12 +28,13 @@ test_that ("sfmfep works", {
   boot = F
   B = NULL
   alphaCI <- 0.05
-  estimate = F
+  estimate = T
   panel = NULL
   parallel = F
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, alphaCI = c(0.1, 0.05),
+  summary(firstdiffBoot)
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 30, alphaCI = c(0.1, 0.05),
                           method = method,  N = N, Time = Time, parallel = parallel,
                           data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
@@ -58,13 +59,13 @@ test_that ("sfmfep works", {
   # Tests if option "panel" works when we specify the column.
   panelColTest1 <- sfmfep (formula = t.formula, method = method,
                            bootstrap = boot, B = B, parallel = parallel,
-                          panel = test.data$producer, data = test.data, mu = mu, myPar = myPar)
+                           panel = test.data$producer, data = test.data, mu = mu, myPar = myPar)
   expect_type (object = panelColTest1, type = "list")
 
   # Tests if option "panel" works when we specify the column.
   panelColTest2 <- sfmfep (formula = t.formula, method = method,
                            bootstrap = boot, B = B, parallel = parallel,
-                          panel = test.data[, 1], data = test.data, mu = mu, myPar = myPar)
+                           panel = test.data[, 1], data = test.data, mu = mu, myPar = myPar)
   expect_type (object = panelColTest2, type = "list")
 
   # Tests if option "panel" works
