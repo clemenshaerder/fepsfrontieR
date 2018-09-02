@@ -9,8 +9,7 @@ plot.sfmfep <- function(x, ...){
 
   hist(x$Ineff, main = "Hist of Inefficiency", xlab = "Inefficiency")
 
-  plot(x$Ineff, main = "mean Inefficiency",
+  plot(y = x$Ineff, x = 1:length(x$Ineff), main = "mean Inefficiency",
        xlab = "panels", ylab = "Inefficiency")
   abline(h = mean(x$Ineff), col= "red")
 }
-
