@@ -38,7 +38,7 @@
 #' # Data has 10 observations for each of the 20 panels.
 #'
 #' fit1 <- sfmfep(formula = y ~ x + (z),
-#'     method = "within", N = 20, Time = 10, data = sfm.data)
+#'     method = "within", N = 40, Time = 5, data = sfm.data)
 #' summary(fit1)
 #'
 #'# ---------------
