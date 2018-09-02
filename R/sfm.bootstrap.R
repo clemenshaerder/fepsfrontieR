@@ -19,7 +19,7 @@
 #'      c(sigma_v, sigma_u, beta = c(), delta = c()).
 #'      Required as starting point for the estimation.
 #' @param lowerInt is a vector of doubles (lower bound for the estimation)
-#' @param sigmaCI is a vector of doubles (significance of the Confidence Intervals)
+#' @param alphaCI is a vector of doubles (significance of the Confidence Intervals)
 #' @param cumTime ia a vector of the cumulated times of the Time vector.
 #'     It serves as an index for computation.
 #' @param parallel is an optional boolean variable. If it is set to TRUE, bootstrapping is
@@ -33,7 +33,7 @@
 
 
 SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
-                          myPar = NULL, lowerInt, sigmaCI, cumTime, parallel){
+                          myPar = NULL, lowerInt, alphaCI, cumTime, parallel){
 
   # create data frame of input variables which helps
   # to conduct the rowise bootstrapping
@@ -165,9 +165,9 @@ SFM.bootstrap <- function(y, xv, z, mu, N, Time, method, R, K, B,
   stderror <- apply (estimatesMat, 2, sd)
 
   # Calculate CIs based on the quantiles of the estimate distribution
-  if (!is.null (sigmaCI)){
+  if (!is.null (alphaCI)){
     conf.Interval <- t (apply (estimatesMat, 2,
-                               function(x) quantile (x,probs = c(sigmaCI/2, 1-sigmaCI/2))))
+                               function(x) quantile (x,probs = c(alphaCI/2, 1-alphaCI/2))))
   } else{
     conf.Interval <- NULL
   }

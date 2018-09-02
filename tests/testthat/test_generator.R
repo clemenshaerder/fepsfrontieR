@@ -27,13 +27,13 @@ test_that ("sfmfep works", {
   myPar = NULL
   boot = F
   B = NULL
-  sigmaCI <- 0.05
+  alphaCI <- 0.05
   estimate = F
   panel = NULL
   parallel = F
 
   # tests if bootstrapping works for method = "firstdiff"
-  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10,
+  firstdiffBoot <- sfmfep(formula = t.formula, bootstrap = T, B = 10, alphaCI = c(0.1, 0.05),
                           method = method,  N = N, Time = Time, parallel = parallel,
                           data = test.data, mu = mu, myPar = myPar)
   expect_type (object = firstdiffBoot, type = "list")
@@ -87,24 +87,24 @@ test_that ("sfmfep works", {
 
   # Tests if it works when CIs are not wanted
   panelNoCI <- sfmfep(formula = t.formula, method = method, panel = "producer", bootstrap = boot, B = B,
-                       data = test.data, mu = mu, sigmaCI = NULL, parallel = parallel,
+                       data = test.data, mu = mu, alphaCI = NULL, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(2), delta = c(1)))
   expect_type (object = panelNoCI, type = "list")
 
   # Tests unbalanced panels with panels without CI
   test.data <- test.data[-60, ]
   unbalancedpanel <- sfmfep(formula = t.formula, method = method, panel ="producer", bootstrap = boot, B = B,
-                       data = test.data, mu = mu, sigmaCI = 0.05, parallel = parallel,
+                       data = test.data, mu = mu, alphaCI = 0.05, parallel = parallel,
                        myPar = c(sigma_u = 1, sigma_v=2, beta = c(2), delta = c(1)))
   expect_type (object = unbalancedpanel, type = "list")
 
   unbalancedBoot <- sfmfep(formula = t.formula, method = method, panel ="producer", bootstrap = T, B = 5,
-                            data = test.data, mu = mu, sigmaCI = NULL, parallel = parallel,
+                            data = test.data, mu = mu, alphaCI = NULL, parallel = parallel,
                             myPar = c(sigma_u = 1, sigma_v=2, beta = c(2), delta = c(1)))
   expect_type (object = unbalancedBoot, type = "list")
 
   unbalancedBootNT <- sfmfep(formula = t.formula, method = method, N = 20, Time =c(rep(10,19),9), bootstrap = T, B = 5,
-                           data = test.data, mu = mu, sigmaCI = 0.05, parallel = parallel,
+                           data = test.data, mu = mu, alphaCI = 0.05, parallel = parallel,
                            myPar = c(sigma_u = 1, sigma_v=2, beta = c(2), delta = c(1)))
   expect_type (object = unbalancedBoot, type = "list")
 

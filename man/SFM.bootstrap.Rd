@@ -5,7 +5,7 @@
 \title{SFM.bootstrap performs estimation with B Individual Bootstrap Samples}
 \usage{
 SFM.bootstrap(y, xv, z, mu, N, Time, method, R, K, B, myPar = NULL,
-  lowerInt, sigmaCI, cumTime, parallel)
+  lowerInt, alphaCI, cumTime, parallel)
 }
 \arguments{
 \item{y}{is a n*t x 1 vector (response)}
@@ -34,7 +34,7 @@ Required as starting point for the estimation.}
 
 \item{lowerInt}{is a vector of doubles (lower bound for the estimation)}
 
-\item{sigmaCI}{is a vector of doubles (significance of the Confidence Intervals)}
+\item{alphaCI}{is a vector of doubles (significance of the Confidence Intervals)}
 
 \item{cumTime}{ia a vector of the cumulated times of the Time vector.
 It serves as an index for computation.}
@@ -50,7 +50,7 @@ A B x (K + R + 2) matrix is returned of the estimates, the mean, standard error
 \description{
 B Individual Bootstrap Samples are generated from the input and MLE is performed
     for each sample. Unlike i.i.d. bootstrapping, individual bootrapping samples
-    the rows with replacement individually for each panel instead from all samples.
+    the rows with replacement individually for each panel instead from all panels.
     In addition to the mean and the standard error of the estimates,
     a confidence interval is returned based on the quantiles of the distribution of estimates.
 }

@@ -2,10 +2,10 @@
 % Please edit documentation in R/sfmfep.R
 \name{sfmfep}
 \alias{sfmfep}
-\title{Fixed effect stochastic Frontier Model}
+\title{Fixed-Effect Stochastic Frontier Model Estimation for Panel Data}
 \usage{
 sfmfep(formula, data, panel = NULL, N = NULL, Time = NULL,
-  method = "firstdiff", mu = 0, sigmaCI = 0.05, estimate = T,
+  method = "firstdiff", mu = 0, alphaCI = 0.05, estimate = T,
   bootstrap = F, B = NULL, parallel = F, myPar = c(sigma_u = NULL,
   sigma_v = NULL, beta = c(NULL), delta = c(NULL)))
 }
@@ -28,7 +28,7 @@ If Time is entered, N is also a required input.}
 
 \item{mu}{is the mean of a truncated normal distribution of the stochastic inefficiency.}
 
-\item{sigmaCI}{is an optional vector specifying the significance
+\item{alphaCI}{is an optional vector specifying the significance
 values of the confidence intervals for the MLE estimates.}
 
 \item{estimate}{TRUE or FALSE specifies if "myPar" is used as
@@ -46,12 +46,11 @@ performed with parallelization, using all available cores - 1.
 Only available for OS Windows.}
 
 \item{myPar}{is a vecor which has to be entered in the following order:
-c(sigma_v, sigma_u, beta = c(), delta = c())}
+c(sigma_v, sigma_u, beta = c( ), delta = c( ))}
 }
 \value{
-sfmfep returns an object of class S3. The function summary( )
+sfmfep returns an object of class S3 "sfmfep". The function summary( )
     can be used to obtain or print a summary of the results.
-    An object of class "sfmfep" is returned.
 }
 \description{
 Estimates a Stochastic Frontier Model for Fixed-Effects.
@@ -61,7 +60,8 @@ Estimates a Stochastic Frontier Model for Fixed-Effects.
     via the hessian matrix.
 }
 \examples{
-# Fit of a simple model with balanced panels. Definition with *N & T*.
+# Fit of a simple model with balanced panels.
+# Definition with *N & T*.
 # Data has 10 observations for each of the 20 panels.
 
 fit1 <- sfmfep(formula = y ~ x + (z),
@@ -69,18 +69,20 @@ fit1 <- sfmfep(formula = y ~ x + (z),
 summary(fit1)
 
 # ---------------
-# Fit of a simple model with balanced panels. Definition with *panels*.
+# Fit of a simple model with balanced panels.
+# Definition with *panels*.
 
 fit2 <- sfmfep(formula = y ~ x + (z),
      method = "within", panel = sfm.data$producer, data = sfm.data)
 summary(fit2)
 
 # ---------------
-# Fit of a simple model with *Bootstrapping* using *method = firstdiff*
+# Fit of a simple model with *Bootstrapping* using
+# *method = firstdiff*
 # with different *sigmas* for *Confidence Intervals*
 
 fit3 <- sfmfep(formula = y ~ x + (z),
-    bootstrap = TRUE, B = 20, sigmaCI = c(0.1, 0.05),
+    bootstrap = TRUE, B = 20, alphaCI = c(0.1, 0.05),
     method = "firstdiff", panel = sfm.data$producer, data = sfm.data)
 summary(fit3)
 

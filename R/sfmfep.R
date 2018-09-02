@@ -15,7 +15,7 @@
 #'     If Time is entered, N is also a required input.
 #' @param method a required string specifying the method ("within" or "firstdiff").
 #' @param mu is the mean of a truncated normal distribution of the stochastic inefficiency.
-#' @param sigmaCI is an optional vector specifying the significance
+#' @param alphaCI is an optional vector specifying the significance
 #'     values of the confidence intervals for the MLE estimates.
 #' @param estimate TRUE or FALSE specifies if "myPar" is used as
 #'     starting point of the estimation, or if "myPar" is used to fit
@@ -55,7 +55,7 @@
 #' # with different *sigmas* for *Confidence Intervals*
 #'
 #' fit3 <- sfmfep(formula = y ~ x + (z),
-#'     bootstrap = TRUE, B = 20, sigmaCI = c(0.1, 0.05),
+#'     bootstrap = TRUE, B = 20, alphaCI = c(0.1, 0.05),
 #'     method = "firstdiff", panel = sfm.data$producer, data = sfm.data)
 #' summary(fit3)
 #'
@@ -87,9 +87,10 @@
 #' @export
 
 sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
-                   method = "firstdiff", mu = 0,  sigmaCI = 0.05, estimate = T,
+                   method = "firstdiff", mu = 0,  alphaCI = 0.05, estimate = T,
                    bootstrap = F, B = NULL, parallel = F, myPar = c(sigma_u = NULL,
                    sigma_v = NULL, beta = c(NULL), delta = c(NULL))){
+
 
   call <- match.call ()
 
@@ -139,10 +140,10 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
     stop ("The mean of the truncated normal distribution (*mu*) must be a positive value")
   }
 
-  # Tests if the sig.niveau sigmaCI for the Confidence Interval are correctly entered
-  if (!is.null (sigmaCI)){ # NULL would throw an error, but is a valid input.
-    if (any (sigmaCI <= 0 | sigmaCI > 1) || is.nan (sigmaCI)){
-      cat ("Can not compute Confidence Intervals due to invalid input (sigmaCI must be between [0, 1]")
+  # Tests if the sig.niveau alphaCI for the Confidence Interval are correctly entered
+  if (!is.null (alphaCI)){ # NULL would throw an error, but is a valid input.
+    if (any (alphaCI <= 0 | alphaCI > 1) || is.nan (alphaCI)){
+      cat ("Can not compute Confidence Intervals due to invalid input (alphaCI must be between [0, 1]")
     }
   }
 
@@ -341,7 +342,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                                     method = method,
                                     lowerInt = l.int,
                                     cumTime = cumTime,
-                                    sigmaCI = sigmaCI,
+                                    alphaCI = alphaCI,
                                     parallel = parallel)
       }
     } else { # else myPar is defined & not NULL
@@ -387,7 +388,7 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
                                     B = B,
                                     cumTime = cumTime,
                                     lowerInt = l.int,
-                                    sigmaCI = sigmaCI,
+                                    alphaCI = alphaCI,
                                     parallel = parallel)
       }
     }
@@ -502,12 +503,12 @@ sfmfep <- function(formula, data, panel = NULL, N = NULL, Time = NULL,
 
   df = sum (Time.input) - length (optim.SFM$par)  # get degrees of freedom
 
-  # sigmaCI can be a vector of significance levels
+  # alphaCI can be a vector of significance levels
   if (bootstrap == F){
-    if (!is.null (sigmaCI)){
+    if (!is.null (alphaCI)){
       # A data frame is returned
       c.Interval <- SFM.CI (estimates = optim.SFM$par, hessianMatrix = hes,
-                            alpha = sigmaCI, df = df)
+                            alpha = alphaCI, df = df)
       if(!is.character (c.Interval)){  # split the return for the output
         conf.Interval <- c.Interval[, c(2, 3)]
         standerror    <- c.Interval$standerror
